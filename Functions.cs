@@ -5,10 +5,15 @@ namespace Rehau.Sku.Assist
     public class Functions : IExcelAddIn
     {
         [ExcelFunction(description: "Получение наименования и артикула позиции")]
-        public static string RAUNAME(string request)
+        public static object RAUNAME(string request)
         {
             SkuAssist.EnsureHttpInitialized();
-            return SkuAssist.GetSku(request);
+
+            return ExcelTaskUtil.Run("RAUNAME ASYNC", request, async token =>
+            {
+                var document = await SkuAssist.GetDocumentAsync(request);
+                return SkuAssist.GetResultFromDocument(document);
+            });
         }
 
         public void AutoClose()
