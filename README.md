@@ -13,4 +13,4 @@
 получить полное наименование и артикул позиции из каталога интернет-магазина REHAU https://shop-rehau.ru/
 ## Принцип работы
 Прототип делает поисковый запрос в интернет-магазине, выполняет парсинг полученного ответа и выдает первый результат
-![Видео работы](https://github.com/schebotar/Rehau.Sku.Assist/blob/dev/README.files/video.webm.mov)
+![Видео работы](https://github.com/schebotar/Rehau.Sku.Assist/blob/dev/README.files/work.gif)
