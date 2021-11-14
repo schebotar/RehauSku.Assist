@@ -1,25 +1,23 @@
 ﻿using ExcelDna.Integration;
+using System.Net.Http;
 
 namespace Rehau.Sku.Assist
 {
     public class Functions : IExcelAddIn
     {
-        [ExcelFunction(description: "Получение наименования и артикула позиции")]
+        static readonly HttpClient httpClient = new HttpClient();
+
         public static object RAUNAME(string request)
         {
-            SkuAssist.EnsureHttpInitialized();
-
-            return ExcelTaskUtil.Run("RAUNAME ASYNC", request, async token =>
+            return ExcelAsyncUtil.Run("RAUNAME", request, delegate
             {
-                var document = await SkuAssist.GetDocumentAsync(request);
+                var document = SkuAssist.GetDocumentAsync(request, httpClient).Result;
                 return SkuAssist.GetResultFromDocument(document);
             });
         }
 
         public void AutoClose()
         {
-            ExcelIntegration.RegisterUnhandledExceptionHandler(
-                delegate (object ex) { return string.Format("!!!ERROR: {0}", ex.ToString()); });
         }
 
         public void AutoOpen()

@@ -58,12 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CancellationDisposable.cs" />
-    <Compile Include="DefaultDisposable.cs" />
-    <Compile Include="ExcelTaskUtil.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkuAssist.cs" />
+    <Compile Include="Assistant\SkuAssist.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Rehau.Sku.Assist-AddIn.dna" />

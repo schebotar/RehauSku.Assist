@@ -8,24 +8,13 @@ namespace Rehau.Sku.Assist
 {
     static class SkuAssist
     {
-        static private HttpClient _httpClient;
-
-        public static void EnsureHttpInitialized()
+        public async static Task<AngleSharp.Dom.IDocument> GetDocumentAsync(string request, HttpClient httpClient)
         {
-            if (_httpClient == null)
-            {
-                _httpClient = new HttpClient();
-            }
-        }
-
-        public async static Task<AngleSharp.Dom.IDocument> GetDocumentAsync(string request)
-        {
-            string url = "https://shop-rehau.ru/catalogsearch/result/?q=" + request;
+            string uri = "https://shop-rehau.ru/catalogsearch/result/?q=" + request;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            HttpResponseMessage response = await httpClient.GetAsync(uri);
             response.EnsureSuccessStatusCode();
-
 
             IConfiguration config = Configuration.Default;
             IBrowsingContext context = BrowsingContext.New(config);
