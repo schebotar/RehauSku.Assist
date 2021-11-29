@@ -15,7 +15,7 @@ namespace Rehau.Sku.Assist
             Task<string> contentTask = Task.Run(() => SkuAssist.GetContent(request, httpClient));
             Task<IDocument> documentTask = await contentTask.ContinueWith(content => SkuAssist.GetDocument(content));
             IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetProductFromDocument(doc.Result));
-            return product.ToString();
+            return product == null ? ExcelError.ExcelErrorNull.ToString() : product.ToString();
         }
     }
 }

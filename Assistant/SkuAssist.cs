@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Rehau.Sku.Assist
@@ -11,7 +12,7 @@ namespace Rehau.Sku.Assist
     {
         public async static Task<string> GetContent(string request, HttpClient httpClient)
         {
-            string uri = "https://shop-rehau.ru/catalogsearch/result/?q=" + request;
+            string uri = "https://shop-rehau.ru/catalogsearch/result/?q=" + request._CleanRequest();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             return await httpClient.GetStringAsync(uri);
@@ -31,8 +32,12 @@ namespace Rehau.Sku.Assist
                 .All
                 .Where(e => e.ClassName == "product-item__desc-top")
                 .Select(e => new Product(e.Children[0].TextContent, e.Children[1].TextContent.Trim(new[] { '\n', ' ' })))
-                // .Where(product => !product.Sku.Any(c => char.IsLetter(c)))
                 .FirstOrDefault();
+        }
+
+        private static string _CleanRequest(this string input)
+        {
+            return input.Replace("+", " plus ");
         }
     }
 }

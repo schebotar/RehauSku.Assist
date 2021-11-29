@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.16.1.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>packages\AngleSharp.0.16.1\lib\net472\AngleSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ExcelDna.Integration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=f225e9659857edbe, processorArchitecture=MSIL">
       <HintPath>packages\ExcelDna.Integration.1.5.0\lib\net452\ExcelDna.Integration.dll</HintPath>
@@ -43,6 +44,7 @@
     </Reference>
     <Reference Include="ExcelDna.Registration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=f225e9659857edbe, processorArchitecture=MSIL">
       <HintPath>packages\ExcelDna.Registration.1.5.0\lib\net452\ExcelDna.Registration.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
