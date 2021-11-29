@@ -1,8 +1,8 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using AngleSharp;
+﻿using AngleSharp;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Rehau.Sku.Assist
 {
@@ -23,16 +23,14 @@ namespace Rehau.Sku.Assist
             return await context.OpenAsync(req => req.Content(source));
         }
 
-        public static string GetResultFromDocument(AngleSharp.Dom.IDocument document)
+        public static IProduct GetProductFromDocument(AngleSharp.Dom.IDocument document)
         {
-            var result = document
+            return document
                 .All
                 .Where(e => e.ClassName == "product-item__desc-top")
-                .Select(e => new { sku = e.Children[0].TextContent, title = e.Children[1].TextContent.Trim(new[] { '\n', ' ' }) })
-                .Where(t => !t.sku.Any(c => char.IsLetter(c)))
+                .Select(e => new Product(e.Children[0].TextContent, e.Children[1].TextContent.Trim(new[] { '\n', ' ' })))
+                // .Where(product => !product.Sku.Any(c => char.IsLetter(c)))
                 .FirstOrDefault();
-
-            return result == null ? "Не найдено" : $"{result.title} ({result.sku})";
         }
     }
 }
