@@ -17,12 +17,12 @@ namespace Rehau.Sku.Assist
             return await httpClient.GetStringAsync(uri);
         }
 
-        public async static Task<IDocument> GetDocument(string source)
+        public async static Task<IDocument> GetDocument(Task<string> source)
         {
             IConfiguration config = Configuration.Default;
             IBrowsingContext context = BrowsingContext.New(config);
 
-            return await context.OpenAsync(req => req.Content(source));
+            return await context.OpenAsync(req => req.Content(source.Result));
         }
 
         public static IProduct GetProductFromDocument(IDocument document)

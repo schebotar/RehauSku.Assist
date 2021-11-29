@@ -1,4 +1,4 @@
-﻿using System;
+﻿using AngleSharp.Dom;
 using ExcelDna.Integration;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,7 +12,10 @@ namespace Rehau.Sku.Assist
         [ExcelFunction]
         public static async Task<string> RAUNAME(string request)
         {
-            throw new NotImplementedException();
+            Task<string> contentTask = Task.Run(() => SkuAssist.GetContent(request, httpClient));
+            Task<IDocument> documentTask = await contentTask.ContinueWith(content => SkuAssist.GetDocument(content));
+            IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetProductFromDocument(doc.Result));
+            return product.ToString();
         }
     }
 }
