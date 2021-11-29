@@ -7,12 +7,12 @@ namespace Rehau.Sku.Assist
 {
     public class Functions
     {
-        private static HttpClient httpClient = new HttpClient();
+        private static HttpClient _httpClient = new HttpClient();
 
         [ExcelFunction]
         public static async Task<string> RAUNAME(string request)
         {
-            Task<string> contentTask = Task.Run(() => SkuAssist.GetContent(request, httpClient));
+            Task<string> contentTask = Task.Run(() => SkuAssist.GetContent(request, _httpClient));
             Task<IDocument> documentTask = await contentTask.ContinueWith(content => SkuAssist.GetDocument(content));
             IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetProductFromDocument(doc.Result));
             return product == null ? ExcelError.ExcelErrorNull.ToString() : product.ToString();
