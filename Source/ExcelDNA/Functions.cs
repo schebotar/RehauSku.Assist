@@ -1,19 +1,36 @@
-﻿using AngleSharp.Dom;
-using ExcelDna.Integration;
-using System.Net.Http;
+﻿using ExcelDna.Integration;
 using System.Threading.Tasks;
+using System.Runtime.Caching;
 
 namespace Rehau.Sku.Assist
 {
     public class Functions
     {
         [ExcelFunction]
-        public static async Task<string> RAUNAME(string request)
+        public static object RAUNAME(string request)
         {
-            Task<string> contentTask = Task.Run(() => SkuAssist.GetContent(request));
-            Task<IDocument> documentTask = await contentTask.ContinueWith(content => SkuAssist.GetDocument(content));
-            IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetProductFromDocument(doc.Result));
-            return product != null ? product.ToString() : "Не найдено";
+            if (MemoryCache.Default.Contains(request))
+                return MemoryCache.Default[request].ToString();
+
+            else
+            {
+                object result = ExcelAsyncUtil.Run("Rauname", new[] { request },
+                    delegate
+                    {
+                        Task<IProduct> product = Task.Run(() => SkuAssist.GetProduct(request));
+                        return product.Result;
+                    });
+
+                if (Equals(result, ExcelError.ExcelErrorNA))
+                {
+                    return "Загрузка...";
+                }
+                else
+                {
+                    MemoryCache.Default.Add(request, result, System.DateTime.Now.AddMinutes(10));
+                    return result == null ? "Не найдено" : result.ToString();
+                }
+            }
         }
     }
 }

@@ -1,80 +1,62 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Rehau.Sku.Assist
 {
+    public enum ResponseOrder
+    {
+        NoSettings,
+        Relevance,
+        Name,
+        Price,
+        Series
+    }
+
     static class SkuAssist
     {
-        private static HttpClient _httpClient;
-        private enum ResponseOrder
+        public static async Task<IProduct> GetProduct(string request)
         {
-            NoSettings,
-            Relevance,
-            Name,
-            Price,
-            Series
-        }
-        private static void _EnsureHttpClientRunning()
-        {
-            if (_httpClient == null)
-                _httpClient = new HttpClient();
+            Uri uri = request.ConvertToUri(ResponseOrder.NoSettings);
+
+            Task<string> contentTask = Task.Run(() => HttpClientUtil.GetContentByUriAsync(uri));
+            Task<IDocument> documentTask = await contentTask.ContinueWith(content => HttpClientUtil.ContentToDocAsync(content));
+
+            IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetFirstProduct(doc.Result));
+            return product;
         }
 
-        public async static Task<string> GetContent(string request)
+        public static IProduct GetFirstProduct(IDocument doc)
         {
-            Uri uri = _ConvertToUri(request, ResponseOrder.NoSettings);
-            _EnsureHttpClientRunning();
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-            return await _httpClient.GetStringAsync(uri);
-        }
-
-        public async static Task<IDocument> GetDocument(Task<string> source)
-        {
-            IConfiguration config = Configuration.Default;
-            IBrowsingContext context = BrowsingContext.New(config);
-
-            return await context.OpenAsync(req => req.Content(source.Result));
-        }
-
-        public static IProduct GetProductFromDocument(IDocument document)
-        {
-            return document
+            return doc
                 .All
                 .Where(e => e.ClassName == "product-item__desc-top")
-                .Select(e => new Product(e.Children[0].TextContent, e.Children[1].TextContent.Trim(new[] { '\n', ' ' })))
+                .Where(e => Regex.IsMatch(e.Children[0].TextContent, @"\d{11}", RegexOptions.None))
+                .Select(e => 
+                    new Product(e.Children[0].TextContent,
+                    e.Children[1].TextContent.Trim(new[] { '\n', ' ' })))
                 .FirstOrDefault();
         }
 
-        private static Uri _ConvertToUri(this string request, ResponseOrder order)
+        public static Uri GetFirstResultLink(IDocument doc)
         {
-            string cleanedRequest = request._CleanRequest();
-            switch (order)
-            {
-                case ResponseOrder.Relevance:
-                    return new Uri("https://shop-rehau.ru/catalogsearch/result/index/?dir=asc&order=relevance&q=" + cleanedRequest);
-                case ResponseOrder.Name:
-                    return new Uri("https://shop-rehau.ru/catalogsearch/result/index/?dir=asc&order=name&q=" + cleanedRequest);
-                case ResponseOrder.Price:
-                    return new Uri("https://shop-rehau.ru/catalogsearch/result/index/?dir=asc&order=price&q=" + cleanedRequest);
-                case ResponseOrder.Series:
-                    return new Uri("https://shop-rehau.ru/catalogsearch/result/index/?dir=asc&order=sch_product_series&q=" + cleanedRequest);
-                case ResponseOrder.NoSettings:
-                    return new Uri("https://shop-rehau.ru/catalogsearch/result/?q=" + cleanedRequest);
-                default:
-                    throw new ArgumentException();
-            }
+            var link = new Uri(doc
+                .Links
+                .Where(e => e.ClassName == "product-item__title-link js-name")
+                .Select(l => ((IHtmlAnchorElement)l).Href)
+                .FirstOrDefault());
+            return link;
         }
-        private static string _CleanRequest(this string input)
+
+        public static string GetFistResultImageLink(IDocument doc)
         {
-            return input.Replace("+", " plus ");
+            var imageSource = doc.Images
+                .Where(x => x.ClassName == "product-item__image")
+                .FirstOrDefault();
+            return imageSource != null ? imageSource.Source : "Нет ссылки";
         }
     }
 }
-
-

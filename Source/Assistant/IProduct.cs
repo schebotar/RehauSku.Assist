@@ -1,9 +1,11 @@
-﻿namespace Rehau.Sku.Assist
+﻿using System;
+
+namespace Rehau.Sku.Assist
 {
     interface IProduct
     {
         string Sku { get; }
         string Name { get; }
-        string Uri { get; }
+        Uri Uri { get; }
     }
 }

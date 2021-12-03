@@ -85,6 +85,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Assistant\HttpClientUtil.cs" />
     <Compile Include="Source\ExcelDNA\AddIn.cs" />
     <Compile Include="Source\Assistant\IProduct.cs" />
     <Compile Include="Source\Assistant\Product.cs" />
