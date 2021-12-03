@@ -48,6 +48,9 @@
       <HintPath>packages\ExcelDna.Registration.1.5.0\lib\net452\ExcelDna.Registration.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.13.2.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>packages\NUnit.3.13.2\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -86,9 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Assistant\HttpClientUtil.cs" />
+    <Compile Include="Source\Assistant\StoreResponse.cs" />
     <Compile Include="Source\ExcelDNA\AddIn.cs" />
     <Compile Include="Source\Assistant\IProduct.cs" />
-    <Compile Include="Source\Assistant\Product.cs" />
     <Compile Include="Source\ExcelDNA\Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Assistant\SkuAssist.cs" />

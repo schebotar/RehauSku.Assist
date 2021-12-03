@@ -1,9 +1,9 @@
 ﻿using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Rehau.Sku.Assist
 {
@@ -25,38 +25,28 @@ namespace Rehau.Sku.Assist
             Task<string> contentTask = Task.Run(() => HttpClientUtil.GetContentByUriAsync(uri));
             Task<IDocument> documentTask = await contentTask.ContinueWith(content => HttpClientUtil.ContentToDocAsync(content));
 
-            IProduct product = await documentTask.ContinueWith(doc => SkuAssist.GetFirstProduct(doc.Result));
+            return GetProduct(documentTask.Result);
+        }
+
+        public static IProduct GetProduct(IDocument d)
+        {
+            string script = d.Scripts
+                   .Where(s => s.InnerHtml.Contains("dataLayer"))
+                   .First()
+                   .InnerHtml;
+
+            string json = script
+                .Substring(script.IndexOf("push(") + 5)
+                .TrimEnd(new[] { ')', ';', '\n', ' ' });
+
+            StoreResponce storeResponse = JsonConvert.DeserializeObject<StoreResponce>(json);
+            IProduct product = storeResponse
+                .Ecommerce
+                .Impressions
+                .Where(i => Regex.IsMatch(i.Id, @"\d{11}", RegexOptions.None))
+                .FirstOrDefault();
+
             return product;
-        }
-
-        public static IProduct GetFirstProduct(IDocument doc)
-        {
-            return doc
-                .All
-                .Where(e => e.ClassName == "product-item__desc-top")
-                .Where(e => Regex.IsMatch(e.Children[0].TextContent, @"\d{11}", RegexOptions.None))
-                .Select(e => 
-                    new Product(e.Children[0].TextContent,
-                    e.Children[1].TextContent.Trim(new[] { '\n', ' ' })))
-                .FirstOrDefault();
-        }
-
-        public static Uri GetFirstResultLink(IDocument doc)
-        {
-            var link = new Uri(doc
-                .Links
-                .Where(e => e.ClassName == "product-item__title-link js-name")
-                .Select(l => ((IHtmlAnchorElement)l).Href)
-                .FirstOrDefault());
-            return link;
-        }
-
-        public static string GetFistResultImageLink(IDocument doc)
-        {
-            var imageSource = doc.Images
-                .Where(x => x.ClassName == "product-item__image")
-                .FirstOrDefault();
-            return imageSource != null ? imageSource.Source : "Нет ссылки";
         }
     }
 }

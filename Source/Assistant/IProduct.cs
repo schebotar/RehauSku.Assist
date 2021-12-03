@@ -4,8 +4,7 @@ namespace Rehau.Sku.Assist
 {
     interface IProduct
     {
-        string Sku { get; }
+        string Id { get; }
         string Name { get; }
-        Uri Uri { get; }
     }
 }

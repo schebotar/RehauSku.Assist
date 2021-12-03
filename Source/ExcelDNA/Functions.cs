@@ -1,6 +1,6 @@
 ﻿using ExcelDna.Integration;
-using System.Threading.Tasks;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 
 namespace Rehau.Sku.Assist
 {
@@ -17,7 +17,7 @@ namespace Rehau.Sku.Assist
 
             else
             {
-                object result = ExcelAsyncUtil.Run("Rauname", new[] { request },
+                object result = ExcelAsyncUtil.Run("RauName", new[] { request },
                     delegate
                     {
                         Task<IProduct> p = Task.Run(() => SkuAssist.GetProduct(request));
@@ -32,7 +32,6 @@ namespace Rehau.Sku.Assist
 
                 IProduct product = result as IProduct;
                 MemoryCache.Default.Add(request, product, System.DateTime.Now.AddMinutes(10));
-                //MemoryCache.Default.Add(product.Name, product, System.DateTime.Now.AddMinutes(10));
                 return product.Name;
             }
         }
@@ -42,8 +41,8 @@ namespace Rehau.Sku.Assist
         {
             if (MemoryCache.Default.Contains(request))
             {
-                IProduct result = MemoryCache.Default[request] as IProduct;
-                return result.Sku;
+                IProduct product = MemoryCache.Default[request] as IProduct;
+                return product.Id;
             }
             else
             {
@@ -62,8 +61,7 @@ namespace Rehau.Sku.Assist
 
                 IProduct product = result as IProduct;
                 MemoryCache.Default.Add(request, product, System.DateTime.Now.AddMinutes(10));
-                //MemoryCache.Default.Add(product.Sku, product, System.DateTime.Now.AddMinutes(10));
-                return product.Sku;
+                return product.Id;
             }
         }
     }
