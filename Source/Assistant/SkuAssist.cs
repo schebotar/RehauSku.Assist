@@ -1,7 +1,9 @@
 ﻿using AngleSharp.Dom;
+using ExcelDna.Integration;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -14,6 +16,13 @@ namespace Rehau.Sku.Assist
         Name,
         Price,
         Series
+    }
+
+    public enum ProductField
+    {
+        Name,
+        Id,
+        Price
     }
 
     static class SkuAssist
@@ -43,10 +52,52 @@ namespace Rehau.Sku.Assist
             IProduct product = storeResponse
                 .Ecommerce
                 .Impressions
-                .Where(i => Regex.IsMatch(i.Id, @"\d{11}", RegexOptions.None))
+                .Where(p => Regex.IsMatch(p.Id, @"\d{11}", RegexOptions.None))
                 .FirstOrDefault();
 
             return product;
+        }
+
+        public static object GetProduct(string request, ProductField field)
+        {
+            IProduct product;
+
+            if (MemoryCache.Default.Contains(request))
+            {
+                product = MemoryCache.Default[request] as IProduct;
+            }
+
+            else
+            {
+                object result = ExcelAsyncUtil.Run("RauName", new[] { request },
+                    delegate
+                    {
+                        Task<IProduct> p = Task.Run(() => GetProduct(request));
+                        return p.Result;
+                    });
+
+                if (result == null)
+                    return "Не найдено";
+
+                if (result.Equals(ExcelError.ExcelErrorNA))
+                    return "Загрузка...";
+
+                product = result as IProduct;
+                MemoryCache.Default.Add(request, product, DateTime.Now.AddMinutes(10));
+                return product.Name;
+            }
+
+            switch (field)
+            {
+                case ProductField.Name:
+                    return product.Name;
+                case ProductField.Id:
+                    return product.Id;
+                case ProductField.Price:
+                    return product.Price;
+                default:
+                    return ExcelError.ExcelErrorValue;
+            }
         }
     }
 }
