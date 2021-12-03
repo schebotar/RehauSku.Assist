@@ -84,7 +84,6 @@ namespace Rehau.Sku.Assist
 
                 product = result as IProduct;
                 MemoryCache.Default.Add(request, product, DateTime.Now.AddMinutes(10));
-                return product.Name;
             }
 
             switch (field)
