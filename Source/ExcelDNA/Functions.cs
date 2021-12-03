@@ -25,10 +25,16 @@ namespace Rehau.Sku.Assist
                 {
                     return "Загрузка...";
                 }
+
+                else if (result == null)
+                {
+                    return "Не найдено";
+                }
+
                 else
                 {
                     MemoryCache.Default.Add(request, result, System.DateTime.Now.AddMinutes(10));
-                    return result == null ? "Не найдено" : result.ToString();
+                    return result.ToString();
                 }
             }
         }
