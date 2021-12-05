@@ -26,3 +26,7 @@
 
     Выбрать и включить файл плагина.
 
+## Использованные библиотеки
+- [ExcelDna](https://github.com/Excel-DNA/ExcelDna)
+- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+- [AngleSharp](https://github.com/AngleSharp/AngleSharp)
