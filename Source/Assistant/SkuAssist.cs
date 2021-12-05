@@ -80,7 +80,7 @@ namespace Rehau.Sku.Assist
                     });
 
                 if (result == null)
-                    return "Не найдено";
+                    return "Не найдено :(";
 
                 if (result.Equals(ExcelError.ExcelErrorNA))
                     return "Загрузка...";
