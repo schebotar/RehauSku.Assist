@@ -48,6 +48,9 @@ namespace Rehau.Sku.Assist
                 .Substring(script.IndexOf("push(") + 5)
                 .TrimEnd(new[] { ')', ';', '\n', ' ' });
 
+            if (!json.Contains("impressions"))
+                return null;
+
             StoreResponce storeResponse = JsonConvert.DeserializeObject<StoreResponce>(json);
             IProduct product = storeResponse
                 .Ecommerce
