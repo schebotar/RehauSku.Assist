@@ -68,6 +68,7 @@ namespace Rehau.Sku.Assist
                 .Replace("РХ", "")
                 .Replace("º", " ")
                 .Replace(".", " ")
+                .Replace("Ø", " ")
                 .ToString();
         }
     }
