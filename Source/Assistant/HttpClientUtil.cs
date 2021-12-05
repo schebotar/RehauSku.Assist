@@ -30,14 +30,14 @@ namespace Rehau.Sku.Assist
             return await context.OpenAsync(req => req.Content(content.Result));
         }
 
-        public static Uri ConvertToUri(this string request, ResponseOrder order)
+        public static Uri ConvertToUri(this string request)
         {
             UriBuilder baseUri = new UriBuilder("https", "shop-rehau.ru");
 
             baseUri.Path = "/catalogsearch/result/index/";
             string cleanedRequest = request._CleanRequest();
 
-            switch (order)
+            switch (AddIn.responseOrder)
             {
                 case ResponseOrder.Relevance:
                     baseUri.Query = "dir=asc&order=relevance&q=" + cleanedRequest;

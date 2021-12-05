@@ -10,15 +10,6 @@ using System.Threading.Tasks;
 
 namespace Rehau.Sku.Assist
 {
-    public enum ResponseOrder
-    {
-        NoSettings,
-        Relevance,
-        Name,
-        Price,
-        Series
-    }
-
     public enum ProductField
     {
         Name,
@@ -30,7 +21,7 @@ namespace Rehau.Sku.Assist
     {
         public static async Task<IProduct> GetProduct(string request)
         {
-            Uri uri = request.ConvertToUri(ResponseOrder.NoSettings);
+            Uri uri = request.ConvertToUri();
 
             Task<string> contentTask = Task.Run(() => HttpClientUtil.GetContentByUriAsync(uri));
             Task<IDocument> documentTask = await contentTask.ContinueWith(content => HttpClientUtil.ContentToDocAsync(content));
