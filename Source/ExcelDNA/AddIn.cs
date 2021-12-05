@@ -6,12 +6,11 @@ namespace Rehau.Sku.Assist
 {
     public class AddIn : IExcelAddIn
     {
-        public static HttpClient httpClient;
+        public static readonly HttpClient httpClient = new HttpClient();
 
         public void AutoOpen()
         {
             RegisterFunctions();
-            httpClient = new HttpClient();
         }
 
         public void AutoClose()
