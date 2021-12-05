@@ -29,12 +29,13 @@ namespace Rehau.Sku.Assist
             return GetProduct(documentTask.Result);
         }
 
-        public static IProduct GetProduct(IDocument d)
+        public static IProduct GetProduct(IDocument document)
         {
-            string script = d.Scripts
-                   .Where(s => s.InnerHtml.Contains("dataLayer"))
-                   .First()
-                   .InnerHtml;
+            string script = document
+                .Scripts
+                .Where(s => s.InnerHtml.Contains("dataLayer"))
+                .First()
+                .InnerHtml;
 
             string json = script
                 .Substring(script.IndexOf("push(") + 5)
