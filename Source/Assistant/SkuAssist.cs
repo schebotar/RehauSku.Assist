@@ -2,6 +2,7 @@
 using ExcelDna.Integration;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
@@ -96,7 +97,7 @@ namespace Rehau.Sku.Assist
                 case ProductField.Id:
                     return product.Id;
                 case ProductField.Price:
-                    return product.Price;
+                    return double.Parse((string)product.Price, CultureInfo.InvariantCulture);
                 default:
                     return ExcelError.ExcelErrorValue;
             }

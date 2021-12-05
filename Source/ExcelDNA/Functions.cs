@@ -14,6 +14,6 @@ namespace Rehau.Sku.Assist
 
         [ExcelFunction]
         public static object RAUPRICE(string request)
-            => SkuAssist.GetProduct(request, ProductField.Price); 
+            => SkuAssist.GetProduct(request, ProductField.Price);
     }
 }
