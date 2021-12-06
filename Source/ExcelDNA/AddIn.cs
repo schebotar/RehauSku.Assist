@@ -1,6 +1,8 @@
 ﻿using ExcelDna.Integration;
 using ExcelDna.Registration;
+using Microsoft.Win32;
 using System.Net.Http;
+using System.IO;
 
 namespace Rehau.Sku.Assist
 {
@@ -17,15 +19,17 @@ namespace Rehau.Sku.Assist
     {
         public static readonly HttpClient httpClient = new HttpClient();
         public static ResponseOrder responseOrder;
+        public string priceListPath;
 
         public void AutoOpen()
         {
             RegisterFunctions();
-            responseOrder = ResponseOrder.NoSettings;
+            GetRegistryKeys();
         }
 
         public void AutoClose()
         {
+
         }
 
         void RegisterFunctions()
@@ -34,5 +38,18 @@ namespace Rehau.Sku.Assist
                              .ProcessAsyncRegistrations(nativeAsyncIfAvailable: false)
                              .RegisterFunctions();
         }
+
+        void GetRegistryKeys()
+        {
+            RegistryKey addInKeys = Registry
+                .CurrentUser
+                .OpenSubKey("SOFTWARE")
+                .OpenSubKey("REHAU")
+                .OpenSubKey("SkuAssist");
+
+            responseOrder = (ResponseOrder)addInKeys.GetValue("ResponseOrder");
+            priceListPath = (string)addInKeys.GetValue("PriceListPath");
+        }
+
     }
 }
