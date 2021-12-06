@@ -1,12 +1,9 @@
 ﻿using ExcelDna.Integration;
 using Microsoft.Office.Interop.Excel;
-using Rehau.Sku.Assist;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 
-namespace Rehau.Sku
+namespace Rehau.Sku.Assist
 {
     public class DataWriter : IDisposable
     {
@@ -14,12 +11,11 @@ namespace Rehau.Sku
         private Dictionary<string, double> SkuAmount { get; set; }
         private object[,] SelectedCells { get; set; }
         private string FileName { get; set; }
-        private string ExportFileName { get; set; }
 
         public DataWriter()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
-            this.FileName = this.xlApp.ActiveWorkbook.FullName;
+            this.FileName = AddIn.priceListPath;
 
             GetSelectedCells();
         }
@@ -75,21 +71,9 @@ namespace Rehau.Sku
             }
         }
 
-        public void DownloadPriceList()
-        {
-            Uri linkToPrice = new Uri(@"https://www.rehau.com/downloads/831332/%D0%BF%D1%80%D0%B0%D0%B9%D1%81-%D0%BB%D0%B8%D1%81%D1%82-%D0%B2%D0%B8%D1%81-exel-2021.xlsm");
-
-            if (FileName.Contains(':'))
-                ExportFileName = string.Join(".", FileName.Split('.').Select((x, i) => i == 0 ? string.Concat(x, "~") : "xlsm"));
-            else
-                ExportFileName = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Прайс-лист REHAU.xlsm";
-
-            HttpClientUtil.DownloadFile(linkToPrice, ExportFileName);
-        }
-
         public void GetPriceListWB()
         {            
-            Workbook wb = xlApp.Workbooks.Open(ExportFileName);
+            Workbook wb = xlApp.Workbooks.Open(FileName);
         }
 
         public void Dispose()
