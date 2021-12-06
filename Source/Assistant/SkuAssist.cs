@@ -48,7 +48,7 @@ namespace Rehau.Sku.Assist
             IProduct product = storeResponse
                 .Ecommerce
                 .Impressions
-                .Where(p => Regex.IsMatch(p.Id, @"\d{11}", RegexOptions.None))
+                .Where(p => p.Id.IsRehauSku())
                 .FirstOrDefault();
 
             return product;
@@ -93,6 +93,13 @@ namespace Rehau.Sku.Assist
                 default:
                     return ExcelError.ExcelErrorValue;
             }
+        }
+
+        public static bool IsRehauSku(this string line)
+        {
+            return Regex.IsMatch(line, @"\d{11}") &&
+                line[0].Equals('1') &&
+                line[7].Equals('1');
         }
     }
 }
