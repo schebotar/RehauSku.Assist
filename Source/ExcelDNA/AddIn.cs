@@ -19,7 +19,7 @@ namespace Rehau.Sku.Assist
     {
         public static readonly HttpClient httpClient = new HttpClient();
         public static ResponseOrder responseOrder;
-        public string priceListPath;
+        public static string priceListPath;
 
         public void AutoOpen()
         {
