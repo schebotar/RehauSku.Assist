@@ -28,7 +28,6 @@ namespace Rehau.Sku.Assist
 
             return GetProduct(documentTask.Result);
         }
-
         public static IProduct GetProduct(IDocument document)
         {
             string script = document
@@ -53,7 +52,6 @@ namespace Rehau.Sku.Assist
 
             return product;
         }
-
         public static object GetProduct(string request, ProductField field)
         {
             IProduct product;
@@ -94,7 +92,6 @@ namespace Rehau.Sku.Assist
                     return ExcelError.ExcelErrorValue;
             }
         }
-
         public static bool IsRehauSku(this string line)
         {
             return Regex.IsMatch(line, @"\d{11}") &&

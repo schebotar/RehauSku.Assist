@@ -2,7 +2,6 @@
 using ExcelDna.Registration;
 using Microsoft.Win32;
 using System.Net.Http;
-using System.IO;
 
 namespace Rehau.Sku.Assist
 {
