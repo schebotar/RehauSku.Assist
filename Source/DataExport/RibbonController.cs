@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration.CustomUI;
+using Rehau.Sku.Assist;
 
 namespace Ribbon
 {
@@ -21,6 +22,24 @@ namespace Ribbon
         </tabs>
       </ribbon>
     </customUI>";
+        }
+
+        public void OnButtonPressed(IRibbonControl control)
+        {
+            using (DataWriter dw = new DataWriter())
+            {
+                if (!dw.IsRangeValid())
+                {
+                    MessageBox.Show("Выделен неверный диапазон!", "Неверный диапазон", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                else
+                {
+                    dw.FillSkuAmountDict();
+                    dw.FillPriceList();
+                }
+            }
         }
     }
 }
