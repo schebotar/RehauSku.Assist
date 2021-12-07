@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Rehau.Sku.Assist
 {
@@ -30,27 +31,36 @@ namespace Rehau.Sku.Assist
         }
         public static IProduct GetProduct(IDocument document)
         {
-            string script = document
-                .Scripts
-                .Where(s => s.InnerHtml.Contains("dataLayer"))
-                .First()
-                .InnerHtml;
+            try
+            {
+                string script = document
+                    .Scripts
+                    .Where(s => s.InnerHtml.Contains("dataLayer"))
+                    .FirstOrDefault()
+                    .InnerHtml;
 
-            string json = script
-                .Substring(script.IndexOf("push(") + 5)
-                .TrimEnd(new[] { ')', ';', '\n', ' ' });
+                string json = script
+                    .Substring(script.IndexOf("push(") + 5)
+                    .TrimEnd(new[] { ')', ';', '\n', ' ' });
 
-            if (!json.Contains("impressions"))
+                if (!json.Contains("impressions"))
+                    return null;
+
+                StoreResponce storeResponse = JsonConvert.DeserializeObject<StoreResponce>(json);
+                IProduct product = storeResponse
+                    .Ecommerce
+                    .Impressions
+                    .Where(p => p.Id.IsRehauSku())
+                    .FirstOrDefault();
+
+                return product;
+            }
+
+            catch (NullReferenceException e)
+            {
+                MessageBox.Show(e.Message, "Ошибка получения данных", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
-
-            StoreResponce storeResponse = JsonConvert.DeserializeObject<StoreResponce>(json);
-            IProduct product = storeResponse
-                .Ecommerce
-                .Impressions
-                .Where(p => p.Id.IsRehauSku())
-                .FirstOrDefault();
-
-            return product;
+            }
         }
         public static object GetProduct(string request, ProductField field)
         {
