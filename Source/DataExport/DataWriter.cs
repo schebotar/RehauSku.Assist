@@ -10,12 +10,12 @@ namespace Rehau.Sku.Assist
         private Application xlApp;
         private Dictionary<string, double> SkuAmount { get; set; }
         private object[,] SelectedCells { get; set; }
-        private string FileName { get; set; }
+        private string ExportFileName { get; set; }
 
         public DataWriter()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
-            this.FileName = AddIn.priceListPath;
+            this.ExportFileName = AddIn.priceListPath;
 
             GetSelectedCells();
         }
@@ -71,9 +71,24 @@ namespace Rehau.Sku.Assist
             }
         }
 
-        public void GetPriceListWB()
-        {            
-            Workbook wb = xlApp.Workbooks.Open(FileName);
+        public void FillPriceList()
+        {
+            Workbook wb = xlApp.Workbooks.Open(ExportFileName);
+            Worksheet ws = wb.ActiveSheet;
+
+            Range amountCell = ws.Cells.Find("Кол-во");
+
+            foreach (KeyValuePair<string,double> kvp in SkuAmount)
+            {
+                Range cell = ws.Cells.Find(kvp.Key);
+                ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
+            }
+
+            //Range filter = ws.Cells[amountCell.Row + 1, amountCell.Column];
+            //filter.AutoFilter(1, "<>");
+
+            wb.Save();
+            wb.Close();
         }
 
         public void Dispose()
