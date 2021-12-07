@@ -49,6 +49,5 @@ namespace Rehau.Sku.Assist
             responseOrder = (ResponseOrder)addInKeys.GetValue("ResponseOrder");
             priceListPath = (string)addInKeys.GetValue("PriceListPath");
         }
-
     }
 }
