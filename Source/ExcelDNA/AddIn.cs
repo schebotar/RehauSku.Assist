@@ -7,7 +7,7 @@ namespace Rehau.Sku.Assist
 {
     public enum ResponseOrder
     {
-        NoSettings,
+        Default,
         Relevance,
         Name,
         Price,

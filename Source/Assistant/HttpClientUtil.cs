@@ -51,11 +51,9 @@ namespace Rehau.Sku.Assist
                 case ResponseOrder.Series:
                     baseUri.Query = "dir=asc&order=sch_product_series&q=" + cleanedRequest;
                     break;
-                case ResponseOrder.NoSettings:
+                default:
                     baseUri.Query = "q=" + cleanedRequest;
                     break;
-                default:
-                    throw new ArgumentException();
             }
 
             return baseUri.Uri;
