@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace RehauSku.Assist
+namespace RehauSku.Assistant
 {
     static class HttpClientUtil
     {

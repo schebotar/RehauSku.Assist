@@ -1,6 +1,7 @@
 ﻿using ExcelDna.Integration;
+using RehauSku.Assistant;
 
-namespace RehauSku.Assist
+namespace RehauSku
 {
     public class Functions
     {

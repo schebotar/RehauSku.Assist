@@ -3,17 +3,18 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using RehauSku.Assistant;
 
-namespace RehauSku.Assist
+namespace RehauSku.DataExport
 {
-    public class DataWriter : IDisposable
+    public class Exporter : IDisposable
     {
         private Application xlApp;
         private Dictionary<string, double> SkuAmount { get; set; }
         private object[,] SelectedCells { get; set; }
         private string WorkingFileName { get; set; }
 
-        public DataWriter()
+        public Exporter()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
             this.WorkingFileName = xlApp.ActiveWorkbook.FullName;

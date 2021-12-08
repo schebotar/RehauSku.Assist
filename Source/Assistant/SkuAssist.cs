@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RehauSku.Assist
+namespace RehauSku.Assistant
 {
     public enum ProductField
     {

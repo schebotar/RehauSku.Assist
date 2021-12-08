@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration.CustomUI;
-using RehauSku.Assist;
+using RehauSku.DataExport;
 
-namespace Ribbon
+namespace RehauSku.Ribbon
 {
     [ComVisible(true)]
     public class RibbonController : ExcelRibbon
@@ -26,7 +26,7 @@ namespace Ribbon
 
         public void OnButtonPressed(IRibbonControl control)
         {
-            using (DataWriter dw = new DataWriter())
+            using (Exporter dw = new Exporter())
             {
                 if (!dw.IsRangeValid())
                 {
