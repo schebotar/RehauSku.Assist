@@ -97,7 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Assistant\RequestModifier.cs" />
-    <Compile Include="Source\DataExport\RibbonController.cs" />
+    <Compile Include="Source\Ribbon\RibbonController.cs" />
     <Compile Include="Source\Assistant\HttpClientUtil.cs" />
     <Compile Include="Source\Assistant\StoreResponse.cs" />
     <Compile Include="Source\DataExport\DataWriter.cs" />
