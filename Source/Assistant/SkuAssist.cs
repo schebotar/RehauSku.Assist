@@ -104,9 +104,7 @@ namespace RehauSku.Assistant
         }
         public static bool IsRehauSku(this string line)
         {
-            return Regex.IsMatch(line, @"\d{11}") &&
-                line[0].Equals('1') &&
-                line[7].Equals('1');
+            return Regex.IsMatch(line, @"[1]\d{6}[1]\d{3}");
         }
     }
 }
