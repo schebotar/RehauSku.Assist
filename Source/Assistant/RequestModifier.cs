@@ -17,10 +17,10 @@ namespace Rehau.Sku.Assist
                 .Replace("Ø", " ")
                 .ToString();
 
-            return replace._tPiece();
+            return replace._tPieceNormalize();
         }
 
-        private static string _tPiece(this string line)
+        private static string _tPieceNormalize(this string line)
         {
             Regex regex = new Regex(@"\d{2}.\d{2}.\d{2}");
 
@@ -29,11 +29,12 @@ namespace Rehau.Sku.Assist
 
             string match = regex.Match(line).Value;
 
-            int endFaceA = int.Parse($"{match[0]}{match[1]}"),                
-                side = int.Parse($"{match[3]}{match[4]}"),
-                endFaceB = int.Parse($"{match[6]}{match[7]}");
-
-            int[] endFaces = new[] { endFaceA, endFaceB };
+            int side = int.Parse($"{match[3]}{match[4]}");
+            int[] endFaces = new int[]
+            {
+                int.Parse($"{match[0]}{match[1]}"),
+                int.Parse($"{match[6]}{match[7]}")
+            };
 
             List<string> additions = new List<string>();
 
@@ -42,7 +43,7 @@ namespace Rehau.Sku.Assist
 
             else
             {
-                if (new[] { endFaceA, endFaceB, side }.Distinct().Count() == 1)
+                if (new[] { endFaces[0], endFaces[1], side }.Distinct().Count() == 1)
                     additions.Add("равнопроходной");
                 else
                     additions.Add("уменьшенный");
@@ -50,7 +51,7 @@ namespace Rehau.Sku.Assist
                 if (endFaces.Any(x => x > side))
                     additions.Add("боковой");
 
-                if (endFaceA != endFaceB)
+                if (endFaces[0] != endFaces[1])
                     additions.Add("торцевой");
             }
 
