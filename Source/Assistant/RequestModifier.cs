@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Rehau.Sku.Assist
+namespace RehauSku.Assist
 {
     public static class RequestModifier
     {

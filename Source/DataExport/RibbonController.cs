@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration.CustomUI;
-using Rehau.Sku.Assist;
+using RehauSku.Assist;
 
 namespace Ribbon
 {

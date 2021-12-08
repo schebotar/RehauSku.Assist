@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rehau.Sku.Assist
+namespace RehauSku.Assist
 {
     public class StoreResponce
     {

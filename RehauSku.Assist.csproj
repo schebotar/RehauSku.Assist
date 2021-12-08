@@ -7,8 +7,8 @@
     <ProjectGuid>{18A2FF67-0E46-4A86-B872-29F2B3F23ADF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rehau.Sku.Assist</RootNamespace>
-    <AssemblyName>Rehau.Sku.Assist</AssemblyName>
+    <RootNamespace>RehauSku.Assist</RootNamespace>
+    <AssemblyName>RehauSku.Assist</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Rehau.Sku.Assist-AddIn.dna" />
+    <None Include="RehauSku.Assist-AddIn.dna" />
     <None Include="packages.config" />
     <None Include="Properties\ExcelDna.Build.props" />
   </ItemGroup>

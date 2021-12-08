@@ -3,7 +3,7 @@ using ExcelDna.Registration;
 using Microsoft.Win32;
 using System.Net.Http;
 
-namespace Rehau.Sku.Assist
+namespace RehauSku.Assist
 {
     public enum ResponseOrder
     {

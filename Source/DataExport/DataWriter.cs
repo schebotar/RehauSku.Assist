@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Rehau.Sku.Assist
+namespace RehauSku.Assist
 {
     public class DataWriter : IDisposable
     {
