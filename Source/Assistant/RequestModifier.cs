@@ -22,14 +22,16 @@ namespace Rehau.Sku.Assist
 
         private static string _tPiece(this string line)
         {
-            if (!line.ToLower().Contains("тройник"))
+            Regex regex = new Regex(@"\d{2}.\d{2}.\d{2}");
+
+            if (!regex.IsMatch(line))
                 return line;
 
-            string m = Regex.Match(line, @"\d{2}.\d{2}.\d{2}").Value;
+            string match = regex.Match(line).Value;
 
-            int endFaceA = int.Parse($"{m[0]}{m[1]}");
-            int side = int.Parse($"{m[3]}{m[4]}");
-            int endFaceB = int.Parse($"{m[6]}{m[7]}");
+            int endFaceA = int.Parse($"{match[0]}{match[1]}"),                
+                side = int.Parse($"{match[3]}{match[4]}"),
+                endFaceB = int.Parse($"{match[6]}{match[7]}");
 
             int[] endFaces = new[] { endFaceA, endFaceB };
 
@@ -47,14 +49,15 @@ namespace Rehau.Sku.Assist
 
                 if (endFaces.Any(x => x > side))
                     additions.Add("боковой");
+
                 if (endFaceA != endFaceB)
                     additions.Add("торцевой");
             }
 
             string piece = $" {endFaces.Max()}-{side}-{endFaces.Min()} ";
-            string replace = string.Join(" ", additions) + piece;
+            string modifiedMatch = string.Join(" ", additions) + piece;
 
-            return line.Replace(m, replace);
+            return line.Replace(match, modifiedMatch);
         }
     }
 }
