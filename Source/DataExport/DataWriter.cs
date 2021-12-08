@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Rehau.Sku.Assist
 {
@@ -10,12 +11,12 @@ namespace Rehau.Sku.Assist
         private Application xlApp;
         private Dictionary<string, double> SkuAmount { get; set; }
         private object[,] SelectedCells { get; set; }
-        private string ExportFileName { get; set; }
+        private string WorkingFileName { get; set; }
 
         public DataWriter()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
-            this.ExportFileName = AddIn.priceListPath;
+            this.WorkingFileName = xlApp.ActiveWorkbook.FullName;
 
             GetSelectedCells();
         }
@@ -71,25 +72,31 @@ namespace Rehau.Sku.Assist
             }
         }
 
-        public void FillPriceList()
-        {
-            Workbook wb = xlApp.Workbooks.Open(ExportFileName);
-            Worksheet ws = wb.ActiveSheet;
+        //public void FillPriceList()
+        //{
+        //    string exportFileName = "rehau-export_" + DateTime.Now + ".xlsm";
+        //    string workingDir = xlApp.ActiveWorkbook.Path;
 
-            Range amountCell = ws.Cells.Find("Кол-во");
+        //    //File.Copy(Path.GetFullPath(PriceListFilePath), Path.Combine(WorkingFileName, exportFileName + ".xlsm"));
 
-            foreach (KeyValuePair<string,double> kvp in SkuAmount)
-            {
-                Range cell = ws.Cells.Find(kvp.Key);
-                ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
-            }
 
-            //Range filter = ws.Cells[amountCell.Row + 1, amountCell.Column];
-            //filter.AutoFilter(1, "<>");
+        //    Workbook wb = xlApp.Workbooks.Open(PriceListFilePath);
+        //    Worksheet ws = wb.ActiveSheet;
 
-            wb.Save();
-            wb.Close();
-        }
+        //    Range amountCell = ws.Cells.Find("Кол-во");
+
+        //    foreach (KeyValuePair<string, double> kvp in SkuAmount)
+        //    {
+        //        Range cell = ws.Cells.Find(kvp.Key);
+        //        ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
+        //    }
+
+        //    //Range filter = ws.Range["H16:H4058"];
+        //    ws.Cells.AutoFilter(7, "<>");
+
+        //    //wb.Save();
+        //    //wb.Close();
+        //}
 
         public void Dispose()
         {
