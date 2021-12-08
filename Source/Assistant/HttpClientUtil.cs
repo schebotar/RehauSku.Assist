@@ -4,7 +4,6 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text;
 
 namespace Rehau.Sku.Assist
 {
@@ -35,7 +34,7 @@ namespace Rehau.Sku.Assist
             UriBuilder baseUri = new UriBuilder("https", "shop-rehau.ru");
 
             baseUri.Path = "/catalogsearch/result/index/";
-            string cleanedRequest = request._CleanRequest();
+            string cleanedRequest = request.CleanRequest();
 
             switch (AddIn.responseOrder)
             {
@@ -57,17 +56,6 @@ namespace Rehau.Sku.Assist
             }
 
             return baseUri.Uri;
-        }
-
-        private static string _CleanRequest(this string input)
-        {
-            return new StringBuilder(input)
-                .Replace("+", " plus ")
-                .Replace("РХ", "")
-                .Replace("º", " ")
-                .Replace(".", " ")
-                .Replace("Ø", " ")
-                .ToString();
         }
     }
 }

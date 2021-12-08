@@ -37,7 +37,7 @@ namespace Ribbon
                 else
                 {
                     dw.FillSkuAmountDict();
-                    dw.FillPriceList();
+                    //dw.FillPriceList();
                 }
             }
         }
