@@ -12,17 +12,17 @@ namespace RehauSku.DataExport
         private Application xlApp;
         private Dictionary<string, double> SkuAmount { get; set; }
         private object[,] SelectedCells { get; set; }
-        private string ActiveFilePath { get; set; }
+        private string CurrentFilePath { get; set; }
 
         public Exporter()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
-            this.ActiveFilePath = xlApp.ActiveWorkbook.Path;
+            this.CurrentFilePath = xlApp.ActiveWorkbook.FullName;
 
-            GetSelectedCells();
+            _GetSelectedCells();
         }
 
-        private void GetSelectedCells()
+        private void _GetSelectedCells()
         {
             Range selection = xlApp.Selection;
             this.SelectedCells = (object[,])selection.Value2;
@@ -75,36 +75,28 @@ namespace RehauSku.DataExport
 
         public void FillPriceList()
         {
+            string exportFile = _GetExportFullPath();
+            File.Copy(AddIn.priceListPath, exportFile, true);
 
-            File.Copy(AddIn.priceListPath, _GetExportFileDir());
+            Workbook wb = xlApp.Workbooks.Open(exportFile);
+            Worksheet ws = wb.ActiveSheet;
 
-            //Workbook wb = xlApp.Workbooks.Open(PriceListFilePath);
-            //Worksheet ws = wb.ActiveSheet;
+            Range amountCell = ws.Cells.Find("Кол-во");
 
-            //Range amountCell = ws.Cells.Find("Кол-во");
+            foreach (KeyValuePair<string, double> kvp in SkuAmount)
+            {
+                Range cell = ws.Cells.Find(kvp.Key);
+                ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
+            }
 
-            //foreach (KeyValuePair<string, double> kvp in SkuAmount)
-            //{
-            //    Range cell = ws.Cells.Find(kvp.Key);
-            //    ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
-            //}
-
-            ////Range filter = ws.Range["H16:H4058"];
-            //ws.Cells.AutoFilter(7, "<>");
-
-            ////wb.Save();
-            ////wb.Close();
+            ws.Cells.AutoFilter(7, "<>");
         }
 
-        private string _GetExportFileDir()
+        private string _GetExportFullPath()
         {
-            string fileExtension = Path.GetExtension(AddIn.priceListPath),
-                exportFileName = "rehau-export-" + DateTime.Now.ToShortDateString(),
-                exportFilePath = !string.IsNullOrEmpty(ActiveFilePath) ?
-                    ActiveFilePath :
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string fileExtension = Path.GetExtension(AddIn.priceListPath);
 
-            return Path.Combine(exportFilePath, exportFileName) + fileExtension;
+            return Path.GetTempFileName() + fileExtension;
         }
 
 
