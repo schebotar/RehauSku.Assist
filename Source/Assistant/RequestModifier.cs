@@ -36,6 +36,9 @@ namespace RehauSku.Assistant
                 int.Parse($"{match[6]}{match[7]}")
             };
 
+            if (new[] { endFaces[0], endFaces[1], side }.Any(x => x == 45 || x == 90 || x == 87))
+                return line;
+
             List<string> additions = new List<string>();
 
             if (endFaces.All(x => x < side))
