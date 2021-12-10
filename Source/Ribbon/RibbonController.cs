@@ -34,7 +34,10 @@ namespace RehauSku.Ribbon
             {
                 if (!dw.IsRangeValid())
                 {
-                    MessageBox.Show("Выделен неверный диапазон!", "Неверный диапазон", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Выделен неверный диапазон!", 
+                        "Неверный диапазон", 
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 

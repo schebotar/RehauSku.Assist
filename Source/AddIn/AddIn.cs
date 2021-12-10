@@ -17,8 +17,8 @@ namespace RehauSku
     public class AddIn : IExcelAddIn
     {
         public static readonly HttpClient httpClient = new HttpClient();
-        public static ResponseOrder responseOrder;
-        public static string priceListPath;
+        public static ResponseOrder StoreResponse { get; set; }
+        public static string PriceListPath { get; set; }
 
         public void AutoOpen()
         {
@@ -46,8 +46,8 @@ namespace RehauSku
                 .OpenSubKey("REHAU")
                 .OpenSubKey("SkuAssist");
 
-            responseOrder = (ResponseOrder)addInKeys.GetValue("ResponseOrder");
-            priceListPath = (string)addInKeys.GetValue("PriceListPath");
+            StoreResponse = (ResponseOrder)addInKeys.GetValue("ResponseOrder");
+            PriceListPath = (string)addInKeys.GetValue("PriceListPath");
         }
     }
 }
