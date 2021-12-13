@@ -42,6 +42,9 @@
       <HintPath>packages\ExcelDna.Integration.1.5.0\lib\net452\ExcelDna.Integration.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ExcelDna.IntelliSense, Version=1.4.4.0, Culture=neutral, PublicKeyToken=f225e9659857edbe, processorArchitecture=MSIL">
+      <HintPath>packages\ExcelDna.IntelliSense.1.5.0\lib\net452\ExcelDna.IntelliSense.dll</HintPath>
+    </Reference>
     <Reference Include="ExcelDna.Registration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=f225e9659857edbe, processorArchitecture=MSIL">
       <HintPath>packages\ExcelDna.Registration.1.5.0\lib\net452\ExcelDna.Registration.dll</HintPath>
       <Private>True</Private>
@@ -96,7 +99,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Assistant\MemoryCacheExtensions.cs" />
+    <Compile Include="Source\Assistant\ParseUtil.cs" />
     <Compile Include="Source\Assistant\RequestModifier.cs" />
+    <Compile Include="Source\Assistant\SkuExtension.cs" />
     <Compile Include="Source\Ribbon\RibbonController.cs" />
     <Compile Include="Source\Assistant\HttpClientUtil.cs" />
     <Compile Include="Source\Assistant\StoreResponse.cs" />

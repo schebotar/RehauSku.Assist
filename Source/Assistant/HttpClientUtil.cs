@@ -1,6 +1,4 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,8 +9,10 @@ namespace RehauSku.Assistant
     {
         private static HttpClient _httpClient = AddIn.httpClient;
 
-        public async static Task<string> GetContentByUriAsync(Uri uri)
+        public async static Task<string> GetContentByRequest(string request)
         {
+            Uri uri = request.ConvertToUri();
+
             ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11 |
@@ -21,15 +21,7 @@ namespace RehauSku.Assistant
             return await _httpClient.GetStringAsync(uri);
         }
 
-        public async static Task<IDocument> ContentToDocAsync(Task<string> content)
-        {
-            IConfiguration config = Configuration.Default;
-            IBrowsingContext context = BrowsingContext.New(config);
-
-            return await context.OpenAsync(req => req.Content(content.Result));
-        }
-
-        public static Uri ConvertToUri(this string request)
+        private static Uri ConvertToUri(this string request)
         {
             UriBuilder baseUri = new UriBuilder("https", "shop-rehau.ru");
 

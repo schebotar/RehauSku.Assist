@@ -1,4 +1,5 @@
 ﻿using ExcelDna.Integration;
+using ExcelDna.IntelliSense;
 using ExcelDna.Registration;
 using Microsoft.Win32;
 using System.Net.Http;
@@ -24,11 +25,12 @@ namespace RehauSku
         {
             RegisterFunctions();
             GetRegistryKeys();
+            IntelliSenseServer.Install();
         }
 
         public void AutoClose()
         {
-
+            IntelliSenseServer.Uninstall();
         }
 
         void RegisterFunctions()

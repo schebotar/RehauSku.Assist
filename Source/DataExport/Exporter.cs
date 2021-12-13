@@ -52,7 +52,7 @@ namespace RehauSku.DataExport
                     object current = SelectedCells[row, column];
 
                     if (current.GetType() == typeof(string)
-                        && SkuAssist.IsRehauSku((string)current))
+                        && ((string)current).IsRehauSku())
                         sku = (string)current;
 
                     else if (current.GetType() == typeof(string)
