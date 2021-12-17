@@ -1,7 +1,6 @@
 ﻿using ExcelDna.Integration;
 using ExcelDna.IntelliSense;
 using ExcelDna.Registration;
-using Microsoft.Win32;
 using System.Net.Http;
 
 namespace RehauSku
@@ -18,13 +17,12 @@ namespace RehauSku
     public class AddIn : IExcelAddIn
     {
         public static readonly HttpClient httpClient = new HttpClient();
-        public static ResponseOrder StoreResponse { get; set; }
-        public static string PriceListPath { get; set; }
+        public static ResponseOrder StoreResponseOrder = RegistryUtil.StoreResponseOrder;
+        public static string PriceListPath = RegistryUtil.PriceListPath;
 
         public void AutoOpen()
         {
             RegisterFunctions();
-            GetRegistryKeys();
             IntelliSenseServer.Install();
         }
 
@@ -38,18 +36,6 @@ namespace RehauSku
             ExcelRegistration.GetExcelFunctions()
                              .ProcessAsyncRegistrations(nativeAsyncIfAvailable: false)
                              .RegisterFunctions();
-        }
-
-        void GetRegistryKeys()
-        {
-            RegistryKey addInKeys = Registry
-                .CurrentUser
-                .OpenSubKey("SOFTWARE")
-                .OpenSubKey("REHAU")
-                .OpenSubKey("SkuAssist");
-
-            StoreResponse = (ResponseOrder)addInKeys.GetValue("ResponseOrder");
-            PriceListPath = (string)addInKeys.GetValue("PriceListPath");
         }
     }
 }
