@@ -34,7 +34,7 @@ namespace RehauSku.DataExport
                 SelectedCells.GetLength(1) == 2;
         }
 
-        public void FillSkuAmountDict()
+        private void FillSkuAmountDict()
         {
             SkuAmount = new Dictionary<string, double>();
             int rowsCount = SelectedCells.GetLength(0);
@@ -73,20 +73,22 @@ namespace RehauSku.DataExport
             }
         }
 
-        public void FillPriceList()
+        public void FillNewPriceList()
         {
+            FillSkuAmountDict();
             string exportFile = _GetExportFullPath();
             File.Copy(RegistryUtil.PriceListPath, exportFile, true);
 
             Workbook wb = xlApp.Workbooks.Open(exportFile);
             Worksheet ws = wb.ActiveSheet;
 
-            Range amountCell = ws.Cells.Find("Кол-во");
+            int amountColumn = ws.Cells.Find("Кол-во").Column;
+            int skuColumn = ws.Cells.Find("Актуальный материал").Column;
 
             foreach (KeyValuePair<string, double> kvp in SkuAmount)
             {
-                Range cell = ws.Cells.Find(kvp.Key);
-                ws.Cells[cell.Row, amountCell.Column].Value = kvp.Value;
+                Range cell = ws.Columns[skuColumn].Find(kvp.Key);
+                ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
             }
 
             ws.Cells.AutoFilter(7, "<>");

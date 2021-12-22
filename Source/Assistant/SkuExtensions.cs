@@ -2,7 +2,7 @@
 
 namespace RehauSku.Assistant
 {
-    static class SkuExtension
+    static class SkuExtensions
     {
         public static bool IsRehauSku(this string line)
         {

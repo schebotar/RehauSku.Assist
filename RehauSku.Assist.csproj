@@ -100,11 +100,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\AddIn\FileDialog.cs" />
     <Compile Include="Source\AddIn\RegistryUtil.cs" />
     <Compile Include="Source\Assistant\MemoryCacheExtensions.cs" />
     <Compile Include="Source\Assistant\ParseUtil.cs" />
     <Compile Include="Source\Assistant\RequestModifier.cs" />
-    <Compile Include="Source\Assistant\SkuExtension.cs" />
+    <Compile Include="Source\Assistant\SkuExtensions.cs" />
     <Compile Include="Source\Ribbon\RibbonController.cs" />
     <Compile Include="Source\Assistant\HttpClientUtil.cs" />
     <Compile Include="Source\Assistant\StoreResponse.cs" />

@@ -42,16 +42,15 @@ namespace RehauSku.Ribbon
 
                 else
                 {
-                    dw.FillSkuAmountDict();
-                    dw.FillPriceList();
+                    dw.FillNewPriceList();
                 }
             }
         }
-
         
         public void OnSettingsPressed(IRibbonControl control)
         {
-            Application.Run(new Settings.SettingsForm());
+            Form settingsForm = new Settings.SettingsForm();
+            settingsForm.Show();
         }
     }
 }

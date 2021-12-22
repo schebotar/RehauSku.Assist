@@ -22,6 +22,7 @@ namespace RehauSku
         {
             RegisterFunctions();
             IntelliSenseServer.Install();
+            RegistryUtil.Initialize();
         }
 
         public void AutoClose()
