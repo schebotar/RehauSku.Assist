@@ -16,9 +16,7 @@ namespace RehauSku
 
     public class AddIn : IExcelAddIn
     {
-        public static readonly HttpClient httpClient = new HttpClient();
-        public static ResponseOrder StoreResponseOrder = RegistryUtil.StoreResponseOrder;
-        public static string PriceListPath = RegistryUtil.PriceListPath;
+        public static HttpClient httpClient = new HttpClient();
 
         public void AutoOpen()
         {

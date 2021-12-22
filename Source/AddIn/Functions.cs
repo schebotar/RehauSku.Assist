@@ -5,16 +5,16 @@ namespace RehauSku
 {
     public class Functions
     {
-        [ExcelFunction(Description = "Получение названия первого продукта по запросу в интернет-магазин REHAU")]
-        public static object RAUNAME([ExcelArgument(Name = "Запрос", Description = "Запрос в свободной форме или ячейка с запросом")] string request)
+        [ExcelFunction(description: "Получение названия первого продукта в поиске")]
+        public static object RAUNAME([ExcelArgument(Name = "\"Запрос\"", Description = "в свободной форме или ячейка с запросом")] string request)
             => MakeRequest(request, ProductField.Name);
 
-        [ExcelFunction(Description = "Получение артикула первого продукта по запросу в интернет-магазин REHAU")]
-        public static object RAUSKU([ExcelArgument(Name = "Запрос", Description = "Запрос в свободной форме или ячейка с запросом")] string request)
+        [ExcelFunction(Description = "Получение артикула первого продукта в поиске")]
+        public static object RAUSKU([ExcelArgument(Name = "\"Запрос\"", Description = "в свободной форме или ячейка с запросом")] string request)
             => MakeRequest(request, ProductField.Id);
 
-        [ExcelFunction(Description = "Получение цены первого продукта по запросу в интернет-магазин REHAU")]
-        public static object RAUPRICE([ExcelArgument(Name = "Запрос", Description = "Запрос в свободной форме или ячейка с запросом")] string request)
+        [ExcelFunction(Description = "Получение цены первого продукта в поиске")]
+        public static object RAUPRICE([ExcelArgument(Name = "\"Запрос\"", Description = "в свободной форме или ячейка с запросом")] string request)
             => MakeRequest(request, ProductField.Price);
 
         private static object MakeRequest(string request, ProductField field)

@@ -6,71 +6,37 @@ namespace RehauSku
     {
         public static string PriceListPath
         {
-            get
-            {
-                _GetRootKey();
-
-                if (_RootKey == null)
-                {
-                    return @"D:\Dropbox\Рабочее\Таблица заказов ИС EAE_2021.xlsm";
-                }
-
-                else return (string)_RootKey.GetValue("PriceListPath");
-            }
-
-            private set
-            {
-                _GetRootKey();
-
-                if (_RootKey == null)
-                {
-                    RegistryKey PriceListPath = Registry.CurrentUser
-                        .CreateSubKey("SOFTWARE")
-                        .CreateSubKey("REHAU")
-                        .CreateSubKey("SkuAssist");
-                }
-
-                _RootKey.SetValue("PriceListPath", value);
-            }
+            get => (string)_RootKey.GetValue("PriceListPath");
         }
 
         public static ResponseOrder StoreResponseOrder
         {
+            get => (ResponseOrder)_RootKey.GetValue("StoreResponseOrder");
+        }
+
+        private static RegistryKey _RootKey
+        {
             get
             {
-                _GetRootKey();
-
-                if (_RootKey == null)
-                {
-                    return ResponseOrder.Default;
-                }
-
-                return (ResponseOrder)_RootKey.GetValue("ResponseOrder");
-            }
-
-            private set
-            {
-                if (_RootKey == null)
-                {
-                    RegistryKey PriceListPath = Registry.CurrentUser
-                        .CreateSubKey("SOFTWARE")
-                        .CreateSubKey("REHAU")
-                        .CreateSubKey("SkuAssist");
-                }
-
-                _RootKey.SetValue("ResponseOrder", value);
+                return _OpenRootKey() ?? _CreateRootKey();
             }
         }
 
-        private static RegistryKey _RootKey { get; set; }
-
-        private static void _GetRootKey()
+        private static RegistryKey _OpenRootKey()
         {
-            _RootKey = Registry
-                .CurrentUser
-                .OpenSubKey("SOFTWARE")
-                .OpenSubKey("REHAU")
-                .OpenSubKey("SkuAssist");
+            return Registry.CurrentUser
+                .OpenSubKey(@"SOFTWARE\REHAU\SkuAssist");
+        }
+
+        private static RegistryKey _CreateRootKey()
+        {
+            RegistryKey key = Registry.CurrentUser
+                .CreateSubKey(@"SOFTWARE\REHAU\SkuAssist");
+
+            key.SetValue("PriceListPath", @"D:\Dropbox\Рабочее\Таблица заказов ИС EAE_2021.xlsm");
+            key.SetValue("StoreResponseOrder", 0);
+
+            return key;
         }
     }
 }

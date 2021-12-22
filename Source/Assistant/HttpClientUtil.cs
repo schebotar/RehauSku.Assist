@@ -28,7 +28,7 @@ namespace RehauSku.Assistant
             baseUri.Path = "/catalogsearch/result/index/";
             string cleanedRequest = request.CleanRequest();
 
-            switch (AddIn.StoreResponseOrder)
+            switch (RegistryUtil.StoreResponseOrder)
             {
                 case ResponseOrder.Relevance:
                     baseUri.Query = "dir=asc&order=relevance&q=" + cleanedRequest;

@@ -76,7 +76,7 @@ namespace RehauSku.DataExport
         public void FillPriceList()
         {
             string exportFile = _GetExportFullPath();
-            File.Copy(AddIn.PriceListPath, exportFile, true);
+            File.Copy(RegistryUtil.PriceListPath, exportFile, true);
 
             Workbook wb = xlApp.Workbooks.Open(exportFile);
             Worksheet ws = wb.ActiveSheet;
@@ -94,7 +94,7 @@ namespace RehauSku.DataExport
 
         private string _GetExportFullPath()
         {
-            string fileExtension = Path.GetExtension(AddIn.PriceListPath);
+            string fileExtension = Path.GetExtension(RegistryUtil.PriceListPath);
 
             return Path.GetTempFileName() + fileExtension;
         }
