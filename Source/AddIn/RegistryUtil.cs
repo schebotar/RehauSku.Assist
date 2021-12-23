@@ -16,6 +16,11 @@ namespace RehauSku
             _storeResponseOrder = _RootKey.GetValue("StoreResponseOrder") as int?;
         }
 
+        public static void Uninitialize()
+        {
+            _RootKey.Close();
+        }
+
         public static bool IsPriceListPathEmpty()
         {
             return string.IsNullOrEmpty(_priceListPath);

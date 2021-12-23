@@ -7,14 +7,14 @@ using RehauSku.Assistant;
 
 namespace RehauSku.DataExport
 {
-    public class Exporter : IDisposable
+    public class ExportTool : IDisposable
     {
         private Application xlApp;
         private Dictionary<string, double> SkuAmount { get; set; }
-        private object[,] SelectedCells { get; set; }
+        private Range Selection { get; set; }
         private string CurrentFilePath { get; set; }
 
-        public Exporter()
+        public ExportTool()
         {
             this.xlApp = (Application)ExcelDnaUtil.Application;
             this.CurrentFilePath = xlApp.ActiveWorkbook.FullName;
@@ -24,24 +24,23 @@ namespace RehauSku.DataExport
 
         private void _GetSelectedCells()
         {
-            Range selection = xlApp.Selection;
-            this.SelectedCells = (object[,])selection.Value2;
+            Selection = xlApp.Selection;
         }
 
         public bool IsRangeValid()
         {
-            return SelectedCells != null &&
-                SelectedCells.GetLength(1) == 2;
+            return Selection.Columns.Count == 2;
         }
 
         private void FillSkuAmountDict()
         {
+            object[,] cells = Selection.Value2;
             SkuAmount = new Dictionary<string, double>();
-            int rowsCount = SelectedCells.GetLength(0);
+            int rowsCount = Selection.Rows.Count;
 
             for (int row = 1; row <= rowsCount; row++)
             {
-                if (SelectedCells[row, 1] == null || SelectedCells[row, 2] == null)
+                if (cells[row, 1] == null || cells[row, 2] == null)
                     continue;
 
                 string sku = null;
@@ -49,7 +48,7 @@ namespace RehauSku.DataExport
 
                 for (int column = 1; column <= 2; column++)
                 {
-                    object current = SelectedCells[row, column];
+                    object current = cells[row, column];
 
                     if (current.GetType() == typeof(string)
                         && ((string)current).IsRehauSku())
@@ -75,15 +74,19 @@ namespace RehauSku.DataExport
 
         public void FillNewPriceList()
         {
+            const string amountHeader = "Кол-во";
+            const string skuHeader = "Актуальный материал";
+
             FillSkuAmountDict();
             string exportFile = _GetExportFullPath();
             File.Copy(RegistryUtil.PriceListPath, exportFile, true);
 
             Workbook wb = xlApp.Workbooks.Open(exportFile);
-            Worksheet ws = wb.ActiveSheet;
+            Worksheet ws = wb.Sheets["КП"];
+            ws.Activate();
 
-            int amountColumn = ws.Cells.Find("Кол-во").Column;
-            int skuColumn = ws.Cells.Find("Актуальный материал").Column;
+            int amountColumn = ws.Cells.Find(amountHeader).Column;
+            int skuColumn = ws.Cells.Find(skuHeader).Column;
 
             foreach (KeyValuePair<string, double> kvp in SkuAmount)
             {
@@ -91,7 +94,11 @@ namespace RehauSku.DataExport
                 ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
             }
 
-            ws.Cells.AutoFilter(7, "<>");
+            AutoFilter filter = ws.AutoFilter;
+            int firstFilterColumn = filter.Range.Column;
+
+            filter.Range.AutoFilter(amountColumn - firstFilterColumn + 1, "<>");
+            ws.Range["A1"].Activate();
         }
 
         private string _GetExportFullPath()
@@ -112,6 +119,11 @@ namespace RehauSku.DataExport
         {
 
         }
+    }
+
+    class SelectionCheck
+    {
+
     }
 }
 

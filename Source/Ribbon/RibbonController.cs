@@ -29,7 +29,7 @@ namespace RehauSku.Ribbon
 
         public void OnExportPressed(IRibbonControl control)
         {
-            using (Exporter dw = new Exporter())
+            using (ExportTool dw = new ExportTool())
             {
                 if (!dw.IsRangeValid())
                 {
