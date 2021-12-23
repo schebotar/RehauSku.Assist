@@ -109,7 +109,7 @@
     <Compile Include="Source\Ribbon\RibbonController.cs" />
     <Compile Include="Source\Assistant\HttpClientUtil.cs" />
     <Compile Include="Source\Assistant\StoreResponse.cs" />
-    <Compile Include="Source\DataExport\Exporter.cs" />
+    <Compile Include="Source\DataExport\ExportTool.cs" />
     <Compile Include="Source\AddIn\AddIn.cs" />
     <Compile Include="Source\Assistant\IProduct.cs" />
     <Compile Include="Source\AddIn\Functions.cs" />
