@@ -47,6 +47,12 @@ namespace RehauSku
                     return _priceListPath;
                 }
             }
+
+            set
+            {
+                _priceListPath = value;
+                _RootKey.SetValue("PriceListPath", value);
+            }
         }
 
         public static ResponseOrder StoreResponseOrder

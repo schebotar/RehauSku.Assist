@@ -11,7 +11,7 @@ namespace RehauSku.Forms
 
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                dialog.Filter = "Все файлы (*.*)|*.*";
+                dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -28,7 +28,7 @@ namespace RehauSku.Forms
 
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                dialog.Filter = "Все файлы (*.*)|*.*";
+                dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
                 dialog.Multiselect = true;
 
                 if (dialog.ShowDialog() == DialogResult.OK)

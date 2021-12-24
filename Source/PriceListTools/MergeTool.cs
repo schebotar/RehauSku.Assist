@@ -22,23 +22,56 @@ namespace RehauSku.PriceListTools
             foreach (string file in files)
             {
                 Workbook wb = ExcelApp.Workbooks.Open(file);
-                PriceList priceList = new PriceList(wb);
 
-                if (priceList.IsValid())
+                try
+                {
+                    PriceList priceList = new PriceList(wb);
                     SkuAmount.AddValues(priceList);
+                }
 
-                wb.Close();
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show
+                        ( $"{wb.Name} не является файлом прайслиста \n\n {ex.Message}",
+                        "Неверный файл прайс-листа!",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Error);
+                }
+
+                finally
+                {
+                    wb.Close();
+                }
             }
             ExcelApp.ScreenUpdating = true;
         }
 
         public void ExportToNewFile(string exportFile)
         {
-            Workbook wb = ExcelApp.Workbooks.Open(exportFile);
-            PriceList priceList = new PriceList(wb);
+            if (SkuAmount.Count < 1)
+            {
+                return;
+            }
 
-            if (priceList.IsValid())
+            Workbook wb = ExcelApp.Workbooks.Open(exportFile);
+            PriceList priceList;
+
+            try
+            {
+                priceList = new PriceList(wb);
                 priceList.Fill(SkuAmount);
+            }
+
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    ($"{RegistryUtil.PriceListPath} не является файлом прайслиста \n\n {ex.Message}",
+                    "Неверный файл прайс-листа!",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error);
+
+                wb.Close();
+            }
         }
 
         public void Dispose()

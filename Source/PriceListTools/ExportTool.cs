@@ -74,12 +74,30 @@ namespace RehauSku.PriceListTools
 
         public void ExportToNewFile()
         {
+            if (SkuAmount.Count < 1)
+            {
+                return;
+            }
+
             string exportFile = PriceListUtil.CreateNewExportFile();
             Workbook wb = ExcelApp.Workbooks.Open(exportFile);
-            PriceList priceList = new PriceList(wb);
 
-            if (priceList.IsValid())
+            try
+            {
+                PriceList priceList = new PriceList(wb);
                 priceList.Fill(SkuAmount);
+            }
+
+            catch(Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    ($"{RegistryUtil.PriceListPath} не является файлом прайслиста \n\n {ex.Message}",
+                    "Неверный файл прайс-листа!",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error);
+
+                wb.Close();
+            }
         }
 
         public void Dispose()

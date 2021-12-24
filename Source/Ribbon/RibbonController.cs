@@ -17,11 +17,11 @@ namespace RehauSku.Ribbon
         <tabs>
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
-                <button id='exportToPrice' label='Экспорт' size='large' imageMso='PivotExportToExcel' onAction='OnExportPressed'/>
-                <button id='mergeFiles' label='Объединить' size='large' imageMso='Copy' onAction='OnMergePressed'/>                
+                <button id='exportToPrice' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnExportPressed'/>
+                <button id='mergeFiles' label='Объединить' size='normal' imageMso='Copy' onAction='OnMergePressed'/>                
             </group>
             <group id='rausettings' label='Настройки'>
-                <button id='set' label='Настройки' size='large' imageMso='CurrentViewSettings' onAction='OnSettingsPressed'/>
+                <button id='setPriceList' label='Файл прайс-листа' size='normal' imageMso='CurrentViewSettings' onAction='OnSetPricePressed'/>
             </group>
           </tab>
         </tabs>
@@ -60,12 +60,10 @@ namespace RehauSku.Ribbon
             }
         }
 
-        public void OnSettingsPressed(IRibbonControl control)
+        public void OnSetPricePressed(IRibbonControl control)
         {
-            Form settingsForm = new SettingsForm();
-
-            settingsForm.Show();
-
+            string path = Dialog.GetFilePath();
+            RegistryUtil.PriceListPath = path;
         }
     }
 }
