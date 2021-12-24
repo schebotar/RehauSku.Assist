@@ -1,19 +1,18 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text;
 
-namespace Rehau.Sku.Assist
+namespace RehauSku.Assistant
 {
     static class HttpClientUtil
     {
         private static HttpClient _httpClient = AddIn.httpClient;
 
-        public async static Task<string> GetContentByUriAsync(Uri uri)
+        public async static Task<string> GetContentByRequest(string request)
         {
+            Uri uri = request.ConvertToUri();
+
             ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11 |
@@ -22,22 +21,14 @@ namespace Rehau.Sku.Assist
             return await _httpClient.GetStringAsync(uri);
         }
 
-        public async static Task<IDocument> ContentToDocAsync(Task<string> content)
-        {
-            IConfiguration config = Configuration.Default;
-            IBrowsingContext context = BrowsingContext.New(config);
-
-            return await context.OpenAsync(req => req.Content(content.Result));
-        }
-
-        public static Uri ConvertToUri(this string request, ResponseOrder order)
+        private static Uri ConvertToUri(this string request)
         {
             UriBuilder baseUri = new UriBuilder("https", "shop-rehau.ru");
 
             baseUri.Path = "/catalogsearch/result/index/";
-            string cleanedRequest = request._CleanRequest();
+            string cleanedRequest = request.CleanRequest();
 
-            switch (order)
+            switch (RegistryUtil.StoreResponseOrder)
             {
                 case ResponseOrder.Relevance:
                     baseUri.Query = "dir=asc&order=relevance&q=" + cleanedRequest;
@@ -51,25 +42,12 @@ namespace Rehau.Sku.Assist
                 case ResponseOrder.Series:
                     baseUri.Query = "dir=asc&order=sch_product_series&q=" + cleanedRequest;
                     break;
-                case ResponseOrder.NoSettings:
+                default:
                     baseUri.Query = "q=" + cleanedRequest;
                     break;
-                default:
-                    throw new ArgumentException();
             }
 
             return baseUri.Uri;
-        }
-
-        private static string _CleanRequest(this string input)
-        {
-            return new StringBuilder(input)
-                .Replace("+", " plus ")
-                .Replace("РХ", "")
-                .Replace("º", " ")
-                .Replace(".", " ")
-                .Replace("Ø", " ")
-                .ToString();
         }
     }
 }

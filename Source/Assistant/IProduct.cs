@@ -1,4 +1,4 @@
-﻿namespace Rehau.Sku.Assist
+﻿namespace RehauSku.Assistant
 {
     interface IProduct
     {
