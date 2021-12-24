@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.IO;
+using RehauSku.Forms;
+using System.Windows.Forms;
 
 namespace RehauSku
 {
@@ -19,6 +21,7 @@ namespace RehauSku
         public static void Uninitialize()
         {
             _RootKey.Close();
+            
         }
 
         public static bool IsPriceListPathEmpty()
@@ -32,7 +35,8 @@ namespace RehauSku
             {
                 if (IsPriceListPathEmpty() || !File.Exists(_priceListPath))
                 {
-                    string fileName = FileDialog.GetFilePath();
+                    MessageBox.Show("Прайс-лист отсутствует или неверный файл прайс-листа", "Укажите файл прайс-листа", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    string fileName = Dialog.GetFilePath();
                     _priceListPath = fileName;
                     _RootKey.SetValue("PriceListPath", fileName);
                     return _priceListPath;

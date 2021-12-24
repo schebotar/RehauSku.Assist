@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RehauSku.Settings
+namespace RehauSku.Forms
 {
     public partial class SettingsForm : Form
     {
@@ -17,9 +17,5 @@ namespace RehauSku.Settings
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

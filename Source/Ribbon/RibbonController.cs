@@ -1,7 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration.CustomUI;
-using RehauSku.DataExport;
+using RehauSku.PriceListTools;
+using RehauSku.Forms;
 
 namespace RehauSku.Ribbon
 {
@@ -17,6 +18,7 @@ namespace RehauSku.Ribbon
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
                 <button id='exportToPrice' label='Экспорт' size='large' imageMso='PivotExportToExcel' onAction='OnExportPressed'/>
+                <button id='mergeFiles' label='Объединить' size='large' imageMso='Copy' onAction='OnMergePressed'/>                
             </group>
             <group id='rausettings' label='Настройки'>
                 <button id='set' label='Настройки' size='large' imageMso='CurrentViewSettings' onAction='OnSettingsPressed'/>
@@ -27,11 +29,22 @@ namespace RehauSku.Ribbon
     </customUI>";
         }
 
+        public void OnMergePressed(IRibbonControl control)
+        {
+            using (MergeTool mergeTool = new MergeTool())
+            {
+                string[] files = Dialog.GetMultiplyFiles();
+                mergeTool.AddSkuAmountToDict(files);
+                string exportFile = PriceListUtil.CreateNewExportFile();
+                mergeTool.ExportToNewFile(exportFile);
+            }
+        }
+
         public void OnExportPressed(IRibbonControl control)
         {
-            using (ExportTool dw = new ExportTool())
+            using (ExportTool exportTool = new ExportTool())
             {
-                if (!dw.IsRangeValid())
+                if (!exportTool.IsRangeValid())
                 {
                     MessageBox.Show("Выделен неверный диапазон!",
                         "Неверный диапазон",
@@ -42,15 +55,17 @@ namespace RehauSku.Ribbon
 
                 else
                 {
-                    dw.FillNewPriceList();
+                    exportTool.ExportToNewFile();
                 }
             }
         }
-        
+
         public void OnSettingsPressed(IRibbonControl control)
         {
-            Form settingsForm = new Settings.SettingsForm();
+            Form settingsForm = new SettingsForm();
+
             settingsForm.Show();
+
         }
     }
 }

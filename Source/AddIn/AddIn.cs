@@ -2,6 +2,8 @@
 using ExcelDna.IntelliSense;
 using ExcelDna.Registration;
 using System.Net.Http;
+using System.Runtime.Caching;
+
 
 namespace RehauSku
 {
@@ -16,10 +18,13 @@ namespace RehauSku
 
     public class AddIn : IExcelAddIn
     {
-        public static HttpClient httpClient = new HttpClient();
+        public static HttpClient httpClient;
+        public static MemoryCache memoryCache;
 
         public void AutoOpen()
         {
+            httpClient = new HttpClient();
+            memoryCache = new MemoryCache("RehauSku");
             RegisterFunctions();
             IntelliSenseServer.Install();
             RegistryUtil.Initialize();
@@ -29,6 +34,7 @@ namespace RehauSku
         {
             IntelliSenseServer.Uninstall();
             RegistryUtil.Uninitialize();
+            memoryCache.Dispose();
         }
 
         void RegisterFunctions()

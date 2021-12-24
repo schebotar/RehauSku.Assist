@@ -1,4 +1,4 @@
-﻿namespace RehauSku.Settings
+﻿namespace RehauSku.Forms
 {
     partial class SettingsForm
     {

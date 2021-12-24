@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
+using RehauSku.Assistant;
 
-namespace RehauSku.Assistant
+namespace RehauSku
 {
-    static class MemoryCacheExtensions
+    static class MemoryCacheUtil
     {
         public static bool IsCached(this string request)
         {
-            return MemoryCache.Default.Contains(request);
+            return AddIn.memoryCache.Contains(request);
         }
 
         public static IProduct GetFromCache(this string request)
         {
-            return MemoryCache.Default[request] as IProduct;
+            return AddIn.memoryCache[request] as IProduct;
         }
 
         public static async Task<IProduct> RequestAndCache(this string request)
@@ -23,8 +24,14 @@ namespace RehauSku.Assistant
             if (product == null)
                 return null;
 
-            MemoryCache.Default.Add(request, product, DateTime.Now.AddMinutes(10));
+            AddIn.memoryCache.Add(request, product, DateTime.Now.AddMinutes(10));
             return product;
+        }
+
+        public static void ClearCache()
+        {
+            AddIn.memoryCache.Dispose();
+            AddIn.memoryCache = new MemoryCache("RehauSku");
         }
     }
 }
