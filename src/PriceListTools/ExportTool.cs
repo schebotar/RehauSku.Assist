@@ -91,7 +91,7 @@ namespace RehauSku.PriceListTools
             catch(Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show
-                    ($"{RegistryUtil.PriceListPath} не является файлом прайслиста \n\n {ex.Message}",
+                    ($"{RegistryUtil.PriceListPath} не является файлом прайс-листа \n\n {ex.Message}",
                     "Неверный файл прайс-листа!",
                     System.Windows.Forms.MessageBoxButtons.OK,
                     System.Windows.Forms.MessageBoxIcon.Error);
