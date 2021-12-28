@@ -44,7 +44,16 @@ namespace RehauSku.PriceListTools
             foreach (KeyValuePair<string, double> kvp in values)
             {
                 Range cell = ws.Columns[skuColumn].Find(kvp.Key);
-                ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
+                if (cell == null)
+                {
+                    System.Windows.Forms.MessageBox.Show
+                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                        "Отсутствует позиция в конечной таблице заказов",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Information);
+                }    
+                else
+                    ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
             }
 
             AutoFilter filter = ws.AutoFilter;
