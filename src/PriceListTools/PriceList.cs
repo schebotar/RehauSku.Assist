@@ -40,11 +40,24 @@ namespace RehauSku.PriceListTools
 
             int amountColumn = OfferSheet.amountColumn.Value;
             int skuColumn = OfferSheet.skuColumn.Value;
+            int exportedValues = 0;
 
             foreach (KeyValuePair<string, double> kvp in values)
             {
                 Range cell = ws.Columns[skuColumn].Find(kvp.Key);
-                ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
+                if (cell == null)
+                {
+                    System.Windows.Forms.MessageBox.Show
+                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                        "Отсутствует позиция в конечной таблице заказов",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Information);
+                }
+                else
+                {
+                    ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
+                    exportedValues++;
+                }
             }
 
             AutoFilter filter = ws.AutoFilter;
@@ -52,6 +65,7 @@ namespace RehauSku.PriceListTools
 
             filter.Range.AutoFilter(amountColumn - firstFilterColumn + 1, "<>");
             ws.Range["A1"].Activate();
+            ws.Application.StatusBar = $"Экспортировано {exportedValues} строк из {values.Count}";
         }
 
         public class PriceListSheet
