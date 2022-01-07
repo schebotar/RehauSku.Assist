@@ -2,30 +2,37 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    class MergeTool : ConjoinTool, IDisposable, IConjoinTool
+    class CombineTool : ConjoinTool, IDisposable, IConjoinTool
     {
-        private Dictionary<string, double> SkuAmount { get; set; } 
+        private Dictionary<string, double>[] SkuAmount { get; set; }
+        private string[] FileNames { get; set; }
 
-        public MergeTool()
+        public CombineTool()
         {
             ExcelApp = (Application)ExcelDnaUtil.Application;
-            SkuAmount = new Dictionary<string, double>();
         }
 
         public void CollectSkuAmount(string[] files)
         {
+            FileNames = files.Select(x => Path.GetFileNameWithoutExtension(x)).ToArray();
+            SkuAmount = new Dictionary<string, double>[files.Length];
+
             ExcelApp.ScreenUpdating = false;
-            foreach (string file in files)
+
+            for (int i = 0;  i < files.Length; i++)
             {
-                Workbook wb = ExcelApp.Workbooks.Open(file);
+                Workbook wb = ExcelApp.Workbooks.Open(files[i]);
 
                 try
                 {
                     PriceList priceList = new PriceList(wb);
-                    SkuAmount.AddValuesFromPriceList(priceList);
+                    SkuAmount[i] = new Dictionary<string, double>();
+                    SkuAmount[i].AddValuesFromPriceList(priceList);
                 }
 
                 catch (Exception ex)
@@ -42,12 +49,13 @@ namespace RehauSku.PriceListTools
                     wb.Close();
                 }
             }
+
             ExcelApp.ScreenUpdating = true;
         }
 
         public void ExportToFile(string exportFile)
         {
-            if (SkuAmount.Count < 1)
+            if (SkuAmount.Sum(d => d.Count) < 1)
             {
                 return;
             }
@@ -58,7 +66,7 @@ namespace RehauSku.PriceListTools
             try
             {
                 priceList = new PriceList(wb);
-                priceList.FillWithValues(SkuAmount);
+                priceList.FillWithValues(SkuAmount, FileNames);
             }
 
             catch (Exception ex)
@@ -75,13 +83,13 @@ namespace RehauSku.PriceListTools
 
         public void Dispose()
         {
-            Dispose(true);
+            //Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
+        //protected virtual void Dispose(bool disposing)
+        //{
 
-        }
+        //}
     }
 }

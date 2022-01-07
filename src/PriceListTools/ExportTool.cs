@@ -85,7 +85,7 @@ namespace RehauSku.PriceListTools
             try
             {
                 PriceList priceList = new PriceList(wb);
-                priceList.Fill(SkuAmount);
+                priceList.FillWithValues(SkuAmount);
             }
 
             catch(Exception ex)

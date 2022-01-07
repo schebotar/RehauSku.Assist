@@ -14,7 +14,7 @@ namespace RehauSku.PriceListTools
             return path;
         }
 
-        public static void AddValues(this Dictionary<string, double> SkuAmount, PriceList priceList)
+        public static void AddValuesFromPriceList(this Dictionary<string, double> SkuAmount, PriceList priceList)
         {
             object[,] amountCells = priceList.ActiveSheet.amountCells;
             object[,] skuCells = priceList.ActiveSheet.skuCells;

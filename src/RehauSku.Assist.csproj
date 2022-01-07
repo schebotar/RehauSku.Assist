@@ -106,6 +106,9 @@
     <Compile Include="Assistant\ParseUtil.cs" />
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
+    <Compile Include="PriceListTools\CombineTool.cs" />
+    <Compile Include="PriceListTools\ConjoinTool.cs" />
+    <Compile Include="PriceListTools\IConjoinTool.cs" />
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\PriceList.cs" />
     <Compile Include="PriceListTools\PriceListUtil.cs" />
