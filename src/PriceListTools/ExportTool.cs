@@ -25,6 +25,9 @@ namespace RehauSku.PriceListTools
             else throw new Exception("Неверный диапазон");
         }
 
+        public override void GetSource(string[] files)
+            => GetSource();
+
         private void FillSkuAmountDict()
         {
             object[,] cells = Selection.Value2;
