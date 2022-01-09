@@ -106,9 +106,11 @@
     <Compile Include="Assistant\ParseUtil.cs" />
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
+    <Compile Include="PriceListTools\CombineTool.cs" />
+    <Compile Include="PriceListTools\AbstractPriceListTool.cs" />
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\PriceList.cs" />
-    <Compile Include="PriceListTools\PriceListUtil.cs" />
+    <Compile Include="PriceListTools\PriceListSheet.cs" />
     <Compile Include="Ribbon\RibbonController.cs" />
     <Compile Include="Assistant\HttpClientUtil.cs" />
     <Compile Include="Assistant\StoreResponse.cs" />
@@ -118,12 +120,6 @@
     <Compile Include="AddIn\Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Assistant\SkuAssist.cs" />
-    <Compile Include="Forms\SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

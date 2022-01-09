@@ -2,56 +2,56 @@
 using System.IO;
 using RehauSku.Forms;
 using System.Windows.Forms;
+using ExcelDna.Integration;
 
 namespace RehauSku
 {
     static class RegistryUtil
     {
-        private static string _priceListPath;
-        private static int? _storeResponseOrder;
-        private static RegistryKey _RootKey { get; set; }
+        private static string priceListPath;
+        private static int? storeResponseOrder;
+        private static RegistryKey RootKey { get; set; }
 
         public static void Initialize()
         {
-            _RootKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\REHAU\SkuAssist"); 
-            _priceListPath = _RootKey.GetValue("PriceListPath") as string;
-            _storeResponseOrder = _RootKey.GetValue("StoreResponseOrder") as int?;
+            RootKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\REHAU\SkuAssist"); 
+            priceListPath = RootKey.GetValue("PriceListPath") as string;
+            storeResponseOrder = RootKey.GetValue("StoreResponseOrder") as int?;
         }
 
         public static void Uninitialize()
         {
-            _RootKey.Close();
-            
+            RootKey.Close();            
         }
 
         public static bool IsPriceListPathEmpty()
         {
-            return string.IsNullOrEmpty(_priceListPath);
+            return string.IsNullOrEmpty(priceListPath);
         }
 
         public static string PriceListPath
         {
             get
             {
-                if (IsPriceListPathEmpty() || !File.Exists(_priceListPath))
+                if (IsPriceListPathEmpty() || !File.Exists(priceListPath))
                 {
-                    MessageBox.Show("Прайс-лист отсутствует или неверный файл прайс-листа", "Укажите файл прайс-листа", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //MessageBox.Show("Прайс-лист отсутствует или неверный файл прайс-листа", "Укажите файл прайс-листа", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     string fileName = Dialog.GetFilePath();
-                    _priceListPath = fileName;
-                    _RootKey.SetValue("PriceListPath", fileName);
-                    return _priceListPath;
+                    priceListPath = fileName;
+                    RootKey.SetValue("PriceListPath", fileName);
+                    return priceListPath;
                 }
 
                 else
                 {
-                    return _priceListPath;
+                    return priceListPath;
                 }
             }
 
             set
             {
-                _priceListPath = value;
-                _RootKey.SetValue("PriceListPath", value);
+                priceListPath = value;
+                RootKey.SetValue("PriceListPath", value);
             }
         }
 
@@ -59,16 +59,16 @@ namespace RehauSku
         {
             get
             {
-                if (_storeResponseOrder == null)
+                if (storeResponseOrder == null)
                 {
-                    _RootKey.SetValue("StoreResponseOrder", (int)ResponseOrder.Default);
-                    _storeResponseOrder = (int)ResponseOrder.Default;
-                    return (ResponseOrder)_storeResponseOrder.Value;
+                    RootKey.SetValue("StoreResponseOrder", (int)ResponseOrder.Default);
+                    storeResponseOrder = (int)ResponseOrder.Default;
+                    return (ResponseOrder)storeResponseOrder.Value;
                 }
 
                 else
                 {
-                    return (ResponseOrder)_storeResponseOrder.Value;
+                    return (ResponseOrder)storeResponseOrder.Value;
                 }
             }
         }

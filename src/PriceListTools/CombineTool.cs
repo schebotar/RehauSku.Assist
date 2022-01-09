@@ -3,7 +3,7 @@ using System;
 
 namespace RehauSku.PriceListTools
 {
-    internal class MergeTool : AbstractPriceListTool, IDisposable
+    internal class CombineTool : AbstractPriceListTool, IDisposable
     {
         public override void FillPriceList()
         {
@@ -11,6 +11,7 @@ namespace RehauSku.PriceListTools
             offer.Sheet.Activate();
 
             int exportedValues = 0;
+            int exportedLists = 0;
 
             foreach (var priceList in sourcePriceLists)
             {
@@ -18,6 +19,12 @@ namespace RehauSku.PriceListTools
                 {
                     if (sheet.SkuAmount.Count == 0)
                         continue;
+
+                    offer.Sheet.Columns[offer.amountColumnNumber]
+                        .EntireColumn
+                        .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
+
+                    exportedLists++;
 
                     foreach (var kvp in sheet.SkuAmount)
                     {
@@ -34,7 +41,8 @@ namespace RehauSku.PriceListTools
 
                         else
                         {
-                            Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber];
+                            offer.Sheet.Cells[cell.Row, offer.amountColumnNumber].Value2 = kvp.Value;
+                            Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber + exportedLists];
 
                             if (sumCell.Value2 == null)
                                 sumCell.Value2 = kvp.Value;
@@ -43,6 +51,8 @@ namespace RehauSku.PriceListTools
 
                             exportedValues++;
                         }
+
+                        offer.Sheet.Cells[offer.headerRowNumber, offer.amountColumnNumber].Value2 = $"{priceList.Name}\n{sheet.Name}";
                     }
                 }
             }
@@ -50,8 +60,9 @@ namespace RehauSku.PriceListTools
             AutoFilter filter = offer.Sheet.AutoFilter;
             int firstFilterColumn = filter.Range.Column;
 
-            filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1, "<>");
+            filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1 + exportedLists, "<>");
             offer.Sheet.Range["A1"].Activate();
+
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
 
             Forms.Dialog.SaveWorkbookAs();

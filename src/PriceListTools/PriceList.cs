@@ -1,100 +1,41 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    class PriceList
+    internal class PriceList
     {
-        public readonly Workbook Workbook;
+        public readonly string Name;
         public readonly PriceListSheet OfferSheet;
-        public readonly PriceListSheet ActiveSheet;
+        public List<PriceListSheet> Sheets { get; private set; }
 
-        private const string _amountHeader = "Кол-во";
-        private const string _skuHeader = "Актуальный материал";
-        private const string _offerSheetHeader = "КП";
+        private const string offerSheetHeader = "КП";
 
         public PriceList(Workbook workbook)
         {
-            Workbook = workbook;
-            OfferSheet = new PriceListSheet(workbook.Sheets[_offerSheetHeader]);
+            Name = workbook.Name;
+            Sheets = new List<PriceListSheet>();
 
-            Worksheet active = workbook.ActiveSheet;
-
-            if (active.Name == _offerSheetHeader)
-                ActiveSheet = OfferSheet;
-
-            else
-                ActiveSheet = new PriceListSheet(active);                
-        }
-
-        public bool IsValid()
-        {
-            return OfferSheet.IsValid() &&
-                ActiveSheet.IsValid();
-        }
-
-        public void Fill(Dictionary<string, double> values)
-        {
-            Worksheet ws = OfferSheet.sheet;
-            ws.Activate();
-
-            int amountColumn = OfferSheet.amountColumn.Value;
-            int skuColumn = OfferSheet.skuColumn.Value;
-            int exportedValues = 0;
-
-            foreach (KeyValuePair<string, double> kvp in values)
+            foreach (Worksheet worksheet in workbook.Sheets)
             {
-                Range cell = ws.Columns[skuColumn].Find(kvp.Key);
-                if (cell == null)
-                {
-                    System.Windows.Forms.MessageBox.Show
-                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                        "Отсутствует позиция в конечной таблице заказов",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Information);
-                }
-                else
-                {
-                    ws.Cells[cell.Row, amountColumn].Value = kvp.Value;
-                    exportedValues++;
-                }
+                PriceListSheet priceListSheet = new PriceListSheet(worksheet);
+
+                if (priceListSheet.FillSkuAmount())
+                    Sheets.Add(priceListSheet);
             }
 
-            AutoFilter filter = ws.AutoFilter;
-            int firstFilterColumn = filter.Range.Column;
-
-            filter.Range.AutoFilter(amountColumn - firstFilterColumn + 1, "<>");
-            ws.Range["A1"].Activate();
-            ws.Application.StatusBar = $"Экспортировано {exportedValues} строк из {values.Count}";
+            OfferSheet = Sheets.Where(s => s.Name == offerSheetHeader).FirstOrDefault();
         }
 
-        public class PriceListSheet
+        public static string CreateNewFile()
         {
-            public readonly Worksheet sheet;
-            public readonly int? headerRow;
-            public readonly int? amountColumn;
-            public readonly int? skuColumn;
-            public object[,] amountCells;
-            public object[,] skuCells;
+            string fileExtension = Path.GetExtension(RegistryUtil.PriceListPath);
+            string path = Path.GetTempFileName() + fileExtension;
 
-            public PriceListSheet(Worksheet sheet)
-            {
-                this.sheet = sheet;
-                headerRow = sheet.Cells.Find(_amountHeader).Row;
-                amountColumn = sheet.Cells.Find(_amountHeader).Column;
-                skuColumn = sheet.Cells.Find(_skuHeader).Column;
-
-                amountCells = sheet.Columns[amountColumn].Value2;
-                skuCells = sheet.Columns[skuColumn].Value2;
-            }
-
-            public bool IsValid()
-            {
-                return sheet != null &&
-                    headerRow != null &&
-                    amountColumn != null &&
-                    skuColumn != null;
-            }
+            File.Copy(RegistryUtil.PriceListPath, path);
+            return path;
         }
     }
 }

@@ -6,28 +6,29 @@ using System.Collections.Generic;
 
 namespace RehauSku.PriceListTools
 {
-    class ExportTool : IDisposable
+    internal class ExportTool : AbstractPriceListTool, IDisposable
     {
-        private Application ExcelApp;
         private Dictionary<string, double> SkuAmount { get; set; }
-        private Range Selection { get; set; }
+        private Range Selection;
 
         public ExportTool()
         {
-            this.ExcelApp = (Application)ExcelDnaUtil.Application;
+            ExcelApp = (Application)ExcelDnaUtil.Application;
             Selection = ExcelApp.Selection;
-
-            if (IsRangeValid())
-                _FillSkuAmountDict();
         }
 
-        public bool IsRangeValid()
+        public override void GetSource()
         {
-            return Selection != null &&
-                Selection.Columns.Count == 2;
+            if (Selection != null && Selection.Columns.Count == 2)
+                FillSkuAmountDict();
+
+            else throw new Exception("Неверный диапазон");
         }
 
-        private void _FillSkuAmountDict()
+        public override void GetSource(string[] files)
+            => GetSource();
+
+        private void FillSkuAmountDict()
         {
             object[,] cells = Selection.Value2;
             SkuAmount = new Dictionary<string, double>();
@@ -72,43 +73,54 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public void ExportToNewFile()
+        public override void FillPriceList()
         {
-            if (SkuAmount.Count < 1)
+            if (SkuAmount.Count < 1) return;
+
+            PriceListSheet offer = NewPriceList.OfferSheet;
+            offer.Sheet.Activate();
+
+            int exportedValues = 0;
+
+            foreach (var kvp in SkuAmount)
             {
-                return;
+                Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
+
+                if (cell == null)
+                {
+                    System.Windows.Forms.MessageBox.Show
+                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                        "Отсутствует позиция в конечной таблице заказов",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Information);
+                }
+
+                else
+                {
+                    Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber];
+
+                    if (sumCell.Value2 == null)
+                        sumCell.Value2 = kvp.Value;
+                    else
+                        sumCell.Value2 += kvp.Value;
+
+                    exportedValues++;
+                }
             }
 
-            string exportFile = PriceListUtil.CreateNewExportFile();
-            Workbook wb = ExcelApp.Workbooks.Open(exportFile);
+            AutoFilter filter = offer.Sheet.AutoFilter;
+            int firstFilterColumn = filter.Range.Column;
 
-            try
-            {
-                PriceList priceList = new PriceList(wb);
-                priceList.Fill(SkuAmount);
-            }
-
-            catch(Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show
-                    ($"{RegistryUtil.PriceListPath} не является файлом прайс-листа \n\n {ex.Message}",
-                    "Неверный файл прайс-листа!",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Error);
-
-                wb.Close();
-            }
+            filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1, "<>");
+            offer.Sheet.Range["A1"].Activate();
+            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";
+            
+            Forms.Dialog.SaveWorkbookAs();
         }
 
         public void Dispose()
         {
-            Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-
         }
     }
 }
