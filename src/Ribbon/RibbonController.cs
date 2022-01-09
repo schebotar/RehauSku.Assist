@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using ExcelDna.Integration.CustomUI;
 using RehauSku.PriceListTools;
 using RehauSku.Forms;
+using System;
 
 namespace RehauSku.Ribbon
 {
@@ -24,7 +25,7 @@ namespace RehauSku.Ribbon
                 </menu>
             </group>
             <group id='rausettings' label='Настройки'>
-                <button id='setPriceList' label='Файл прайс-листа' size='normal' imageMso='CurrentViewSettings' onAction='OnSetPricePressed'/>
+                <button id='setPriceList' label='Файл прайс-листа' size='large' imageMso='CurrentViewSettings' onAction='OnSetPricePressed'/>
             </group>
           </tab>
         </tabs>
@@ -39,9 +40,10 @@ namespace RehauSku.Ribbon
             using (MergeTool mergeTool = new MergeTool())
             {
                 string[] files = Dialog.GetMultiplyFiles();
-                mergeTool.CollectSkuAmount(files);
-                string exportFile = PriceListUtil.CreateNewExportFile();
-                mergeTool.ExportToFile(exportFile);
+                mergeTool.GetSource(files);
+                string exportFile = PriceList.CreateNewFile();
+                mergeTool.OpenNewPrice(exportFile);
+                mergeTool.FillPriceList();
             }
         }
 
@@ -50,30 +52,34 @@ namespace RehauSku.Ribbon
             using (CombineTool combineTool = new CombineTool())
             {
                 string[] files = Dialog.GetMultiplyFiles();
-                combineTool.CollectSkuAmount(files);
-                string exportFile = PriceListUtil.CreateNewExportFile();
-                combineTool.ExportToFile(exportFile);
+                combineTool.GetSource(files);
+                string exportFile = PriceList.CreateNewFile();
+                combineTool.OpenNewPrice(exportFile);
+                combineTool.FillPriceList();
             }
         }
 
         public void OnExportPressed(IRibbonControl control)
         {
-            using (ExportTool exportTool = new ExportTool())
+            try
             {
-                if (!exportTool.IsRangeValid())
+                using (ExportTool exportTool = new ExportTool())
                 {
-                    MessageBox.Show("Выделен неверный диапазон!",
-                        "Неверный диапазон",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    return;
-                }
-
-                else
-                {
-                    exportTool.ExportToNewFile();
+                    exportTool.GetSource(null);
+                    string exportFile = PriceList.CreateNewFile();
+                    exportTool.OpenNewPrice(exportFile);
+                    exportTool.FillPriceList();
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
         }
 
         public void OnSetPricePressed(IRibbonControl control)

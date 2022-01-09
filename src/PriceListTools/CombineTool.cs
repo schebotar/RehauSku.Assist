@@ -1,95 +1,74 @@
-﻿using ExcelDna.Integration;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    class CombineTool : ConjoinTool, IDisposable, IConjoinTool
+    internal class CombineTool : AbstractPriceListTool, IDisposable
     {
-        private Dictionary<string, double>[] SkuAmount { get; set; }
-        private string[] FileNames { get; set; }
-
-        public CombineTool()
+        public override void FillPriceList()
         {
-            ExcelApp = (Application)ExcelDnaUtil.Application;
-        }
+            PriceListSheet offer = NewPriceList.OfferSheet;
+            offer.Sheet.Activate();
 
-        public void CollectSkuAmount(string[] files)
-        {
-            FileNames = files.Select(x => Path.GetFileNameWithoutExtension(x)).ToArray();
-            SkuAmount = new Dictionary<string, double>[files.Length];
+            int exportedValues = 0;
+            int exportedLists = 0;
 
-            ExcelApp.ScreenUpdating = false;
-
-            for (int i = 0;  i < files.Length; i++)
+            foreach (var priceList in sourcePriceLists)
             {
-                Workbook wb = ExcelApp.Workbooks.Open(files[i]);
-
-                try
+                foreach (var sheet in priceList.Sheets)
                 {
-                    PriceList priceList = new PriceList(wb);
-                    SkuAmount[i] = new Dictionary<string, double>();
-                    SkuAmount[i].AddValuesFromPriceList(priceList);
+                    if (sheet.SkuAmount.Count == 0)
+                        continue;
+
+                    offer.Sheet.Columns[offer.amountColumnNumber]
+                        .EntireColumn
+                        .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
+
+                    exportedLists++;
+
+                    foreach (var kvp in sheet.SkuAmount)
+                    {
+                        Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
+
+                        if (cell == null)
+                        {
+                            System.Windows.Forms.MessageBox.Show
+                                ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                                "Отсутствует позиция в конечной таблице заказов",
+                                System.Windows.Forms.MessageBoxButtons.OK,
+                                System.Windows.Forms.MessageBoxIcon.Information);
+                        }
+
+                        else
+                        {
+                            offer.Sheet.Cells[cell.Row, offer.amountColumnNumber].Value2 = kvp.Value;
+                            Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber + exportedLists];
+
+                            if (sumCell.Value2 == null)
+                                sumCell.Value2 = kvp.Value;
+                            else
+                                sumCell.Value2 += kvp.Value;
+
+                            exportedValues++;
+                        }
+
+                        offer.Sheet.Cells[offer.headerRowNumber, offer.amountColumnNumber].Value2 = $"{priceList.Name}\n{sheet.Name}";
+                    }
                 }
-
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show
-                        ($"{wb.Name} не является файлом прайс-листа \n\n {ex.Message}",
-                        "Неверный файл прайс-листа!",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Error);
-                }
-
-                finally
-                {
-                    wb.Close();
-                }
             }
 
-            ExcelApp.ScreenUpdating = true;
-        }
+            AutoFilter filter = offer.Sheet.AutoFilter;
+            int firstFilterColumn = filter.Range.Column;
 
-        public void ExportToFile(string exportFile)
-        {
-            if (SkuAmount.Sum(d => d.Count) < 1)
-            {
-                return;
-            }
+            filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1 + exportedLists, "<>");
+            offer.Sheet.Range["A1"].Activate();
 
-            Workbook wb = ExcelApp.Workbooks.Open(exportFile);
-            PriceList priceList;
-
-            try
-            {
-                priceList = new PriceList(wb);
-                priceList.FillWithValues(SkuAmount, FileNames);
-            }
-
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show
-                    ($"{RegistryUtil.PriceListPath} не является файлом прайс-листа \n\n {ex.Message}",
-                    "Неверный файл прайс-листа!",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Error);
-
-                wb.Close();
-            }
+            offer.Sheet.Application.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
         }
 
         public void Dispose()
         {
-            //Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        //protected virtual void Dispose(bool disposing)
-        //{
-
-        //}
     }
 }
