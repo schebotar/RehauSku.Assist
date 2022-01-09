@@ -113,7 +113,9 @@ namespace RehauSku.PriceListTools
 
             filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1, "<>");
             offer.Sheet.Range["A1"].Activate();
-            offer.Sheet.Application.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";
+            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";
+            
+            Forms.Dialog.SaveWorkbookAs();
         }
 
         public void Dispose()

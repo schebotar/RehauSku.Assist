@@ -63,7 +63,9 @@ namespace RehauSku.PriceListTools
             filter.Range.AutoFilter(offer.amountColumnNumber - firstFilterColumn + 1 + exportedLists, "<>");
             offer.Sheet.Range["A1"].Activate();
 
-            offer.Sheet.Application.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
+            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
+
+            Forms.Dialog.SaveWorkbookAs();
         }
 
         public void Dispose()

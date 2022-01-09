@@ -31,7 +31,7 @@ namespace RehauSku.PriceListTools
 
             if (amountCell == null || skuCell == null)
             {
-                Sheet.Application.StatusBar = $"Лист {Name} не распознан";
+                AddIn.Excel.StatusBar = $"Лист {Name} не распознан";
                 return false;
             }
 

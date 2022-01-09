@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace RehauSku.Forms
@@ -41,6 +42,21 @@ namespace RehauSku.Forms
             }
 
             return fileNames.ToArray();
+        }
+
+        public static void SaveWorkbookAs()
+        {
+            Workbook wb = AddIn.Excel.ActiveWorkbook;
+            string currentFilename = wb.FullName;
+            string fileFilter = "Файлы Excel (*.xls;*.xlsx;*.xlsm),*.xls;*.xlsx;*.xlsm";
+
+            object fileName = AddIn.Excel.GetSaveAsFilename(currentFilename, fileFilter);
+
+            if (fileName.GetType() == typeof(string))
+                wb.SaveAs(fileName);
+
+            else
+                wb.Close(false);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ExcelDna.Integration;
 using ExcelDna.IntelliSense;
 using ExcelDna.Registration;
+using Microsoft.Office.Interop.Excel;
 using System.Net.Http;
 using System.Runtime.Caching;
 
@@ -20,6 +21,7 @@ namespace RehauSku
     {
         public static HttpClient httpClient;
         public static MemoryCache memoryCache;
+        public static Application Excel;
 
         public void AutoOpen()
         {
@@ -28,6 +30,7 @@ namespace RehauSku
             RegisterFunctions();
             IntelliSenseServer.Install();
             RegistryUtil.Initialize();
+            Excel = (Application)ExcelDnaUtil.Application;
         }
 
         public void AutoClose()

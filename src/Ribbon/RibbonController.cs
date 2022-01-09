@@ -40,10 +40,13 @@ namespace RehauSku.Ribbon
             using (MergeTool mergeTool = new MergeTool())
             {
                 string[] files = Dialog.GetMultiplyFiles();
-                mergeTool.GetSource(files);
-                string exportFile = PriceList.CreateNewFile();
-                mergeTool.OpenNewPrice(exportFile);
-                mergeTool.FillPriceList();
+                if (files.Length != 0)
+                {
+                    mergeTool.GetSource(files);
+                    string exportFile = RegistryUtil.PriceListPath;
+                    mergeTool.OpenNewPrice(exportFile);
+                    mergeTool.FillPriceList();
+                }
             }
         }
 
@@ -52,10 +55,13 @@ namespace RehauSku.Ribbon
             using (CombineTool combineTool = new CombineTool())
             {
                 string[] files = Dialog.GetMultiplyFiles();
-                combineTool.GetSource(files);
-                string exportFile = PriceList.CreateNewFile();
-                combineTool.OpenNewPrice(exportFile);
-                combineTool.FillPriceList();
+                if (files.Length != 0)
+                {
+                    combineTool.GetSource(files);
+                    string exportFile = RegistryUtil.PriceListPath;
+                    combineTool.OpenNewPrice(exportFile);
+                    combineTool.FillPriceList();
+                }
             }
         }
 
@@ -66,7 +72,7 @@ namespace RehauSku.Ribbon
                 using (ExportTool exportTool = new ExportTool())
                 {
                     exportTool.GetSource();
-                    string exportFile = PriceList.CreateNewFile();
+                    string exportFile = RegistryUtil.PriceListPath;
                     exportTool.OpenNewPrice(exportFile);
                     exportTool.FillPriceList();
                 }
