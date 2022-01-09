@@ -65,7 +65,7 @@ namespace RehauSku.Ribbon
             {
                 using (ExportTool exportTool = new ExportTool())
                 {
-                    exportTool.GetSource(null);
+                    exportTool.GetSource();
                     string exportFile = PriceList.CreateNewFile();
                     exportTool.OpenNewPrice(exportFile);
                     exportTool.FillPriceList();

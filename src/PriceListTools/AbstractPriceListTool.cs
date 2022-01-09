@@ -39,6 +39,11 @@ namespace RehauSku.PriceListTools
             }
         }
 
+        public virtual void GetSource()
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void GetSource(string[] files)
         {
             ExcelApp.ScreenUpdating = false;

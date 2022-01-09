@@ -17,10 +17,11 @@ namespace RehauSku.PriceListTools
             Selection = ExcelApp.Selection;
         }
 
-        public override void GetSource(string[] files)
+        public override void GetSource()
         {
             if (Selection != null && Selection.Columns.Count == 2)
                 FillSkuAmountDict();
+
             else throw new Exception("Неверный диапазон");
         }
 
