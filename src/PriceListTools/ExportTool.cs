@@ -107,14 +107,8 @@ namespace RehauSku.PriceListTools
                     exportedValues++;
                 }
             }
-
-            AutoFilter filter = offer.Sheet.AutoFilter;
-            int firstFilterColumn = filter.Range.Column;
-
-            filter.Range.AutoFilter(offer.amountCell.Column - firstFilterColumn + 1, "<>");
-            offer.Sheet.Range["A1"].Activate();
-            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";
-            
+            FilterByAmount();
+            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";            
             Forms.Dialog.SaveWorkbookAs();
         }
 

@@ -18,24 +18,7 @@ namespace RehauSku.PriceListTools
         public readonly Range skuCell;
         public readonly Range groupCell;
 
-        public Dictionary<PriceListPosition, Range> Map { get; private set; }
-
-        public PriceList(Worksheet sheet)
-        {
-            Sheet = sheet;
-            Name = sheet.Name;
-
-            amountCell = Sheet.Cells.Find(amountHeader);
-            skuCell = Sheet.Cells.Find(skuHeader);
-            groupCell = Sheet.Cells.Find(groupHeader);
-
-            if (amountCell == null || skuCell == null || groupCell == null)
-            {
-                throw new ArgumentException($"Лист { Name } не распознан");
-            }
-
-            FillSkuAmount();
-        }
+        //public Dictionary<PriceListPosition, Range> Map { get; private set; }
 
         public PriceList(Workbook workbook)
         {

@@ -17,6 +17,14 @@ namespace RehauSku.PriceListTools
             sourcePriceLists = new List<PriceList>();
         }
 
+        protected private void FilterByAmount()
+        {
+            AutoFilter filter = NewPriceList.Sheet.AutoFilter;
+
+            filter.Range.AutoFilter(NewPriceList.amountCell.Column, "<>");
+            NewPriceList.Sheet.Range["A1"].Activate();
+        }
+
         public void OpenNewPrice(string path)
         {
             Workbook wb = ExcelApp.Workbooks.Open(path);
