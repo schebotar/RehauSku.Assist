@@ -14,16 +14,11 @@ namespace RehauSku.PriceListTools
         public readonly string Name;
         public Dictionary<string, double> SkuAmount { get; private set; }
 
-        Range amountCell { get; set; }
-        Range skuCell { get; set; }
-        Range groupCell { get; set; }
+        public readonly Range amountCell;
+        public readonly Range skuCell;
+        public readonly Range groupCell;
 
-        public int headerRowNumber { get; private set; }
-        public int amountColumnNumber { get; private set; }
-        public int skuColumnNumber { get; private set; }
-        public int groupColumnNumber { get; private set; }
         public Dictionary<PriceListPosition, Range> Map { get; private set; }
-
 
         public PriceListSheet(Worksheet sheet)
         {
@@ -45,10 +40,6 @@ namespace RehauSku.PriceListTools
 
         private void FillSkuAmount()
         {
-            headerRowNumber = amountCell.Row;
-            skuColumnNumber = skuCell.Column;
-            amountColumnNumber = amountCell.Column;
-
             object[,] amountColumn = Sheet.Columns[amountCell.Column].Value2;
             object[,] skuColumn = Sheet.Columns[skuCell.Column].Value2;
 
