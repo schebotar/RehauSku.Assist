@@ -77,7 +77,7 @@ namespace RehauSku.PriceListTools
         {
             if (SkuAmount.Count < 1) return;
 
-            PriceListSheet offer = NewPriceList.OfferSheet;
+            PriceListSheet offer = NewPriceList.Sheet;
             offer.Sheet.Activate();
 
             int exportedValues = 0;

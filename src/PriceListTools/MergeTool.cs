@@ -7,42 +7,41 @@ namespace RehauSku.PriceListTools
     {
         public override void FillPriceList()
         {
-            PriceListSheet offer = NewPriceList.OfferSheet;
+            PriceListSheet offer = NewPriceList.Sheet;
             offer.Sheet.Activate();
 
             int exportedValues = 0;
 
             foreach (var priceList in sourcePriceLists)
             {
-                foreach (var sheet in priceList.Sheets)
+                PriceListSheet sheet = priceList.Sheet;
+
+                if (sheet.SkuAmount.Count == 0)
+                    continue;
+
+                foreach (var kvp in sheet.SkuAmount)
                 {
-                    if (sheet.SkuAmount.Count == 0)
-                        continue;
+                    Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
 
-                    foreach (var kvp in sheet.SkuAmount)
+                    if (cell == null)
                     {
-                        Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
+                        System.Windows.Forms.MessageBox.Show
+                            ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                            "Отсутствует позиция в конечной таблице заказов",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Information);
+                    }
 
-                        if (cell == null)
-                        {
-                            System.Windows.Forms.MessageBox.Show
-                                ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                                "Отсутствует позиция в конечной таблице заказов",
-                                System.Windows.Forms.MessageBoxButtons.OK,
-                                System.Windows.Forms.MessageBoxIcon.Information);
-                        }
+                    else
+                    {
+                        Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber];
 
+                        if (sumCell.Value2 == null)
+                            sumCell.Value2 = kvp.Value;
                         else
-                        {
-                            Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber];
+                            sumCell.Value2 += kvp.Value;
 
-                            if (sumCell.Value2 == null)
-                                sumCell.Value2 = kvp.Value;
-                            else
-                                sumCell.Value2 += kvp.Value;
-
-                            exportedValues++;
-                        }
+                        exportedValues++;
                     }
                 }
             }

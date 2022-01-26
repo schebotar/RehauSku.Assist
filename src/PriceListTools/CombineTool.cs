@@ -7,7 +7,7 @@ namespace RehauSku.PriceListTools
     {
         public override void FillPriceList()
         {
-            PriceListSheet offer = NewPriceList.OfferSheet;
+            PriceListSheet offer = NewPriceList.Sheet;
             offer.Sheet.Activate();
 
             int exportedValues = 0;
@@ -15,45 +15,44 @@ namespace RehauSku.PriceListTools
 
             foreach (var priceList in sourcePriceLists)
             {
-                foreach (var sheet in priceList.Sheets)
+                PriceListSheet sheet = priceList.Sheet;
+
+                if (sheet.SkuAmount.Count == 0)
+                    continue;
+
+                offer.Sheet.Columns[offer.amountColumnNumber]
+                    .EntireColumn
+                    .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
+
+                exportedLists++;
+
+                foreach (var kvp in sheet.SkuAmount)
                 {
-                    if (sheet.SkuAmount.Count == 0)
-                        continue;
+                    Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
 
-                    offer.Sheet.Columns[offer.amountColumnNumber]
-                        .EntireColumn
-                        .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
-
-                    exportedLists++;
-
-                    foreach (var kvp in sheet.SkuAmount)
+                    if (cell == null)
                     {
-                        Range cell = offer.Sheet.Columns[offer.skuColumnNumber].Find(kvp.Key);
-
-                        if (cell == null)
-                        {
-                            System.Windows.Forms.MessageBox.Show
-                                ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                                "Отсутствует позиция в конечной таблице заказов",
-                                System.Windows.Forms.MessageBoxButtons.OK,
-                                System.Windows.Forms.MessageBoxIcon.Information);
-                        }
-
-                        else
-                        {
-                            offer.Sheet.Cells[cell.Row, offer.amountColumnNumber].Value2 = kvp.Value;
-                            Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber + exportedLists];
-
-                            if (sumCell.Value2 == null)
-                                sumCell.Value2 = kvp.Value;
-                            else
-                                sumCell.Value2 += kvp.Value;
-
-                            exportedValues++;
-                        }
-
-                        offer.Sheet.Cells[offer.headerRowNumber, offer.amountColumnNumber].Value2 = $"{priceList.Name}\n{sheet.Name}";
+                        System.Windows.Forms.MessageBox.Show
+                            ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                            "Отсутствует позиция в конечной таблице заказов",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Information);
                     }
+
+                    else
+                    {
+                        offer.Sheet.Cells[cell.Row, offer.amountColumnNumber].Value2 = kvp.Value;
+                        Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountColumnNumber + exportedLists];
+
+                        if (sumCell.Value2 == null)
+                            sumCell.Value2 = kvp.Value;
+                        else
+                            sumCell.Value2 += kvp.Value;
+
+                        exportedValues++;
+                    }
+
+                    offer.Sheet.Cells[offer.headerRowNumber, offer.amountColumnNumber].Value2 = $"{priceList.Name}\n{sheet.Name}";
                 }
             }
 
