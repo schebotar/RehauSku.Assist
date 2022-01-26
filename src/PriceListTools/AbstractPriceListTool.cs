@@ -24,12 +24,6 @@ namespace RehauSku.PriceListTools
             try
             {
                 NewPriceList = new PriceList(wb);
-
-                //if (NewPriceList.Sheet.Count == 0)
-                //    throw new ArgumentException($"Не найдены листы с артикулами в {wb.Name}");
-
-                //if (NewPriceList.OfferSheet == null)
-                //    throw new ArgumentException($"Нет листа для коммерческого предложения в {wb.Name}");
             }
 
             catch (Exception ex)

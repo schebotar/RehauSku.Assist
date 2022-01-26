@@ -7,15 +7,13 @@ namespace RehauSku.PriceListTools
     {
         public override void FillPriceList()
         {
-            PriceListSheet offer = NewPriceList.Sheet;
+            PriceList offer = NewPriceList;
             offer.Sheet.Activate();
 
             int exportedValues = 0;
 
-            foreach (var priceList in sourcePriceLists)
+            foreach (var sheet in sourcePriceLists)
             {
-                PriceListSheet sheet = priceList.Sheet;
-
                 if (sheet.SkuAmount.Count == 0)
                     continue;
 
@@ -47,9 +45,8 @@ namespace RehauSku.PriceListTools
             }
 
             AutoFilter filter = offer.Sheet.AutoFilter;
-            int firstFilterColumn = filter.Range.Column;
 
-            filter.Range.AutoFilter(offer.amountCell.Column - firstFilterColumn + 1, "<>");
+            filter.Range.AutoFilter(offer.amountCell.Column, "<>");
             offer.Sheet.Range["A1"].Activate();
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
 
