@@ -38,15 +38,6 @@ namespace RehauSku.PriceListTools
 
             //OfferSheet = Sheet.Where(s => s.Name == offerSheetHeader).FirstOrDefault();
         }
-
-        public static string CreateNewFile()
-        {
-            string fileExtension = Path.GetExtension(RegistryUtil.PriceListPath);
-            string path = Path.GetTempFileName() + fileExtension;
-
-            File.Copy(RegistryUtil.PriceListPath, path);
-            return path;
-        }
     }
 }
 
