@@ -75,16 +75,16 @@ namespace RehauSku.PriceListTools
 
         public override void FillPriceList()
         {
-            if (SkuAmount.Count < 1) return;
-
-            PriceList offer = NewPriceList;
-            offer.Sheet.Activate();
+            if (SkuAmount.Count < 1) 
+                return;
 
             int exportedValues = 0;
 
+            ExcelApp.ScreenUpdating = false;
+
             foreach (var kvp in SkuAmount)
             {
-                Range cell = offer.Sheet.Columns[offer.skuCell.Column].Find(kvp.Key);
+                Range cell = NewPriceList.Sheet.Columns[NewPriceList.skuCell.Column].Find(kvp.Key);
 
                 if (cell == null)
                 {
@@ -97,7 +97,7 @@ namespace RehauSku.PriceListTools
 
                 else
                 {
-                    Range sumCell = offer.Sheet.Cells[cell.Row, offer.amountCell.Column];
+                    Range sumCell = NewPriceList.Sheet.Cells[cell.Row, NewPriceList.amountCell.Column];
 
                     if (sumCell.Value2 == null)
                         sumCell.Value2 = kvp.Value;
@@ -107,7 +107,10 @@ namespace RehauSku.PriceListTools
                     exportedValues++;
                 }
             }
+
             FilterByAmount();
+            ExcelApp.ScreenUpdating = true;
+
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";            
             Forms.Dialog.SaveWorkbookAs();
         }

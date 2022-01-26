@@ -9,6 +9,8 @@ namespace RehauSku.PriceListTools
         {
             int exportedValues = 0;
 
+            ExcelApp.ScreenUpdating = false;
+
             foreach (var sheet in sourcePriceLists)
             {
                 if (sheet.SkuAmount.Count == 0)
@@ -42,6 +44,8 @@ namespace RehauSku.PriceListTools
             }
 
             FilterByAmount();
+            ExcelApp.ScreenUpdating = true;
+
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
             Forms.Dialog.SaveWorkbookAs();
         }

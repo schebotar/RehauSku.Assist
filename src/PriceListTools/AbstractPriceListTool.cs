@@ -36,8 +36,12 @@ namespace RehauSku.PriceListTools
 
             catch (Exception ex)
             {
+                System.Windows.Forms.MessageBox.Show
+                    (ex.Message,
+                    "Ошибка открытия шаблонного прайс-листа",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Information);
                 wb.Close();
-                throw ex;
             }
         }
 
@@ -52,9 +56,21 @@ namespace RehauSku.PriceListTools
             foreach (string file in files)
             {
                 Workbook wb = ExcelApp.Workbooks.Open(file);
-                PriceList priceList = new PriceList(wb);
-                sourcePriceLists.Add(priceList);
-                wb.Close();
+                try
+                {
+                    PriceList priceList = new PriceList(wb);
+                    sourcePriceLists.Add(priceList);
+                    wb.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show
+                        (ex.Message,
+                        "Ошибка открытия исходного прайс-листа",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Information);
+                    wb.Close();
+                }
             }
             ExcelApp.ScreenUpdating = true;
         }
