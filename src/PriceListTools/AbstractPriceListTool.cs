@@ -8,13 +8,13 @@ namespace RehauSku.PriceListTools
     internal abstract class AbstractPriceListTool
     {
         protected private Application ExcelApp;
-        protected private PriceList NewPriceList;
-        protected private List<PriceList> sourcePriceLists;
+        protected private SourceFile NewPriceList;
+        protected private List<SourceFile> sourcePriceLists;
 
         public AbstractPriceListTool()
         {
             ExcelApp = (Application)ExcelDnaUtil.Application;
-            sourcePriceLists = new List<PriceList>();
+            sourcePriceLists = new List<SourceFile>();
         }
 
         protected private void FilterByAmount()
@@ -31,7 +31,7 @@ namespace RehauSku.PriceListTools
 
             try
             {
-                NewPriceList = new PriceList(wb);
+                NewPriceList = new SourceFile(wb);
             }
 
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace RehauSku.PriceListTools
                 Workbook wb = ExcelApp.Workbooks.Open(file);
                 try
                 {
-                    PriceList priceList = new PriceList(wb);
+                    SourceFile priceList = new SourceFile(wb);
                     sourcePriceLists.Add(priceList);
                     wb.Close();
                 }
