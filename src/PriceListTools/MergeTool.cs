@@ -10,7 +10,12 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             ExcelApp.ScreenUpdating = false;
-            FillAmountColumn(SourceFiles.Select(x => x.SkuAmount).ToArray());
+
+            foreach (Source source in SourceFiles)
+            {
+                FillColumn(source.SkuAmount, TargetFile.amountCell.Column);
+            }
+
             FilterByAmount();
             ExcelApp.ScreenUpdating = true;
 

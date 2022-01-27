@@ -24,7 +24,7 @@ namespace RehauSku.PriceListTools
         {
             ExcelApp.ScreenUpdating = false;
             GetSelected();
-            FillAmountColumn(new [] {SkuAmount});
+            FillColumn(SkuAmount, TargetFile.amountCell.Column);
             FilterByAmount();
             ExcelApp.ScreenUpdating = true;
 
@@ -67,12 +67,18 @@ namespace RehauSku.PriceListTools
                 }
 
                 if (sku == null || amount == null)
+                {
                     continue;
+                }
 
                 if (SkuAmount.ContainsKey(sku))
+                {
                     SkuAmount[sku] += amount.Value;
+                }
                 else
+                {
                     SkuAmount.Add(sku, amount.Value);
+                }
             }
         }
     }

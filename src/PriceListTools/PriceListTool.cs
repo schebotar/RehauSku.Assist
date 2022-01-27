@@ -31,37 +31,37 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillAmountColumn(Dictionary<string, double>[] dictionaries)
+        protected private void FillColumn(Dictionary<string, double> dictionary, int column)
         {
-            foreach (var dictionary in dictionaries)
+            foreach (var kvp in dictionary)
             {
-                if (dictionary.Count == 0)
-                    continue;
+                Range cell = TargetFile.Sheet.Columns[TargetFile.skuCell.Column].Find(kvp.Key);
 
-                foreach (var kvp in dictionary)
+                if (cell == null)
                 {
-                    Range cell = TargetFile.Sheet.Columns[TargetFile.skuCell.Column].Find(kvp.Key);
+                    System.Windows.Forms.MessageBox.Show
+                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                        "Отсутствует позиция в конечной таблице заказов",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Information);
+                }
 
-                    if (cell == null)
+                else
+                {
+                    Range sumCell = TargetFile.Sheet.Cells[cell.Row, column];
+
+                    if (sumCell.Value2 == null)
                     {
-                        System.Windows.Forms.MessageBox.Show
-                            ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                            "Отсутствует позиция в конечной таблице заказов",
-                            System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Information);
+                        sumCell.Value2 = kvp.Value;
                     }
 
                     else
                     {
-                        Range sumCell = TargetFile.Sheet.Cells[cell.Row, TargetFile.amountCell.Column];
-
-                        if (sumCell.Value2 == null)
-                            sumCell.Value2 = kvp.Value;
-                        else
-                            sumCell.Value2 += kvp.Value;
+                        sumCell.Value2 += kvp.Value;
                     }
                 }
             }
+
         }
 
         protected private void FilterByAmount()
