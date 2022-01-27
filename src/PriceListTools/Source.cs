@@ -1,17 +1,17 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace RehauSku.PriceListTools
 {
-    internal class SourceFile : PriceList
+    internal class Source : PriceList
     {
         public Dictionary<string, double> SkuAmount { get; private set; }
 
-        public SourceFile(Workbook workbook)
+        public Source(Workbook workbook)
         {
             Sheet = workbook.ActiveSheet;
-            Name = workbook.Name + '\n' + Sheet.Name;
+            Name = workbook.Name;
 
             amountCell = Sheet.Cells.Find(amountHeader);
             skuCell = Sheet.Cells.Find(skuHeader);
@@ -46,28 +46,6 @@ namespace RehauSku.PriceListTools
                         SkuAmount.Add(sku.ToString(), (double)amount);
                 }
             }
-        }
-    }
-
-    internal class NewFile : PriceList
-    {
-        public Dictionary<PriceListPosition, Range> Map { get; private set; }
-
-        public void CreateMap()
-        {
-            Range amountCell = Sheet.Cells.Find(amountHeader);
-            Range skuCell = Sheet.Cells.Find(skuHeader);
-            Range groupCell = Sheet.Cells.Find(groupHeader);
-
-            //headerRowNumber = amountCell.Row;
-            //skuColumnNumber = skuCell.Column;
-            //amountColumnNumber = amountCell.Column;
-            //groupColumnNumber = groupCell.Column;
-
-            //for (int row = headerRowNumber + 1; row < skuCell.Rows.Count; row++)
-            //{
-            //    string sku =
-            //}
         }
     }
 }

@@ -42,10 +42,10 @@ namespace RehauSku.Ribbon
                 string[] files = Dialog.GetMultiplyFiles();
                 if (files.Length != 0)
                 {
-                    mergeTool.GetSource(files);
+                    mergeTool.GetSourceLists(files);
                     string exportFile = RegistryUtil.PriceListPath;
                     mergeTool.OpenNewPrice(exportFile);
-                    mergeTool.FillPriceList();
+                    mergeTool.FillTarget();
                 }
             }
         }
@@ -57,10 +57,10 @@ namespace RehauSku.Ribbon
                 string[] files = Dialog.GetMultiplyFiles();
                 if (files.Length != 0)
                 {
-                    combineTool.GetSource(files);
+                    combineTool.GetSourceLists(files);
                     string exportFile = RegistryUtil.PriceListPath;
                     combineTool.OpenNewPrice(exportFile);
-                    combineTool.FillPriceList();
+                    combineTool.FillTarget();
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace RehauSku.Ribbon
                     exportTool.GetSource();
                     string exportFile = RegistryUtil.PriceListPath;
                     exportTool.OpenNewPrice(exportFile);
-                    exportTool.FillPriceList();
+                    exportTool.FillTarget();
                 }
             }
             catch (Exception ex)

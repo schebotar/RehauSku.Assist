@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace RehauSku.PriceListTools
 {
-    internal class ExportTool : AbstractPriceListTool, IDisposable
+    internal class ExportTool : PriceListTool
     {
         private Dictionary<string, double> SkuAmount { get; set; }
         private Range Selection;
@@ -25,7 +25,7 @@ namespace RehauSku.PriceListTools
             else throw new Exception("Неверный диапазон");
         }
 
-        public override void GetSource(string[] files)
+        public override void GetSourceLists(string[] files)
             => GetSource();
 
         private void FillSkuAmountDict()
@@ -73,7 +73,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public override void FillPriceList()
+        public override void FillTarget()
         {
             if (SkuAmount.Count < 1) 
                 return;
@@ -113,11 +113,6 @@ namespace RehauSku.PriceListTools
 
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";            
             Forms.Dialog.SaveWorkbookAs();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
         }
     }
 }

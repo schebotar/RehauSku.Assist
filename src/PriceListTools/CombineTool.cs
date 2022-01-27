@@ -3,9 +3,9 @@ using System;
 
 namespace RehauSku.PriceListTools
 {
-    internal class CombineTool : AbstractPriceListTool, IDisposable
+    internal class CombineTool : PriceListTool
     {
-        public override void FillPriceList()
+        public override void FillTarget()
         {
             int exportedValues = 0;
 
@@ -51,11 +51,6 @@ namespace RehauSku.PriceListTools
             FilterByAmount();
             AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {sourcePriceLists.Count} файлов";
             Forms.Dialog.SaveWorkbookAs();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
         }
     }
 }
