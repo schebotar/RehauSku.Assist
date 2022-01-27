@@ -19,7 +19,7 @@ namespace RehauSku.PriceListTools
 
             if (amountCell == null || skuCell == null || groupCell == null)
             {
-                throw new ArgumentException($"Лист { Name } не распознан");
+                throw new ArgumentException($"Файл {Name} не распознан");
             }
 
             CreateAmountDict();

@@ -1,5 +1,4 @@
-﻿using ExcelDna.Integration;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 using RehauSku.Assistant;
 using System;
 using System.Collections.Generic;
@@ -11,24 +10,28 @@ namespace RehauSku.PriceListTools
         private Dictionary<string, double> SkuAmount { get; set; }
         private Range Selection;
 
-        public ExportTool()
+        public void TryGetSelection()
         {
-            ExcelApp = (Application)ExcelDnaUtil.Application;
             Selection = ExcelApp.Selection;
+
+            if (Selection == null || Selection.Columns.Count != 2)
+            {
+                throw new Exception("Неверный диапазон");
+            }
         }
 
-        public override void GetSource()
+        public void FillTarget()
         {
-            if (Selection != null && Selection.Columns.Count == 2)
-                FillSkuAmountDict();
+            ExcelApp.ScreenUpdating = false;
+            GetSelected();
+            FillAmountColumn(new [] {SkuAmount});
+            FilterByAmount();
+            ExcelApp.ScreenUpdating = true;
 
-            else throw new Exception("Неверный диапазон");
+            Forms.Dialog.SaveWorkbookAs();
         }
 
-        public override void GetSourceLists(string[] files)
-            => GetSource();
-
-        private void FillSkuAmountDict()
+        private void GetSelected()
         {
             object[,] cells = Selection.Value2;
             SkuAmount = new Dictionary<string, double>();
@@ -71,48 +74,6 @@ namespace RehauSku.PriceListTools
                 else
                     SkuAmount.Add(sku, amount.Value);
             }
-        }
-
-        public override void FillTarget()
-        {
-            if (SkuAmount.Count < 1) 
-                return;
-
-            int exportedValues = 0;
-
-            ExcelApp.ScreenUpdating = false;
-
-            foreach (var kvp in SkuAmount)
-            {
-                Range cell = NewPriceList.Sheet.Columns[NewPriceList.skuCell.Column].Find(kvp.Key);
-
-                if (cell == null)
-                {
-                    System.Windows.Forms.MessageBox.Show
-                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                        "Отсутствует позиция в конечной таблице заказов",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Information);
-                }
-
-                else
-                {
-                    Range sumCell = NewPriceList.Sheet.Cells[cell.Row, NewPriceList.amountCell.Column];
-
-                    if (sumCell.Value2 == null)
-                        sumCell.Value2 = kvp.Value;
-                    else
-                        sumCell.Value2 += kvp.Value;
-
-                    exportedValues++;
-                }
-            }
-
-            FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
-
-            AddIn.Excel.StatusBar = $"Экспортировано {exportedValues} строк из {SkuAmount.Count}";            
-            Forms.Dialog.SaveWorkbookAs();
         }
     }
 }

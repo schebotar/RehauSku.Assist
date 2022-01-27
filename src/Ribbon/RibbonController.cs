@@ -4,6 +4,7 @@ using ExcelDna.Integration.CustomUI;
 using RehauSku.PriceListTools;
 using RehauSku.Forms;
 using System;
+using System.Collections.Generic;
 
 namespace RehauSku.Ribbon
 {
@@ -33,35 +34,29 @@ namespace RehauSku.Ribbon
     </customUI>";
         }
 
-        // <dropDown id = 'dd1' label = 'Drop dynamic' getItemCount = 'fncGetItemCountDrop' getItemLabel = 'fncGetItemLabelDrop' onAction = 'fncOnActionDrop'/>
-
         public void OnMergePressed(IRibbonControl control)
         {
-            using (MergeTool mergeTool = new MergeTool())
+            MergeTool mergeTool = new MergeTool();
+            string[] files = Dialog.GetMultiplyFiles();
+
+            if (files.Length != 0)
             {
-                string[] files = Dialog.GetMultiplyFiles();
-                if (files.Length != 0)
-                {
-                    mergeTool.GetSourceLists(files);
-                    string exportFile = RegistryUtil.PriceListPath;
-                    mergeTool.OpenNewPrice(exportFile);
-                    mergeTool.FillTarget();
-                }
+                mergeTool.SourceFiles = SourceUtil.GetSourceLists(files);
+                mergeTool.OpenNewPrice();
+                mergeTool.FillTarget();
             }
         }
 
         public void OnCombinePressed(IRibbonControl control)
         {
-            using (CombineTool combineTool = new CombineTool())
+            CombineTool combineTool = new CombineTool();
+            string[] files = Dialog.GetMultiplyFiles();
+
+            if (files.Length != 0)
             {
-                string[] files = Dialog.GetMultiplyFiles();
-                if (files.Length != 0)
-                {
-                    combineTool.GetSourceLists(files);
-                    string exportFile = RegistryUtil.PriceListPath;
-                    combineTool.OpenNewPrice(exportFile);
-                    combineTool.FillTarget();
-                }
+                combineTool.SourceFiles = SourceUtil.GetSourceLists(files);
+                combineTool.OpenNewPrice();
+                combineTool.FillTarget();
             }
         }
 
@@ -69,14 +64,12 @@ namespace RehauSku.Ribbon
         {
             try
             {
-                using (ExportTool exportTool = new ExportTool())
-                {
-                    exportTool.GetSource();
-                    string exportFile = RegistryUtil.PriceListPath;
-                    exportTool.OpenNewPrice(exportFile);
-                    exportTool.FillTarget();
-                }
+                ExportTool exportTool = new ExportTool();
+                exportTool.TryGetSelection();
+                exportTool.OpenNewPrice();
+                exportTool.FillTarget();
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message,
@@ -85,7 +78,6 @@ namespace RehauSku.Ribbon
                     MessageBoxIcon.Information);
                 return;
             }
-
         }
 
         public void OnSetPricePressed(IRibbonControl control)

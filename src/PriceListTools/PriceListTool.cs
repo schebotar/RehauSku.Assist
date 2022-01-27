@@ -5,25 +5,18 @@ using System.Collections.Generic;
 
 namespace RehauSku.PriceListTools
 {
-    internal abstract class PriceListTool : IDisposable
+    internal abstract class PriceListTool
     {
-        protected private Application ExcelApp;
-        protected private Target NewPriceList;
-        protected private List<Source> sourcePriceLists;
+        protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
+        protected private Target TargetFile;
 
-        public PriceListTool()
+        public void OpenNewPrice()
         {
-            ExcelApp = (Application)ExcelDnaUtil.Application;
-            sourcePriceLists = new List<Source>();
-        }
-
-        public void OpenNewPrice(string path)
-        {
-            Workbook wb = ExcelApp.Workbooks.Open(path);
+            Workbook wb = ExcelApp.Workbooks.Open(RegistryUtil.PriceListPath);
 
             try
             {
-                NewPriceList = new Target(wb);
+                TargetFile = new Target(wb);
             }
 
             catch (Exception ex)
@@ -34,60 +27,20 @@ namespace RehauSku.PriceListTools
                     System.Windows.Forms.MessageBoxButtons.OK,
                     System.Windows.Forms.MessageBoxIcon.Information);
                 wb.Close();
+                throw ex;
             }
         }
 
-        public virtual void GetSource()
+        protected private void FillAmountColumn(Dictionary<string, double>[] dictionaries)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual void GetSourceLists(string[] files)
-        {
-            ExcelApp.ScreenUpdating = false;
-            foreach (string file in files)
+            foreach (var dictionary in dictionaries)
             {
-                Workbook wb = ExcelApp.Workbooks.Open(file);
-                try
-                {
-                    Source priceList = new Source(wb);
-                    sourcePriceLists.Add(priceList);
-                    wb.Close();
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show
-                        (ex.Message,
-                        "Ошибка открытия исходного прайс-листа",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Information);
-                    wb.Close();
-                }
-            }
-            ExcelApp.ScreenUpdating = true;
-        }
-
-        public virtual void FillTarget()
-        {
-            ExcelApp.ScreenUpdating = false;
-            FillAmountColumn();
-            FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
-
-            Forms.Dialog.SaveWorkbookAs();
-        }
-
-        protected private void FillAmountColumn()
-        {
-            int exportedValues = 0;
-            foreach (var sheet in sourcePriceLists)
-            {
-                if (sheet.SkuAmount.Count == 0)
+                if (dictionary.Count == 0)
                     continue;
 
-                foreach (var kvp in sheet.SkuAmount)
+                foreach (var kvp in dictionary)
                 {
-                    Range cell = NewPriceList.Sheet.Columns[NewPriceList.skuCell.Column].Find(kvp.Key);
+                    Range cell = TargetFile.Sheet.Columns[TargetFile.skuCell.Column].Find(kvp.Key);
 
                     if (cell == null)
                     {
@@ -100,14 +53,12 @@ namespace RehauSku.PriceListTools
 
                     else
                     {
-                        Range sumCell = NewPriceList.Sheet.Cells[cell.Row, NewPriceList.amountCell.Column];
+                        Range sumCell = TargetFile.Sheet.Cells[cell.Row, TargetFile.amountCell.Column];
 
                         if (sumCell.Value2 == null)
                             sumCell.Value2 = kvp.Value;
                         else
                             sumCell.Value2 += kvp.Value;
-
-                        exportedValues++;
                     }
                 }
             }
@@ -115,15 +66,10 @@ namespace RehauSku.PriceListTools
 
         protected private void FilterByAmount()
         {
-            AutoFilter filter = NewPriceList.Sheet.AutoFilter;
+            AutoFilter filter = TargetFile.Sheet.AutoFilter;
 
-            filter.Range.AutoFilter(NewPriceList.amountCell.Column, "<>");
-            NewPriceList.Sheet.Range["A1"].Activate();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
+            filter.Range.AutoFilter(TargetFile.amountCell.Column, "<>");
+            TargetFile.Sheet.Range["A1"].Activate();
         }
     }
 }
