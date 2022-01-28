@@ -82,12 +82,14 @@ namespace RehauSku.PriceListTools
                 }
             }
 
-            string values = string.Join("\n", missing.Select(kvp => kvp.Key).ToArray());
-            System.Windows.Forms.MessageBox.Show
-                ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                "Отсутствует позиция в конечной таблице заказов",
-                System.Windows.Forms.MessageBoxButtons.OK,
-                System.Windows.Forms.MessageBoxIcon.Information);
+            if (missing.Count > 0)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                    "Отсутствует позиция в конечной таблице заказов",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Information);
+            }
         }
 
         protected private void FilterByAmount()
