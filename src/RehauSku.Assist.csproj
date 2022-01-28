@@ -122,10 +122,13 @@
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
     <Compile Include="PriceListTools\CombineTool.cs" />
-    <Compile Include="PriceListTools\AbstractPriceListTool.cs" />
+    <Compile Include="PriceListTools\ConvertTool.cs" />
+    <Compile Include="PriceListTools\Position.cs" />
+    <Compile Include="PriceListTools\PriceListTool.cs" />
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\PriceList.cs" />
-    <Compile Include="PriceListTools\PriceListSheet.cs" />
+    <Compile Include="PriceListTools\Source.cs" />
+    <Compile Include="PriceListTools\Target.cs" />
     <Compile Include="Ribbon\RibbonController.cs" />
     <Compile Include="Assistant\HttpClientUtil.cs" />
     <Compile Include="Assistant\StoreResponse.cs" />
