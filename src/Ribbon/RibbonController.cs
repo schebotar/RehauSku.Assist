@@ -20,7 +20,7 @@ namespace RehauSku.Ribbon
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
                 <button id='exportToPrice' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnExportPressed'/> 
-                <button id='convertPrice' label='Обновить прайс-лист' size='normal' imageMso='FileUpdate' onAction='OnConvertPressed'/> 
+                <button id='convertPrice' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnConvertPressed'/> 
                 <menu id='conjoinMenu' label='Объединить' imageMso='Copy'>
                     <button id='mergeFiles' label='Сложить' onAction='OnMergePressed'/>    
                     <button id='combineFiles' label='По колонкам' onAction='OnCombinePressed'/>   
