@@ -2,6 +2,8 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+using Application = Microsoft.Office.Interop.Excel.Application;
 
 namespace RehauSku.PriceListTools
 {
@@ -22,48 +24,70 @@ namespace RehauSku.PriceListTools
 
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show
+                MessageBox.Show
                     (ex.Message,
                     "Ошибка открытия шаблонного прайс-листа",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Information);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 wb.Close();
                 throw ex;
             }
         }
 
-        protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, params int[] columns)
+        protected private void FillColumnsWithDictionary(IEnumerable<KeyValuePair<Position, double>> dictionary, params int[] columns)
         {
             Missing = new List<KeyValuePair<Position, double>>();
 
-            foreach (var kvp in dictionary)
+            foreach (var positionAmount in dictionary)
             {
-                FillPosition(kvp, columns);
+                FillPositionAmountToColumns(positionAmount, columns);
+            }
+
+            if (Missing.Count > 0)
+            { 
+                DialogResult result = 
+                MessageBox.Show
+                    ($"{Missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath} Попробовать найти новый вариант?",
+                    "Отсутствует позиция в конечной таблице заказов",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information);
+
+                if (result == DialogResult.Yes)
+                {
+                    var lookUp = new List<KeyValuePair<Position, double>>(Missing);
+
+                    foreach (var missingPosition in lookUp)
+                    {
+                        TryFillVariantlessSkuToColumns(missingPosition, columns);
+                    }
+                }
             }
 
             if (Missing.Count > 0)
             {
-                System.Windows.Forms.MessageBox.Show
-                    ($"{Missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath} Попробовать найти новый вариант?",
+                FillMissing();
+                MessageBox.Show
+                    ($"{Missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}\n" +
+                    $"Под основной таблицей составлен список не найденных артикулов",
                     "Отсутствует позиция в конечной таблице заказов",
-                    System.Windows.Forms.MessageBoxButtons.YesNo,
-                    System.Windows.Forms.MessageBoxIcon.Information);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
         }
 
-        protected private void FillPosition(KeyValuePair<Position, double> kvp, int[] columns)
+        protected private void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, int[] columns)
         {
-            Range foundCell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
+            Range foundCell = TargetFile.skuCell.EntireColumn.Find(positionAmount.Key.Sku);
 
             if (foundCell == null)
             {
-                Missing.Add(kvp);
+                Missing.Add(positionAmount);
                 return;
             }
 
             string foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
 
-            while (foundCell != null && foundCellGroup != kvp.Key.Group)
+            while (foundCell != null && foundCellGroup != positionAmount.Key.Group)
             {
                 foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
                 foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
@@ -71,7 +95,7 @@ namespace RehauSku.PriceListTools
 
             if (foundCell == null)
             {
-                Missing.Add(kvp);
+                Missing.Add(positionAmount);
             }
 
             else
@@ -79,16 +103,84 @@ namespace RehauSku.PriceListTools
                 foreach (var column in columns)
                 {
                     Range sumCell = TargetFile.Sheet.Cells[foundCell.Row, column];
+
                     if (sumCell.Value2 == null)
                     {
-                        sumCell.Value2 = kvp.Value;
+                        sumCell.Value2 = positionAmount.Value;
                     }
 
                     else
                     {
-                        sumCell.Value2 += kvp.Value;
+                        sumCell.Value2 += positionAmount.Value;
                     }
                 }
+            }
+        }
+
+        protected private void TryFillVariantlessSkuToColumns(KeyValuePair<Position, double> positionAmount, int[] columns)
+        {
+            string sku = positionAmount.Key.Sku.Substring(1, 6);
+
+            Range foundCell = TargetFile.skuCell.EntireColumn.Find(sku);
+
+            if (foundCell == null)
+            {
+                return;
+            }
+
+            string foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
+
+            while (foundCell != null && foundCellGroup != positionAmount.Key.Group)
+            {
+                foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
+                foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
+            }
+
+            if (foundCell == null)
+            {
+                return;
+            }
+
+            foreach (var column in columns)
+            {
+                Range sumCell = TargetFile.Sheet.Cells[foundCell.Row, column];
+
+                if (sumCell.Value2 == null)
+                {
+                    sumCell.Value2 = positionAmount.Value;
+                }
+
+                else
+                {
+                    sumCell.Value2 += positionAmount.Value;
+                }
+            }
+
+            Missing.Remove(positionAmount);
+        }
+
+        protected private void FillMissing()
+        {
+            int startRow =
+                TargetFile.Sheet.AutoFilter.Range.Row + 
+                TargetFile.Sheet.AutoFilter.Range.Rows.Count + 5;
+
+            for (int i = 0; i < Missing.Count; i++)
+            {
+                Range group = TargetFile.Sheet.Cells[startRow + i, TargetFile.groupCell.Column];
+                Range sku = TargetFile.Sheet.Cells[startRow + i, TargetFile.skuCell.Column];
+                Range name = TargetFile.Sheet.Cells[startRow + i, TargetFile.nameCell.Column];
+                Range amount = TargetFile.Sheet.Cells[startRow + i, TargetFile.amountCell.Column];
+
+                group.Value2 = Missing[i].Key.Group;
+                sku.Value2 = Missing[i].Key.Sku;
+                name.Value2 = Missing[i].Key.Name;
+                amount.Value2 = Missing[i].Value;
+
+                group.ClearFormats();
+                sku.ClearFormats();
+                name.ClearFormats();
+                amount.ClearFormats();
             }
         }
 

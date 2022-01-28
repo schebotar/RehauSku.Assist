@@ -27,7 +27,7 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             ExcelApp.ScreenUpdating = false;            
-            FillColumn(Current.PositionAmount, TargetFile.amountCell.Column);
+            FillColumnsWithDictionary(Current.PositionAmount, TargetFile.amountCell.Column);
             FilterByAmount();
             ExcelApp.ScreenUpdating = true;
 

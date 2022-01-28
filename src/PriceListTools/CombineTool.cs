@@ -21,7 +21,7 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
-                FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                FillColumnsWithDictionary(source.PositionAmount, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
             }
 
             FilterByAmount();
