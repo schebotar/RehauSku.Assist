@@ -54,6 +54,7 @@ namespace RehauSku.PriceListTools
         protected private void FillPosition(KeyValuePair<Position, double> kvp, int[] columns)
         {
             Range foundCell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
+
             if (foundCell == null)
             {
                 Missing.Add(kvp);

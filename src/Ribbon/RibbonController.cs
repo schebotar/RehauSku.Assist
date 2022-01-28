@@ -42,7 +42,7 @@ namespace RehauSku.Ribbon
 
             if (files.Length != 0)
             {
-                mergeTool.SourceFiles = SourceUtil.GetSourceLists(files);
+                mergeTool.SourceFiles = Source.GetSourceLists(files);
                 mergeTool.OpenNewPrice();
                 mergeTool.FillTarget();
             }
@@ -55,7 +55,7 @@ namespace RehauSku.Ribbon
 
             if (files.Length != 0)
             {
-                combineTool.SourceFiles = SourceUtil.GetSourceLists(files);
+                combineTool.SourceFiles = Source.GetSourceLists(files);
                 combineTool.OpenNewPrice();
                 combineTool.FillTarget();
             }
