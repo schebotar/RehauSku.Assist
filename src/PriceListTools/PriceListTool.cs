@@ -35,7 +35,6 @@ namespace RehauSku.PriceListTools
         protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, params int[] columns)
         {
             Missing = new List<KeyValuePair<Position, double>>();
-            object[,] groupColumn = TargetFile.groupCell.EntireColumn.Value2;
 
             foreach (var kvp in dictionary)
             {

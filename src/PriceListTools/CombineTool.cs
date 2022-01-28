@@ -22,7 +22,6 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.WrapText = true;
 
                 FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
-                //FillColumn(source.PositionAmount, );
             }
 
             FilterByAmount();
