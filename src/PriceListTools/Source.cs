@@ -35,7 +35,7 @@ namespace RehauSku.PriceListTools
             object[,] amountColumn = amountCell.EntireColumn.Value2;
             object[,] skuColumn = skuCell.EntireColumn.Value2;
             object[,] nameColumn = nameCell.EntireColumn.Value2;
-            object[,] groupColumn = nameCell.EntireColumn.Value2;
+            object[,] groupColumn = groupCell.EntireColumn.Value2;
 
             for (int row = amountCell.Row + 1; row < amountColumn.GetLength(0); row++)
             {
@@ -58,20 +58,6 @@ namespace RehauSku.PriceListTools
                     }
                 }
             }
-        }
-    }
-
-    public class Position
-    {
-        public string SkuGroup { get; private set; }
-        public string Sku { get; private set; }
-        public string Name { get; private set; }
-
-        public Position(string group, string sku, string name)
-        {
-            SkuGroup = group;
-            Sku = sku;
-            Name = name;
         }
     }
 }

@@ -34,19 +34,27 @@ namespace RehauSku.PriceListTools
         protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, int column)
         {
             List<KeyValuePair<Position, double>> missing = new List<KeyValuePair<Position, double>>();
+            object[,] groupColumn = TargetFile.groupCell.EntireColumn.Value2;
 
             foreach (var kvp in dictionary)
             {
-                Range cell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
+                Range foundCell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
+                string foundCellGroup = groupColumn[foundCell.Row, 1].ToString();
 
-                if (cell == null)
+                while (foundCell != null && foundCellGroup != kvp.Key.Group)
+                {
+                    foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
+                    foundCellGroup = groupColumn[foundCell.Row, 1].ToString();
+                }
+
+                if (foundCell == null)
                 {
                     missing.Add(kvp);
                 }
 
                 else
                 {
-                    Range sumCell = TargetFile.Sheet.Cells[cell.Row, column];
+                    Range sumCell = TargetFile.Sheet.Cells[foundCell.Row, column];
 
                     if (sumCell.Value2 == null)
                     {
