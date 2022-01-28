@@ -27,7 +27,7 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             ExcelApp.ScreenUpdating = false;            
-            FillColumn(Current.SkuAmount, TargetFile.amountCell.Column);
+            FillColumn(Current.PositionAmount, TargetFile.amountCell.Column);
             FilterByAmount();
             ExcelApp.ScreenUpdating = true;
 

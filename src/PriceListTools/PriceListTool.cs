@@ -31,13 +31,13 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillColumn(IEnumerable<KeyValuePair<string, double>> dictionary, int column)
+        protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, int column)
         {
-            List<KeyValuePair<string, double>> missing = new List<KeyValuePair<string, double>>();
+            List<KeyValuePair<Position, double>> missing = new List<KeyValuePair<Position, double>>();
 
             foreach (var kvp in dictionary)
             {
-                Range cell = TargetFile.Sheet.Columns[TargetFile.skuCell.Column].Find(kvp.Key);
+                Range cell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
 
                 if (cell == null)
                 {

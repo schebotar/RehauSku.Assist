@@ -13,7 +13,7 @@ namespace RehauSku.PriceListTools
 
             foreach (Source source in SourceFiles)
             {
-                FillColumn(source.SkuAmount, TargetFile.amountCell.Column);
+                FillColumn(source.PositionAmount, TargetFile.amountCell.Column);
             }
 
             FilterByAmount();

@@ -6,7 +6,7 @@ namespace RehauSku.PriceListTools
 {
     internal class Source : PriceList
     {
-        public Dictionary<string, double> SkuAmount { get; private set; }
+        public Dictionary<Position, double> PositionAmount { get; private set; }
 
         public Source(Workbook workbook)
         {
@@ -16,36 +16,62 @@ namespace RehauSku.PriceListTools
             amountCell = Sheet.Cells.Find(amountHeader);
             skuCell = Sheet.Cells.Find(skuHeader);
             groupCell = Sheet.Cells.Find(groupHeader);
+            nameCell = Sheet.Cells.Find(nameHeader);
 
-            if (amountCell == null || skuCell == null || groupCell == null)
+            if (amountCell == null || skuCell == null || groupCell == null || nameCell == null)
             {
                 throw new ArgumentException($"Файл {Name} не распознан");
             }
 
-            CreateAmountDict();
+            CreatePositionsDict();
         }
 
-        private void CreateAmountDict()
+        private void CreatePositionsDict()
         {
-            SkuAmount = new Dictionary<string, double>();
+            PositionAmount = new Dictionary<Position, double>();
 
-            object[,] amountColumn = Sheet.Columns[amountCell.Column].Value2;
-            object[,] skuColumn = Sheet.Columns[skuCell.Column].Value2;
+            var aColumn = amountCell.EntireColumn;
+
+            object[,] amountColumn = amountCell.EntireColumn.Value2;
+            object[,] skuColumn = skuCell.EntireColumn.Value2;
+            object[,] nameColumn = nameCell.EntireColumn.Value2;
+            object[,] groupColumn = nameCell.EntireColumn.Value2;
 
             for (int row = amountCell.Row + 1; row < amountColumn.GetLength(0); row++)
             {
                 object amount = amountColumn[row, 1];
+                object group = groupColumn[row, 1];
+                object name = nameColumn[row, 1];
                 object sku = skuColumn[row, 1];
 
                 if (amount != null && (double)amount != 0)
                 {
-                    if (SkuAmount.ContainsKey(sku.ToString()))
-                        SkuAmount[sku.ToString()] += (double)amount;
+                    Position p = new Position(group.ToString(), sku.ToString(), name.ToString());
 
+                    if (PositionAmount.ContainsKey(p))
+                    {
+                        PositionAmount[p] += (double)amount;
+                    }
                     else
-                        SkuAmount.Add(sku.ToString(), (double)amount);
+                    {
+                        PositionAmount.Add(p, (double)amount);
+                    }
                 }
             }
+        }
+    }
+
+    public class Position
+    {
+        public string SkuGroup { get; private set; }
+        public string Sku { get; private set; }
+        public string Name { get; private set; }
+
+        public Position(string group, string sku, string name)
+        {
+            SkuGroup = group;
+            Sku = sku;
+            Name = name;
         }
     }
 }

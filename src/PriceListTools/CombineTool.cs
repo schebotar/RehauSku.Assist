@@ -20,8 +20,8 @@ namespace RehauSku.PriceListTools
 
                 TargetFile.Sheet.Cells[TargetFile.amountCell.Row, TargetFile.amountCell.Column - 1].Value2 = $"{source.Name}";
 
-                FillColumn(source.SkuAmount, TargetFile.amountCell.Column - 1);
-                FillColumn(source.SkuAmount, TargetFile.amountCell.Column);
+                FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1);
+                FillColumn(source.PositionAmount, TargetFile.amountCell.Column);
             }
 
             FilterByAmount();
