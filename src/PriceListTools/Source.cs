@@ -35,20 +35,16 @@ namespace RehauSku.PriceListTools
         {
             PositionAmount = new Dictionary<Position, double>();
 
-            object[,] amountColumn = amountCell.EntireColumn.Value2;
-            object[,] skuColumn = skuCell.EntireColumn.Value2;
-            object[,] nameColumn = nameCell.EntireColumn.Value2;
-            object[,] groupColumn = groupCell.EntireColumn.Value2;
-
-            for (int row = amountCell.Row + 1; row < amountColumn.GetLength(0); row++)
+            for (int row = amountCell.Row + 1; row < Sheet.AutoFilter.Range.Rows.Count; row++)
             {
-                object amount = amountColumn[row, 1];
-                object group = groupColumn[row, 1];
-                object name = nameColumn[row, 1];
-                object sku = skuColumn[row, 1];
+                object amount = Sheet.Cells[row, amountCell.Column].Value2;
 
                 if (amount != null && (double)amount != 0)
                 {
+                    object group = Sheet.Cells[row, groupCell.Column].Value2;
+                    object name = Sheet.Cells[row, nameCell.Column].Value2;
+                    object sku = Sheet.Cells[row, skuCell.Column].Value2;
+
                     Position p = new Position(group.ToString(), sku.ToString(), name.ToString());
 
                     if (PositionAmount.ContainsKey(p))
