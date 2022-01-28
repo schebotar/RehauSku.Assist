@@ -9,6 +9,7 @@ namespace RehauSku.PriceListTools
     {
         protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
         protected private Target TargetFile;
+        protected private List<KeyValuePair<Position, double>> Missing;
 
         public void OpenNewPrice()
         {
@@ -33,44 +34,44 @@ namespace RehauSku.PriceListTools
 
         protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, params int[] columns)
         {
-            List<KeyValuePair<Position, double>> missing = new List<KeyValuePair<Position, double>>();
+            Missing = new List<KeyValuePair<Position, double>>();
             object[,] groupColumn = TargetFile.groupCell.EntireColumn.Value2;
 
             foreach (var kvp in dictionary)
             {
-                FillPosition(kvp, columns, ref missing, ref groupColumn);
+                FillPosition(kvp, columns);
             }
 
-            if (missing.Count > 0)
+            if (Missing.Count > 0)
             {
                 System.Windows.Forms.MessageBox.Show
-                    ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath} Попробовать найти новый вариант?",
+                    ($"{Missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath} Попробовать найти новый вариант?",
                     "Отсутствует позиция в конечной таблице заказов",
                     System.Windows.Forms.MessageBoxButtons.YesNo,
                     System.Windows.Forms.MessageBoxIcon.Information);
             }
         }
 
-        protected private void FillPosition(KeyValuePair<Position, double> kvp, int[] columns, ref List<KeyValuePair<Position, double>> missing, ref object[,] groupColumn)
+        protected private void FillPosition(KeyValuePair<Position, double> kvp, int[] columns)
         {
             Range foundCell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
             if (foundCell == null)
             {
-                missing.Add(kvp);
+                Missing.Add(kvp);
                 return;
             }
 
-            string foundCellGroup = groupColumn[foundCell.Row, 1].ToString();
+            string foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
 
             while (foundCell != null && foundCellGroup != kvp.Key.Group)
             {
                 foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
-                foundCellGroup = groupColumn[foundCell.Row, 1].ToString();
+                foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
             }
 
             if (foundCell == null)
             {
-                missing.Add(kvp);
+                Missing.Add(kvp);
             }
 
             else
