@@ -187,8 +187,9 @@ namespace RehauSku.PriceListTools
         protected private void FilterByAmount()
         {
             AutoFilter filter = TargetFile.Sheet.AutoFilter;
+            int startColumn = filter.Range.Column;
 
-            filter.Range.AutoFilter(TargetFile.amountCell.Column, "<>");
+            filter.Range.AutoFilter(TargetFile.amountCell.Column - startColumn + 1, "<>");
             TargetFile.Sheet.Range["A1"].Activate();
         }
     }
