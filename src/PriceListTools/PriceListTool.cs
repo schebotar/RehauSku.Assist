@@ -31,7 +31,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, int column)
+        protected private void FillColumn(IEnumerable<KeyValuePair<Position, double>> dictionary, params int[] columns)
         {
             List<KeyValuePair<Position, double>> missing = new List<KeyValuePair<Position, double>>();
             object[,] groupColumn = TargetFile.groupCell.EntireColumn.Value2;
@@ -60,16 +60,18 @@ namespace RehauSku.PriceListTools
 
                 else
                 {
-                    Range sumCell = TargetFile.Sheet.Cells[foundCell.Row, column];
-
-                    if (sumCell.Value2 == null)
+                    foreach (var column in columns)
                     {
-                        sumCell.Value2 = kvp.Value;
-                    }
+                        Range sumCell = TargetFile.Sheet.Cells[foundCell.Row, column];
+                        if (sumCell.Value2 == null)
+                        {
+                            sumCell.Value2 = kvp.Value;
+                        }
 
-                    else
-                    {
-                        sumCell.Value2 += kvp.Value;
+                        else
+                        {
+                            sumCell.Value2 += kvp.Value;
+                        }
                     }
                 }
             }

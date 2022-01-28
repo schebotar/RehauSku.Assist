@@ -1,6 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
@@ -22,8 +21,8 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
-                FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1);
-                FillColumn(source.PositionAmount, TargetFile.amountCell.Column);
+                FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                //FillColumn(source.PositionAmount, );
             }
 
             FilterByAmount();
