@@ -39,6 +39,12 @@ namespace RehauSku.PriceListTools
             foreach (var kvp in dictionary)
             {
                 Range foundCell = TargetFile.skuCell.EntireColumn.Find(kvp.Key.Sku);
+                if (foundCell == null)
+                {
+                    missing.Add(kvp);
+                    continue;
+                }
+
                 string foundCellGroup = groupColumn[foundCell.Row, 1].ToString();
 
                 while (foundCell != null && foundCellGroup != kvp.Key.Group)
