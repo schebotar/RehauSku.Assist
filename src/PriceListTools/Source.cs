@@ -10,6 +10,11 @@ namespace RehauSku.PriceListTools
 
         public Source(Workbook workbook)
         {
+            if (workbook == null)
+            {
+                throw new ArgumentException($"Нет рабочего файла");
+            }
+
             Sheet = workbook.ActiveSheet;
             Name = workbook.Name;
 
