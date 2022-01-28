@@ -128,7 +128,6 @@
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\PriceList.cs" />
     <Compile Include="PriceListTools\Source.cs" />
-    <Compile Include="PriceListTools\SourceUtil.cs" />
     <Compile Include="PriceListTools\Target.cs" />
     <Compile Include="Ribbon\RibbonController.cs" />
     <Compile Include="Assistant\HttpClientUtil.cs" />
