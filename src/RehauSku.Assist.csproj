@@ -122,6 +122,7 @@
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
     <Compile Include="PriceListTools\CombineTool.cs" />
+    <Compile Include="PriceListTools\ConvertTool.cs" />
     <Compile Include="PriceListTools\PriceListTool.cs" />
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\PriceList.cs" />

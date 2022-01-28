@@ -1,4 +1,6 @@
-﻿namespace RehauSku.PriceListTools
+﻿using System;
+
+namespace RehauSku.PriceListTools
 {
     internal class ConvertTool : PriceListTool
     {
@@ -6,7 +8,20 @@
 
         public void GetCurrent()
         {
-            Current = new Source(ExcelApp.ActiveWorkbook);
+            try
+            {
+                Current = new Source(ExcelApp.ActiveWorkbook);
+            }
+
+            catch (Exception exception)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    (exception.Message,
+                    "Ошибка распознавания",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Information);
+                throw exception;
+            }
         }
 
         public void FillTarget()
