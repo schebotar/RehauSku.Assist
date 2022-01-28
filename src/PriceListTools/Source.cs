@@ -35,8 +35,6 @@ namespace RehauSku.PriceListTools
         {
             PositionAmount = new Dictionary<Position, double>();
 
-            var aColumn = amountCell.EntireColumn;
-
             object[,] amountColumn = amountCell.EntireColumn.Value2;
             object[,] skuColumn = skuCell.EntireColumn.Value2;
             object[,] nameColumn = nameCell.EntireColumn.Value2;
