@@ -63,9 +63,9 @@ namespace RehauSku.PriceListTools
             if (missing.Count > 0)
             {
                 System.Windows.Forms.MessageBox.Show
-                    ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                    ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath} Попробовать найти новый вариант?",
                     "Отсутствует позиция в конечной таблице заказов",
-                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
                     System.Windows.Forms.MessageBoxIcon.Information);
             }
         }
