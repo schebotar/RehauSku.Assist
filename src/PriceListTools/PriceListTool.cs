@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
@@ -33,17 +34,15 @@ namespace RehauSku.PriceListTools
 
         protected private void FillColumn(Dictionary<string, double> dictionary, int column)
         {
+            List<KeyValuePair<string, double>> missing = new List<KeyValuePair<string, double>>();
+
             foreach (var kvp in dictionary)
             {
                 Range cell = TargetFile.Sheet.Columns[TargetFile.skuCell.Column].Find(kvp.Key);
 
                 if (cell == null)
                 {
-                    System.Windows.Forms.MessageBox.Show
-                        ($"Артикул {kvp.Key} отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
-                        "Отсутствует позиция в конечной таблице заказов",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Information);
+                    missing.Add(kvp);
                 }
 
                 else
@@ -62,6 +61,12 @@ namespace RehauSku.PriceListTools
                 }
             }
 
+            string values = string.Join("\n", missing.Select(kvp => kvp.Key).ToArray());
+            System.Windows.Forms.MessageBox.Show
+                ($"{missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}",
+                "Отсутствует позиция в конечной таблице заказов",
+                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxIcon.Information);
         }
 
         protected private void FilterByAmount()
