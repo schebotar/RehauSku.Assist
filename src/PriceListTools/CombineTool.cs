@@ -18,7 +18,9 @@ namespace RehauSku.PriceListTools
                     .EntireColumn
                     .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
 
-                TargetFile.Sheet.Cells[TargetFile.amountCell.Row, TargetFile.amountCell.Column - 1].Value2 = $"{source.Name}";
+                Range newColumnHeader = TargetFile.Sheet.Cells[TargetFile.amountCell.Row, TargetFile.amountCell.Column - 1];
+                newColumnHeader.Value2 = $"{source.Name}";
+                newColumnHeader.WrapText = true;
 
                 FillColumn(source.PositionAmount, TargetFile.amountCell.Column - 1);
                 FillColumn(source.PositionAmount, TargetFile.amountCell.Column);
