@@ -31,7 +31,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillColumn(Dictionary<string, double> dictionary, int column)
+        protected private void FillColumn(IEnumerable<KeyValuePair<string, double>> dictionary, int column)
         {
             List<KeyValuePair<string, double>> missing = new List<KeyValuePair<string, double>>();
 
