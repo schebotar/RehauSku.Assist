@@ -65,7 +65,7 @@ namespace RehauSku.PriceListTools
 
             if (Missing.Count > 0)
             {
-                FillMissing();
+                FillMissing(columns);
                 MessageBox.Show
                     ($"{Missing.Count} артикулов отсутствует в таблице заказов {RegistryUtil.PriceListPath}\n" +
                     $"Под основной таблицей составлен список не найденных артикулов",
@@ -159,7 +159,7 @@ namespace RehauSku.PriceListTools
             Missing.Remove(positionAmount);
         }
 
-        protected private void FillMissing()
+        protected private void FillMissing(int[] columns)
         {
             int startRow =
                 TargetFile.Sheet.AutoFilter.Range.Row + 
@@ -170,17 +170,21 @@ namespace RehauSku.PriceListTools
                 Range group = TargetFile.Sheet.Cells[startRow + i, TargetFile.groupCell.Column];
                 Range sku = TargetFile.Sheet.Cells[startRow + i, TargetFile.skuCell.Column];
                 Range name = TargetFile.Sheet.Cells[startRow + i, TargetFile.nameCell.Column];
-                Range amount = TargetFile.Sheet.Cells[startRow + i, TargetFile.amountCell.Column];
 
                 group.Value2 = Missing[i].Key.Group;
                 sku.Value2 = Missing[i].Key.Sku;
                 name.Value2 = Missing[i].Key.Name;
-                amount.Value2 = Missing[i].Value;
 
                 group.ClearFormats();
                 sku.ClearFormats();
                 name.ClearFormats();
-                amount.ClearFormats();
+
+                foreach (int column in columns)
+                {
+                    Range amount = TargetFile.Sheet.Cells[startRow + i, column];
+                    amount.Value2 = Missing[i].Value;
+                    amount.ClearFormats();
+                }
             }
         }
 
