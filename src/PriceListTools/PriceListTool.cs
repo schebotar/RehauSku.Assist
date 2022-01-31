@@ -89,6 +89,8 @@ namespace RehauSku.PriceListTools
 
             while (foundCell != null && foundCellGroup != positionAmount.Key.Group)
             {
+                if (positionAmount.Key.Group == null) break;
+                
                 foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
                 foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
             }
@@ -132,6 +134,8 @@ namespace RehauSku.PriceListTools
 
             while (foundCell != null && foundCellGroup != positionAmount.Key.Group)
             {
+                if (positionAmount.Key.Group == null) break;
+
                 foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
                 foundCellGroup = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
             }
