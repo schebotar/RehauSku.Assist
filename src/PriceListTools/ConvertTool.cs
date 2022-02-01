@@ -26,10 +26,10 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
-            ExcelApp.ScreenUpdating = false;            
-            FillColumnsWithDictionary(Current.PositionAmount, TargetFile.amountCell.Column);
+            foreach (var kvp in Current.PositionAmount)
+                FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+
             FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
 
             Forms.Dialog.SaveWorkbookAs();
         }

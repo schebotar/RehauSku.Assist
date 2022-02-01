@@ -19,21 +19,24 @@ namespace RehauSku.PriceListTools
                 throw new Exception("Неверный диапазон");
             }
         }
+
         public void FillTarget()
         {
-            ExcelApp.ScreenUpdating = false;
             GetSelected();
-            FillColumnsWithDictionary(PositionAmount, TargetFile.amountCell.Column);
+
+            foreach (var kvp in PositionAmount)
+            {
+                FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+            }
+
             FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
 
             Forms.Dialog.SaveWorkbookAs();
         }
 
         private void GetSelected()
         {
-            object[,] cells = Selection.Value2;
-            Dictionary<string, double>  SkuAmount = new Dictionary<string, double>();
+            object[,] cells = Selection.Value2;            
             PositionAmount = new Dictionary<Position, double>();
 
             int rowsCount = Selection.Rows.Count;
@@ -72,20 +75,17 @@ namespace RehauSku.PriceListTools
                     continue;
                 }
 
-                if (SkuAmount.ContainsKey(sku))
+                Position position = new Position(null, sku, null);
+
+                if (PositionAmount.ContainsKey(position))
                 {
-                    SkuAmount[sku] += amount.Value;
+                    PositionAmount[position] += amount.Value;
                 }
 
                 else
                 {
-                    SkuAmount.Add(sku, amount.Value);
+                    PositionAmount.Add(position, amount.Value);
                 }
-            }
-
-            foreach (var kvp in SkuAmount)
-            {
-                PositionAmount.Add(new Position(null, kvp.Key, null), kvp.Value);
             }
         }
     }

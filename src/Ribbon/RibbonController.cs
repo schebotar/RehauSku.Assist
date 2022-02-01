@@ -1,10 +1,9 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using ExcelDna.Integration.CustomUI;
-using RehauSku.PriceListTools;
+﻿using ExcelDna.Integration.CustomUI;
 using RehauSku.Forms;
+using RehauSku.PriceListTools;
 using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace RehauSku.Ribbon
 {

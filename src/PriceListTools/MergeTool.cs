@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
@@ -9,15 +8,13 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
-            ExcelApp.ScreenUpdating = false;
-
             foreach (Source source in SourceFiles)
             {
-                FillColumnsWithDictionary(source.PositionAmount, TargetFile.amountCell.Column);
+                foreach (var kvp in source.PositionAmount)
+                    FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
             }
 
             FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
 
             Forms.Dialog.SaveWorkbookAs();
         }

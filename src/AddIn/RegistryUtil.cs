@@ -1,8 +1,8 @@
 ﻿using Microsoft.Win32;
-using System.IO;
 using RehauSku.Forms;
+using System;
+using System.IO;
 using System.Windows.Forms;
-using ExcelDna.Integration;
 
 namespace RehauSku
 {
@@ -24,22 +24,27 @@ namespace RehauSku
             RootKey.Close();            
         }
 
-        public static bool IsPriceListPathEmpty()
-        {
-            return string.IsNullOrEmpty(priceListPath);
-        }
-
         public static string PriceListPath
         {
             get
             {
-                if (IsPriceListPathEmpty() || !File.Exists(priceListPath))
+                if (string.IsNullOrEmpty(priceListPath) || !File.Exists(priceListPath))
                 {
-                    //MessageBox.Show("Прайс-лист отсутствует или неверный файл прайс-листа", "Укажите файл прайс-листа", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    string fileName = Dialog.GetFilePath();
-                    priceListPath = fileName;
-                    RootKey.SetValue("PriceListPath", fileName);
-                    return priceListPath;
+                    DialogResult result = MessageBox.Show("Прайс-лист отсутствует или неверный файл шаблона прайс-листа. " +
+                        "Укажите файл шаблона прайс-листа.",
+                        "Нет файла шаблона",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.OK)
+                    {
+                        string fileName = Dialog.GetFilePath();
+                        priceListPath = fileName;
+                        RootKey.SetValue("PriceListPath", fileName);
+                        return priceListPath;
+                    }
+
+                    else
+                        throw new Exception("Нет файла шаблона");
                 }
 
                 else
