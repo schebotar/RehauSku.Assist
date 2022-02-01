@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
@@ -19,12 +20,15 @@ namespace RehauSku.PriceListTools
             Sheet = workbook.ActiveSheet;
             Name = workbook.Name;
 
-            amountCell = Sheet.Cells.Find(amountHeader);
-            skuCell = Sheet.Cells.Find(skuHeader);
-            groupCell = Sheet.Cells.Find(groupHeader);
-            nameCell = Sheet.Cells.Find(nameHeader);
+            Range[] cells = new []
+            {
+                amountCell = Sheet.Cells.Find(amountHeader),
+                skuCell = Sheet.Cells.Find(skuHeader),
+                groupCell = Sheet.Cells.Find(groupHeader),
+                nameCell = Sheet.Cells.Find(nameHeader)
+            };
 
-            if (amountCell == null || skuCell == null || groupCell == null || nameCell == null)
+            if (cells.Any(x => x == null)) 
             {
                 throw new ArgumentException($"Файл {Name} не распознан");
             }
@@ -38,9 +42,9 @@ namespace RehauSku.PriceListTools
 
             List<Source> sourceFiles = new List<Source>();
 
-            ExcelApp.ScreenUpdating = false;
             foreach (string file in files)
             {
+                ExcelApp.ScreenUpdating = false;
                 Workbook wb = ExcelApp.Workbooks.Open(file);
                 try
                 {
@@ -57,8 +61,8 @@ namespace RehauSku.PriceListTools
                         System.Windows.Forms.MessageBoxIcon.Information);
                     wb.Close();
                 }
+                ExcelApp.ScreenUpdating = true;
             }
-            ExcelApp.ScreenUpdating = true;
 
             return sourceFiles;
         }
@@ -67,7 +71,7 @@ namespace RehauSku.PriceListTools
         {
             PositionAmount = new Dictionary<Position, double>();
 
-            for (int row = amountCell.Row + 1; row < Sheet.AutoFilter.Range.Rows.Count; row++)
+            for (int row = amountCell.Row + 1; row <= Sheet.Cells[Sheet.Rows.Count, amountCell.Column].End[XlDirection.xlUp].Row; row++)
             {
                 object amount = Sheet.Cells[row, amountCell.Column].Value2;
 
@@ -83,6 +87,7 @@ namespace RehauSku.PriceListTools
                     {
                         PositionAmount[p] += (double)amount;
                     }
+
                     else
                     {
                         PositionAmount.Add(p, (double)amount);

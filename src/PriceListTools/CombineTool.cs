@@ -9,8 +9,6 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
-            ExcelApp.ScreenUpdating = false;
-
             foreach (Source source in SourceFiles)
             {
                 TargetFile.Sheet.Columns[TargetFile.amountCell.Column]
@@ -21,11 +19,11 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
-                FillColumnsWithDictionary(source.PositionAmount, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                foreach(var kvp in source.PositionAmount)
+                    FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
             }
 
             FilterByAmount();
-            ExcelApp.ScreenUpdating = true;
 
             Forms.Dialog.SaveWorkbookAs();
         }
