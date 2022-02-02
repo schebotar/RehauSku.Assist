@@ -5,13 +5,13 @@ namespace RehauSku.PriceListTools
 {
     internal class ConvertTool : AbstractTool
     {
-        private Source Current;
+        private SourcePriceList Current;
 
         public void GetCurrent()
         {
             try
             {
-                Current = new Source(ExcelApp.ActiveWorkbook);
+                Current = new SourcePriceList(ExcelApp.ActiveWorkbook);
             }
 
             catch (Exception exception)

@@ -40,7 +40,7 @@ namespace RehauSku.Interface
 
             if (files.Length != 0)
             {
-                mergeTool.SourceFiles = Source.GetSourceLists(files);
+                mergeTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 mergeTool.OpenNewPrice();
                 mergeTool.FillTarget();
             }
@@ -53,7 +53,7 @@ namespace RehauSku.Interface
 
             if (files.Length != 0)
             {
-                combineTool.SourceFiles = Source.GetSourceLists(files);
+                combineTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 combineTool.OpenNewPrice();
                 combineTool.FillTarget();
             }

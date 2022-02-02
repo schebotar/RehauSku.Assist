@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    internal class Target : AbstractPriceList
+    internal class TargetPriceList : AbstractPriceList
     {
         private const string oldSkuHeader = "Прежний материал";
         public Range oldSkuCell { get; private set; }
 
-        public Target(Workbook workbook)
+        public TargetPriceList(Workbook workbook)
         {
             Sheet = workbook.ActiveSheet;
             Name = workbook.FullName;

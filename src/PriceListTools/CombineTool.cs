@@ -7,13 +7,13 @@ namespace RehauSku.PriceListTools
 {
     internal class CombineTool : AbstractTool
     {
-        public List<Source> SourceFiles;
+        public List<SourcePriceList> SourceFiles;
 
         public void FillTarget()
         {
             ProgressBar bar = new ProgressBar(SourceFiles.Sum(file => file.PositionAmount.Count));
 
-            foreach (Source source in SourceFiles)
+            foreach (SourcePriceList source in SourceFiles)
             {
                 TargetFile.Sheet.Columns[TargetFile.amountCell.Column]
                     .EntireColumn

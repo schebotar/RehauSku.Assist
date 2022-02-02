@@ -10,7 +10,7 @@ namespace RehauSku.PriceListTools
     internal abstract class AbstractTool
     {
         protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
-        protected private Target TargetFile;
+        protected private TargetPriceList TargetFile;
 
         public void OpenNewPrice()
         {
@@ -18,7 +18,7 @@ namespace RehauSku.PriceListTools
 
             try
             {
-                TargetFile = new Target(wb);
+                TargetFile = new TargetPriceList(wb);
             }
 
             catch (Exception ex)

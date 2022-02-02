@@ -7,11 +7,11 @@ using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-    internal class Source : AbstractPriceList
+    internal class SourcePriceList : AbstractPriceList
     {
         public Dictionary<Position, double> PositionAmount { get; private set; }
 
-        public Source(Workbook workbook)
+        public SourcePriceList(Workbook workbook)
         {
             if (workbook == null)
             {
@@ -37,12 +37,12 @@ namespace RehauSku.PriceListTools
             CreatePositionsDict();
         }
 
-        public static List<Source> GetSourceLists(string[] files)
+        public static List<SourcePriceList> GetSourceLists(string[] files)
         {
             var ExcelApp = (Application)ExcelDnaUtil.Application;
             ProgressBar bar = new ProgressBar(files.Length);
 
-            List<Source> sourceFiles = new List<Source>();
+            List<SourcePriceList> sourceFiles = new List<SourcePriceList>();
 
             foreach (string file in files)
             {
@@ -50,7 +50,7 @@ namespace RehauSku.PriceListTools
                 Workbook wb = ExcelApp.Workbooks.Open(file);
                 try
                 {
-                    Source priceList = new Source(wb);
+                    SourcePriceList priceList = new SourcePriceList(wb);
                     sourceFiles.Add(priceList);
                     wb.Close();
                     bar.DoProgress();

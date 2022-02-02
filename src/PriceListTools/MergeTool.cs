@@ -6,13 +6,13 @@ namespace RehauSku.PriceListTools
 {
     internal class MergeTool : AbstractTool
     {
-        public List<Source> SourceFiles;
+        public List<SourcePriceList> SourceFiles;
 
         public void FillTarget()
         {
             ProgressBar bar = new ProgressBar(SourceFiles.Sum(x => x.PositionAmount.Count));
 
-            foreach (Source source in SourceFiles)
+            foreach (SourcePriceList source in SourceFiles)
             {
                 foreach (var kvp in source.PositionAmount)
                 {
