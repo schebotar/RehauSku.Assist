@@ -38,6 +38,12 @@ namespace RehauSku
                     if (result == DialogResult.OK)
                     {
                         string fileName = Dialog.GetFilePath();
+
+                        if (string.IsNullOrEmpty(fileName))
+                        {
+                            throw new Exception("Нет файла шаблона");
+                        }
+
                         priceListPath = fileName;
                         RootKey.SetValue("PriceListPath", fileName);
                         return priceListPath;

@@ -91,7 +91,11 @@ namespace RehauSku.Interface
         public void OnSetPricePressed(IRibbonControl control)
         {
             string path = Dialog.GetFilePath();
-            RegistryUtil.PriceListPath = path;
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                RegistryUtil.PriceListPath = path;
+            }
         }
     }
 }

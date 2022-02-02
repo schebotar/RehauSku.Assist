@@ -16,9 +16,9 @@ namespace RehauSku.Interface
                 {
                     return dialog.FileName;
                 }
-            }
 
-            return string.Empty;
+                else return string.Empty;
+            }
         }
 
         public static string[] GetMultiplyFiles()
