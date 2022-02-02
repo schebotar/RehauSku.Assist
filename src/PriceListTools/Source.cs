@@ -7,7 +7,7 @@ using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-    internal class Source : PriceList
+    internal class Source : AbstractPriceList
     {
         public Dictionary<Position, double> PositionAmount { get; private set; }
 
