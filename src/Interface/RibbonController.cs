@@ -38,7 +38,7 @@ namespace RehauSku.Interface
             MergeTool mergeTool = new MergeTool();
             string[] files = Dialog.GetMultiplyFiles();
 
-            if (files.Length != 0)
+            if (files != null)
             {
                 mergeTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 mergeTool.OpenNewPrice();
@@ -51,7 +51,7 @@ namespace RehauSku.Interface
             CombineTool combineTool = new CombineTool();
             string[] files = Dialog.GetMultiplyFiles();
 
-            if (files.Length != 0)
+            if (files != null)
             {
                 combineTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 combineTool.OpenNewPrice();

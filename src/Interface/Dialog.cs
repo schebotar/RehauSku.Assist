@@ -8,25 +8,21 @@ namespace RehauSku.Interface
     {
         public static string GetFilePath()
         {
-            string filePath = string.Empty;
-
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
                 dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    filePath = dialog.FileName;
+                    return dialog.FileName;
                 }
             }
 
-            return filePath;
+            return string.Empty;
         }
 
         public static string[] GetMultiplyFiles()
         {
-            List<string> fileNames = new List<string>();
-
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
                 dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
@@ -34,14 +30,11 @@ namespace RehauSku.Interface
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    foreach (string file in dialog.FileNames)
-                    {
-                        fileNames.Add(file);
-                    }
+                    return dialog.FileNames;
                 }
-            }
 
-            return fileNames.ToArray();
+                else return null;
+            }
         }
 
         public static void SaveWorkbookAs()
