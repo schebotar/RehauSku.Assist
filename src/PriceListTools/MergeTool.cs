@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RehauSku.Interface;
+using System.Collections.Generic;
 
 namespace RehauSku.PriceListTools
 {
@@ -16,7 +17,7 @@ namespace RehauSku.PriceListTools
 
             FilterByAmount();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Dialog.SaveWorkbookAs();
         }
     }
 }

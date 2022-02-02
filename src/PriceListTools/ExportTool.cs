@@ -31,7 +31,7 @@ namespace RehauSku.PriceListTools
 
             FilterByAmount();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Interface.Dialog.SaveWorkbookAs();
         }
 
         private void GetSelected()

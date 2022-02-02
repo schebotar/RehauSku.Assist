@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace RehauSku.Forms
+namespace RehauSku.Interface
 {
     static class Dialog
     {

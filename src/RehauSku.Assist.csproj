@@ -115,7 +115,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Dialog.cs" />
+    <Compile Include="Interface\Dialog.cs" />
     <Compile Include="AddIn\RegistryUtil.cs" />
     <Compile Include="AddIn\MemoryCacheUtil.cs" />
     <Compile Include="Assistant\ParseUtil.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="PriceListTools\PriceList.cs" />
     <Compile Include="PriceListTools\Source.cs" />
     <Compile Include="PriceListTools\Target.cs" />
-    <Compile Include="Ribbon\RibbonController.cs" />
+    <Compile Include="Interface\RibbonController.cs" />
     <Compile Include="Assistant\HttpClientUtil.cs" />
     <Compile Include="Assistant\StoreResponse.cs" />
     <Compile Include="PriceListTools\ExportTool.cs" />

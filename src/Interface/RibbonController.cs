@@ -1,11 +1,10 @@
 ﻿using ExcelDna.Integration.CustomUI;
-using RehauSku.Forms;
 using RehauSku.PriceListTools;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace RehauSku.Ribbon
+namespace RehauSku.Interface
 {
     [ComVisible(true)]
     public class RibbonController : ExcelRibbon
