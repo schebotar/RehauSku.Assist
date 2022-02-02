@@ -58,9 +58,11 @@ namespace RehauSku.Interface
                     workbook.Close(false);
                 }
 
-                string fileName = dialog.FileName;
-
-                workbook.SaveAs(fileName);
+                else
+                {
+                    string fileName = dialog.FileName;
+                    workbook.SaveAs(fileName);
+                }
             }
         }
     }
