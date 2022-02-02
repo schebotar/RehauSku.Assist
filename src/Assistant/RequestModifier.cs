@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace RehauSku.Assistant
 {
-    public static class RequestModifier
+    static class RequestModifier
     {
         public static string CleanRequest(this string input)
         {
