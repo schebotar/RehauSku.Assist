@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    internal class CombineTool : PriceListTool
+    internal class CombineTool : AbstractTool
     {
         public List<Source> SourceFiles;
 

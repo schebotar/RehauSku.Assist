@@ -3,7 +3,7 @@ using System;
 
 namespace RehauSku.PriceListTools
 {
-    internal class ConvertTool : PriceListTool
+    internal class ConvertTool : AbstractTool
     {
         private Source Current;
 

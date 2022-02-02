@@ -6,7 +6,7 @@ using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-    internal class ExportTool : PriceListTool
+    internal class ExportTool : AbstractTool
     {
         private Dictionary<Position, double> PositionAmount;
         private Range Selection;

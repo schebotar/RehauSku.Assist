@@ -7,7 +7,7 @@ using Application = Microsoft.Office.Interop.Excel.Application;
 
 namespace RehauSku.PriceListTools
 {
-    internal abstract class PriceListTool
+    internal abstract class AbstractTool
     {
         protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
         protected private Target TargetFile;
