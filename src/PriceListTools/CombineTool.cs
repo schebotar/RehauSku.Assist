@@ -1,5 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
+using RehauSku.Interface;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
@@ -9,6 +11,8 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
+            ProgressBar bar = new ProgressBar(SourceFiles.Sum(file => file.PositionAmount.Count));
+
             foreach (Source source in SourceFiles)
             {
                 TargetFile.Sheet.Columns[TargetFile.amountCell.Column]
@@ -19,8 +23,11 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
-                foreach(var kvp in source.PositionAmount)
+                foreach (var kvp in source.PositionAmount)
+                {
                     FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                    bar.DoProgress();
+                }
             }
 
             FilterByAmount();

@@ -121,6 +121,7 @@
     <Compile Include="Assistant\ParseUtil.cs" />
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
+    <Compile Include="Interface\ProgressBar.cs" />
     <Compile Include="PriceListTools\CombineTool.cs" />
     <Compile Include="PriceListTools\ConvertTool.cs" />
     <Compile Include="PriceListTools\Position.cs" />

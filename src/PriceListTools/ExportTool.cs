@@ -2,6 +2,7 @@
 using RehauSku.Assistant;
 using System;
 using System.Collections.Generic;
+using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
@@ -23,10 +24,12 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             GetSelected();
-
+            ProgressBar bar = new ProgressBar(PositionAmount.Count);
+            
             foreach (var kvp in PositionAmount)
             {
                 FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+                bar.DoProgress();
             }
 
             FilterByAmount();

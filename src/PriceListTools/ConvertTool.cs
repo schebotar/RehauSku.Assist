@@ -27,8 +27,13 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
+            ProgressBar bar = new ProgressBar(Current.PositionAmount.Count);
+
             foreach (var kvp in Current.PositionAmount)
+            {
                 FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+                bar.DoProgress();
+            }
 
             FilterByAmount();
 

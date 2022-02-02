@@ -3,6 +3,7 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
@@ -39,6 +40,7 @@ namespace RehauSku.PriceListTools
         public static List<Source> GetSourceLists(string[] files)
         {
             var ExcelApp = (Application)ExcelDnaUtil.Application;
+            ProgressBar bar = new ProgressBar(files.Length);
 
             List<Source> sourceFiles = new List<Source>();
 
@@ -51,6 +53,7 @@ namespace RehauSku.PriceListTools
                     Source priceList = new Source(wb);
                     sourceFiles.Add(priceList);
                     wb.Close();
+                    bar.DoProgress();
                 }
                 catch (Exception ex)
                 {
@@ -60,6 +63,7 @@ namespace RehauSku.PriceListTools
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Information);
                     wb.Close();
+                    bar.DoProgress();
                 }
                 ExcelApp.ScreenUpdating = true;
             }
