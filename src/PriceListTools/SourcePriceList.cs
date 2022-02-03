@@ -40,7 +40,7 @@ namespace RehauSku.PriceListTools
         public static List<SourcePriceList> GetSourceLists(string[] files)
         {
             var ExcelApp = (Application)ExcelDnaUtil.Application;
-            ProgressBar bar = new ProgressBar(files.Length);
+            ProgressBar bar = new ProgressBar("Открываю исходные файлы...", files.Length);
 
             List<SourcePriceList> sourceFiles = new List<SourcePriceList>();
 

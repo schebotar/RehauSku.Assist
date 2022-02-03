@@ -24,7 +24,7 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             GetSelected();
-            ProgressBar bar = new ProgressBar(PositionAmount.Count);
+            ProgressBar bar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
             
             foreach (var kvp in PositionAmount)
             {

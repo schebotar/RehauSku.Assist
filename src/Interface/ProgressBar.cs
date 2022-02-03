@@ -7,9 +7,11 @@ namespace RehauSku.Interface
         private Application Excel = AddIn.Excel;
         private double CurrentProgress { get; set; }
         private readonly double TaskWeight;
+        private readonly string Message;
 
-        public ProgressBar(int weight)
+        public ProgressBar(string message, int weight)
         {
+            Message = message;
             TaskWeight = weight;
             CurrentProgress = 0;
         }
@@ -20,7 +22,7 @@ namespace RehauSku.Interface
 
             if (percent < 100)
             {
-                Excel.StatusBar = $"Выполнено {percent.ToString("#.##")} %";
+                Excel.StatusBar = $"{Message} Выполнено {percent.ToString("#.##")} %";
             }
 
             else

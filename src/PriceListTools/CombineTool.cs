@@ -11,7 +11,7 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
-            ProgressBar bar = new ProgressBar(SourceFiles.Sum(file => file.PositionAmount.Count));
+            ProgressBar bar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
 
             foreach (SourcePriceList source in SourceFiles)
             {
