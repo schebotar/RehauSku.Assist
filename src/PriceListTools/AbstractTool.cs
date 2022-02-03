@@ -33,7 +33,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillColumnsWithDictionary(KeyValuePair<Position, double> positionAmount, params int[] columns)
+        protected private void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
             int? row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
 

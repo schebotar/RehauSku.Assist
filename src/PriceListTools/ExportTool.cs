@@ -28,7 +28,7 @@ namespace RehauSku.PriceListTools
             
             foreach (var kvp in PositionAmount)
             {
-                FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+                FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
                 bar.DoProgress();
             }
 
