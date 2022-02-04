@@ -11,7 +11,8 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
-            ProgressBar bar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
+            ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
+            ResultBar = new ResultBar();
 
             foreach (SourcePriceList source in SourceFiles)
             {
@@ -26,13 +27,15 @@ namespace RehauSku.PriceListTools
                 foreach (var kvp in source.PositionAmount)
                 {
                     FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
-                    bar.DoProgress();
+                    ProgressBar.Update();
                 }
             }
 
             FilterByAmount();
+            ResultBar.Update();
 
             Interface.Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
     }
 }

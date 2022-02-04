@@ -1,10 +1,7 @@
-﻿using Microsoft.Office.Interop.Excel;
-
-namespace RehauSku.Interface
+﻿namespace RehauSku.Interface
 {
-    internal class ProgressBar
+    internal class ProgressBar : AbstractBar
     {
-        private Application Excel = AddIn.Excel;
         private double CurrentProgress { get; set; }
         private readonly double TaskWeight;
         private readonly string Message;
@@ -16,7 +13,7 @@ namespace RehauSku.Interface
             CurrentProgress = 0;
         }
 
-        public void DoProgress()
+        public override void Update()
         {
             double percent = (++CurrentProgress / TaskWeight) * 100;
 

@@ -115,6 +115,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\AbstractBar.cs" />
     <Compile Include="Interface\Dialog.cs" />
     <Compile Include="AddIn\RegistryUtil.cs" />
     <Compile Include="AddIn\MemoryCacheUtil.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Assistant\RequestModifier.cs" />
     <Compile Include="Assistant\SkuExtensions.cs" />
     <Compile Include="Interface\ProgressBar.cs" />
+    <Compile Include="Interface\ResultBar.cs" />
     <Compile Include="PriceListTools\CombineTool.cs" />
     <Compile Include="PriceListTools\ConvertTool.cs" />
     <Compile Include="PriceListTools\Position.cs" />

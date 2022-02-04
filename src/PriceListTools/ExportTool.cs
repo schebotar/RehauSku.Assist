@@ -24,17 +24,20 @@ namespace RehauSku.PriceListTools
         public void FillTarget()
         {
             GetSelected();
-            ProgressBar bar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
+            ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
+            ResultBar = new ResultBar();
             
             foreach (var kvp in PositionAmount)
             {
                 FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
-                bar.DoProgress();
+                ProgressBar.Update();
             }
 
             FilterByAmount();
+            ResultBar.Update();
 
             Interface.Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
 
         private void GetSelected()

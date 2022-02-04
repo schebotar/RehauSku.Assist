@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RehauSku.Interface;
+using RehauSku.Assistant;
 
 namespace RehauSku.PriceListTools
 {
@@ -53,7 +54,7 @@ namespace RehauSku.PriceListTools
                     SourcePriceList priceList = new SourcePriceList(wb);
                     sourceFiles.Add(priceList);
                     wb.Close();
-                    bar.DoProgress();
+                    bar.Update();
                 }
                 catch (Exception ex)
                 {
@@ -63,7 +64,7 @@ namespace RehauSku.PriceListTools
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Information);
                     wb.Close();
-                    bar.DoProgress();
+                    bar.Update();
                 }
                 ExcelApp.ScreenUpdating = true;
             }
@@ -84,6 +85,12 @@ namespace RehauSku.PriceListTools
                     object group = Sheet.Cells[row, groupCell.Column].Value2;
                     object name = Sheet.Cells[row, nameCell.Column].Value2;
                     object sku = Sheet.Cells[row, skuCell.Column].Value2;
+
+                    if (group == null || name == null || sku == null)
+                        continue;
+
+                    if (!sku.ToString().IsRehauSku())
+                        continue;
 
                     Position p = new Position(group.ToString(), sku.ToString(), name.ToString());
 
