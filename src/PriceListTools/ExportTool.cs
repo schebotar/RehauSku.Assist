@@ -1,5 +1,4 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using RehauSku.Assistant;
 using System;
 using System.Collections.Generic;
 using RehauSku.Interface;

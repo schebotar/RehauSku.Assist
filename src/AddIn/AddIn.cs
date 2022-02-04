@@ -31,6 +31,24 @@ namespace RehauSku
             IntelliSenseServer.Install();
             RegistryUtil.Initialize();
             Excel = (Application)ExcelDnaUtil.Application;
+            AddEvents();
+        }
+
+        private void AddEvents()
+        {
+            Excel.SheetSelectionChange += RefreshExportButton;
+            Excel.SheetActivate += RefreshConvertButton;
+            Excel.WorkbookActivate += RefreshConvertButton;
+        }
+
+        private void RefreshConvertButton(object sh)
+        {
+            Interface.RibbonController.RefreshControl("convertPrice");
+        }
+
+        private void RefreshExportButton(object sh, Range target)
+        {
+            Interface.RibbonController.RefreshControl("exportToPrice");
         }
 
         public void AutoClose()

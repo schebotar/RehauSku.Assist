@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RehauSku.Interface;
-using RehauSku.Assistant;
 
 namespace RehauSku.PriceListTools
 {
+
     internal class SourcePriceList : AbstractPriceList
     {
         public Dictionary<Position, double> PositionAmount { get; private set; }
@@ -22,7 +22,7 @@ namespace RehauSku.PriceListTools
             Sheet = workbook.ActiveSheet;
             Name = workbook.Name;
 
-            Range[] cells = new []
+            Range[] cells = new[]
             {
                 amountCell = Sheet.Cells.Find(amountHeader),
                 skuCell = Sheet.Cells.Find(skuHeader),
@@ -30,7 +30,7 @@ namespace RehauSku.PriceListTools
                 nameCell = Sheet.Cells.Find(nameHeader)
             };
 
-            if (cells.Any(x => x == null)) 
+            if (cells.Any(x => x == null))
             {
                 throw new ArgumentException($"Файл {Name} не распознан");
             }
