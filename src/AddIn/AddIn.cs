@@ -5,7 +5,6 @@ using Microsoft.Office.Interop.Excel;
 using System.Net.Http;
 using System.Runtime.Caching;
 
-
 namespace RehauSku
 {
     enum ResponseOrder
@@ -27,34 +26,18 @@ namespace RehauSku
         {
             httpClient = new HttpClient();
             memoryCache = new MemoryCache("RehauSku");
+            Excel = (Application)ExcelDnaUtil.Application;
             RegisterFunctions();
             IntelliSenseServer.Install();
             RegistryUtil.Initialize();
-            Excel = (Application)ExcelDnaUtil.Application;
-            AddEvents();
-        }
-
-        private void AddEvents()
-        {
-            Excel.SheetSelectionChange += RefreshExportButton;
-            Excel.SheetActivate += RefreshConvertButton;
-            Excel.WorkbookActivate += RefreshConvertButton;
-        }
-
-        private void RefreshConvertButton(object sh)
-        {
-            Interface.RibbonController.RefreshControl("convertPrice");
-        }
-
-        private void RefreshExportButton(object sh, Range target)
-        {
-            Interface.RibbonController.RefreshControl("exportToPrice");
+            EventsUtil.Initialize();
         }
 
         public void AutoClose()
         {
             IntelliSenseServer.Uninstall();
             RegistryUtil.Uninitialize();
+            EventsUtil.Uninitialize();
             memoryCache.Dispose();
         }
 
