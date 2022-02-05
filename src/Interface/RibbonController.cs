@@ -87,13 +87,11 @@ namespace RehauSku.Interface
             }
         }
 
-
         public void OnExportPressed(IRibbonControl control)
         {
             try
             {
                 ExportTool exportTool = new ExportTool();
-                exportTool.TryGetSelection();
                 exportTool.OpenNewPrice();
                 exportTool.FillTarget();
             }

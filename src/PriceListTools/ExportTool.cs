@@ -10,14 +10,9 @@ namespace RehauSku.PriceListTools
         private Dictionary<Position, double> PositionAmount;
         private Range Selection;
 
-        public void TryGetSelection()
+        public ExportTool()
         {
             Selection = ExcelApp.Selection;
-
-            if (Selection == null || Selection.Columns.Count != 2)
-            {
-                throw new Exception("Неверный диапазон");
-            }
         }
 
         public void FillTarget()
