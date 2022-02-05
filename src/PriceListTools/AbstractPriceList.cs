@@ -2,7 +2,7 @@
 
 namespace RehauSku.PriceListTools
 {
-    internal class PriceList
+    internal abstract class AbstractPriceList
     {
         protected const string amountHeader = "Кол-во";
         protected const string skuHeader = "Актуальный материал";

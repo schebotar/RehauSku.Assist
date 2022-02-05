@@ -1,15 +1,20 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
+using RehauSku.Interface;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    internal class CombineTool : PriceListTool
+    internal class CombineTool : AbstractTool
     {
-        public List<Source> SourceFiles;
+        public List<SourcePriceList> SourceFiles;
 
         public void FillTarget()
         {
-            foreach (Source source in SourceFiles)
+            ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
+            ResultBar = new ResultBar();
+
+            foreach (SourcePriceList source in SourceFiles)
             {
                 TargetFile.Sheet.Columns[TargetFile.amountCell.Column]
                     .EntireColumn
@@ -19,13 +24,18 @@ namespace RehauSku.PriceListTools
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
-                foreach(var kvp in source.PositionAmount)
-                    FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                foreach (var kvp in source.PositionAmount)
+                {
+                    FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                    ProgressBar.Update();
+                }
             }
 
             FilterByAmount();
+            ResultBar.Update();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Interface.Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
     }
 }

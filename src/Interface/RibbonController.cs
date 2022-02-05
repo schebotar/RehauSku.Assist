@@ -1,25 +1,27 @@
 ﻿using ExcelDna.Integration.CustomUI;
-using RehauSku.Forms;
+using Microsoft.Office.Interop.Excel;
 using RehauSku.PriceListTools;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace RehauSku.Ribbon
+namespace RehauSku.Interface
 {
     [ComVisible(true)]
     public class RibbonController : ExcelRibbon
     {
+        private static IRibbonUI ribbonUi;
+
         public override string GetCustomUI(string RibbonID)
         {
             return @"
-      <customUI xmlns='http://schemas.microsoft.com/office/2006/01/customui'>
+      <customUI onLoad='RibbonLoad' xmlns='http://schemas.microsoft.com/office/2006/01/customui'>
       <ribbon>
         <tabs>
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
-                <button id='exportToPrice' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnExportPressed'/> 
-                <button id='convertPrice' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnConvertPressed'/> 
+                <button id='exportToPrice' getEnabled='GetExportEnabled' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnExportPressed'/> 
+                <button id='convertPrice' getEnabled='GetConvertEnabled' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnConvertPressed'/> 
                 <menu id='conjoinMenu' label='Объединить' imageMso='Copy'>
                     <button id='mergeFiles' label='Сложить' onAction='OnMergePressed'/>    
                     <button id='combineFiles' label='По колонкам' onAction='OnCombinePressed'/>   
@@ -34,14 +36,27 @@ namespace RehauSku.Ribbon
     </customUI>";
         }
 
+        public void RibbonLoad(IRibbonUI sender)
+        {
+            ribbonUi = sender;
+        }
+
+        public static void RefreshControl(string id)
+        {
+            if (ribbonUi != null)
+            {
+                ribbonUi.InvalidateControl(id);
+            }
+        }
+
         public void OnMergePressed(IRibbonControl control)
         {
             MergeTool mergeTool = new MergeTool();
             string[] files = Dialog.GetMultiplyFiles();
 
-            if (files.Length != 0)
+            if (files != null)
             {
-                mergeTool.SourceFiles = Source.GetSourceLists(files);
+                mergeTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 mergeTool.OpenNewPrice();
                 mergeTool.FillTarget();
             }
@@ -52,11 +67,23 @@ namespace RehauSku.Ribbon
             CombineTool combineTool = new CombineTool();
             string[] files = Dialog.GetMultiplyFiles();
 
-            if (files.Length != 0)
+            if (files != null)
             {
-                combineTool.SourceFiles = Source.GetSourceLists(files);
+                combineTool.SourceFiles = SourcePriceList.GetSourceLists(files);
                 combineTool.OpenNewPrice();
                 combineTool.FillTarget();
+            }
+        }
+
+        public bool GetConvertEnabled(IRibbonControl control)
+        {
+            if (AddIn.Excel.ActiveWorkbook == null)
+                return false;
+
+            else
+            {
+                Worksheet worksheet = AddIn.Excel.ActiveWorkbook.ActiveSheet;
+                return worksheet.IsRehauSource();
             }
         }
 
@@ -65,7 +92,6 @@ namespace RehauSku.Ribbon
             try
             {
                 ExportTool exportTool = new ExportTool();
-                exportTool.TryGetSelection();
                 exportTool.OpenNewPrice();
                 exportTool.FillTarget();
             }
@@ -77,6 +103,18 @@ namespace RehauSku.Ribbon
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
+            }
+        }
+
+        public bool GetExportEnabled(IRibbonControl control)
+        {
+            if (AddIn.Excel.ActiveWorkbook == null)
+                return false;
+
+            else
+            {
+                Range selection = AddIn.Excel.Selection;
+                return selection.Columns.Count == 2;
             }
         }
 
@@ -92,7 +130,11 @@ namespace RehauSku.Ribbon
         public void OnSetPricePressed(IRibbonControl control)
         {
             string path = Dialog.GetFilePath();
-            RegistryUtil.PriceListPath = path;
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                RegistryUtil.PriceListPath = path;
+            }
         }
     }
 }

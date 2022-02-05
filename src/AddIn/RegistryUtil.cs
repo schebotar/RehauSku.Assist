@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using RehauSku.Forms;
+using RehauSku.Interface;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -38,6 +38,12 @@ namespace RehauSku
                     if (result == DialogResult.OK)
                     {
                         string fileName = Dialog.GetFilePath();
+
+                        if (string.IsNullOrEmpty(fileName))
+                        {
+                            throw new Exception("Нет файла шаблона");
+                        }
+
                         priceListPath = fileName;
                         RootKey.SetValue("PriceListPath", fileName);
                         return priceListPath;

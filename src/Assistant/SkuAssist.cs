@@ -2,7 +2,7 @@
 
 namespace RehauSku.Assistant
 {
-    public enum ProductField
+    enum ProductField
     {
         Name,
         Id,

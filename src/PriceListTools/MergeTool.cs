@@ -1,22 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using RehauSku.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    internal class MergeTool : PriceListTool
+    internal class MergeTool : AbstractTool
     {
-        public List<Source> SourceFiles;
+        public List<SourcePriceList> SourceFiles;
 
         public void FillTarget()
         {
-            foreach (Source source in SourceFiles)
+            ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(x => x.PositionAmount.Count));
+            ResultBar = new ResultBar();
+
+            foreach (SourcePriceList source in SourceFiles)
             {
                 foreach (var kvp in source.PositionAmount)
-                    FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+                {
+                    FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
+                    ProgressBar.Update();
+                }
             }
 
             FilterByAmount();
+            ResultBar.Update();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
     }
 }

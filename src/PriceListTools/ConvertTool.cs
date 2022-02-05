@@ -1,16 +1,17 @@
-﻿using System;
+﻿using RehauSku.Interface;
+using System;
 
 namespace RehauSku.PriceListTools
 {
-    internal class ConvertTool : PriceListTool
+    internal class ConvertTool : AbstractTool
     {
-        private Source Current;
+        private SourcePriceList Current;
 
         public void GetCurrent()
         {
             try
             {
-                Current = new Source(ExcelApp.ActiveWorkbook);
+                Current = new SourcePriceList(ExcelApp.ActiveWorkbook);
             }
 
             catch (Exception exception)
@@ -26,12 +27,20 @@ namespace RehauSku.PriceListTools
 
         public void FillTarget()
         {
+            ProgressBar = new ProgressBar("Заполняю строки...", Current.PositionAmount.Count);
+            ResultBar = new ResultBar();
+
             foreach (var kvp in Current.PositionAmount)
-                FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+            {
+                FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
+                ProgressBar.Update();
+            }
 
             FilterByAmount();
+            ResultBar.Update();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
     }
 }

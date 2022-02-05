@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace RehauSku.Assistant
+namespace RehauSku
 {
     static class SkuExtensions
     {

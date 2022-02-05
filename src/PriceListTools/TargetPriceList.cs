@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace RehauSku.PriceListTools
 {
-    internal class Target : PriceList
+    internal class TargetPriceList : AbstractPriceList
     {
         private const string oldSkuHeader = "Прежний материал";
         public Range oldSkuCell { get; private set; }
 
-        public Target(Workbook workbook)
+        public TargetPriceList(Workbook workbook)
         {
             Sheet = workbook.ActiveSheet;
             Name = workbook.FullName;
@@ -19,9 +19,10 @@ namespace RehauSku.PriceListTools
                 amountCell = Sheet.Cells.Find(amountHeader),
                 skuCell = Sheet.Cells.Find(skuHeader),
                 groupCell = Sheet.Cells.Find(groupHeader),
-                nameCell = Sheet.Cells.Find(nameHeader),
-                oldSkuCell = Sheet.Cells.Find(oldSkuHeader)
+                nameCell = Sheet.Cells.Find(nameHeader)
             };
+
+            oldSkuCell = Sheet.Cells.Find(oldSkuHeader);
 
             if (cells.Any(x => x == null))
             {

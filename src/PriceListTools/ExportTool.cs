@@ -1,37 +1,37 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using RehauSku.Assistant;
 using System;
 using System.Collections.Generic;
+using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-    internal class ExportTool : PriceListTool
+    internal class ExportTool : AbstractTool
     {
         private Dictionary<Position, double> PositionAmount;
         private Range Selection;
 
-        public void TryGetSelection()
+        public ExportTool()
         {
             Selection = ExcelApp.Selection;
-
-            if (Selection == null || Selection.Columns.Count != 2)
-            {
-                throw new Exception("Неверный диапазон");
-            }
         }
 
         public void FillTarget()
         {
             GetSelected();
-
+            ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
+            ResultBar = new ResultBar();
+            
             foreach (var kvp in PositionAmount)
             {
-                FillColumnsWithDictionary(kvp, TargetFile.amountCell.Column);
+                FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
+                ProgressBar.Update();
             }
 
             FilterByAmount();
+            ResultBar.Update();
 
-            Forms.Dialog.SaveWorkbookAs();
+            Interface.Dialog.SaveWorkbookAs();
+            ExcelApp.StatusBar = false;
         }
 
         private void GetSelected()

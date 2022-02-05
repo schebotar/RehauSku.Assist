@@ -3,14 +3,16 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-    internal class Source : PriceList
+
+    internal class SourcePriceList : AbstractPriceList
     {
         public Dictionary<Position, double> PositionAmount { get; private set; }
 
-        public Source(Workbook workbook)
+        public SourcePriceList(Workbook workbook)
         {
             if (workbook == null)
             {
@@ -20,7 +22,7 @@ namespace RehauSku.PriceListTools
             Sheet = workbook.ActiveSheet;
             Name = workbook.Name;
 
-            Range[] cells = new []
+            Range[] cells = new[]
             {
                 amountCell = Sheet.Cells.Find(amountHeader),
                 skuCell = Sheet.Cells.Find(skuHeader),
@@ -28,7 +30,7 @@ namespace RehauSku.PriceListTools
                 nameCell = Sheet.Cells.Find(nameHeader)
             };
 
-            if (cells.Any(x => x == null)) 
+            if (cells.Any(x => x == null))
             {
                 throw new ArgumentException($"Файл {Name} не распознан");
             }
@@ -36,11 +38,12 @@ namespace RehauSku.PriceListTools
             CreatePositionsDict();
         }
 
-        public static List<Source> GetSourceLists(string[] files)
+        public static List<SourcePriceList> GetSourceLists(string[] files)
         {
             var ExcelApp = (Application)ExcelDnaUtil.Application;
+            ProgressBar bar = new ProgressBar("Открываю исходные файлы...", files.Length);
 
-            List<Source> sourceFiles = new List<Source>();
+            List<SourcePriceList> sourceFiles = new List<SourcePriceList>();
 
             foreach (string file in files)
             {
@@ -48,9 +51,10 @@ namespace RehauSku.PriceListTools
                 Workbook wb = ExcelApp.Workbooks.Open(file);
                 try
                 {
-                    Source priceList = new Source(wb);
+                    SourcePriceList priceList = new SourcePriceList(wb);
                     sourceFiles.Add(priceList);
                     wb.Close();
+                    bar.Update();
                 }
                 catch (Exception ex)
                 {
@@ -60,6 +64,7 @@ namespace RehauSku.PriceListTools
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Information);
                     wb.Close();
+                    bar.Update();
                 }
                 ExcelApp.ScreenUpdating = true;
             }
@@ -80,6 +85,12 @@ namespace RehauSku.PriceListTools
                     object group = Sheet.Cells[row, groupCell.Column].Value2;
                     object name = Sheet.Cells[row, nameCell.Column].Value2;
                     object sku = Sheet.Cells[row, skuCell.Column].Value2;
+
+                    if (group == null || name == null || sku == null)
+                        continue;
+
+                    if (!sku.ToString().IsRehauSku())
+                        continue;
 
                     Position p = new Position(group.ToString(), sku.ToString(), name.ToString());
 

@@ -5,10 +5,9 @@ using Microsoft.Office.Interop.Excel;
 using System.Net.Http;
 using System.Runtime.Caching;
 
-
 namespace RehauSku
 {
-    public enum ResponseOrder
+    enum ResponseOrder
     {
         Default,
         Relevance,
@@ -17,7 +16,7 @@ namespace RehauSku
         Series
     }
 
-    public class AddIn : IExcelAddIn
+    class AddIn : IExcelAddIn
     {
         public static HttpClient httpClient;
         public static MemoryCache memoryCache;
@@ -27,16 +26,18 @@ namespace RehauSku
         {
             httpClient = new HttpClient();
             memoryCache = new MemoryCache("RehauSku");
+            Excel = (Application)ExcelDnaUtil.Application;
             RegisterFunctions();
             IntelliSenseServer.Install();
             RegistryUtil.Initialize();
-            Excel = (Application)ExcelDnaUtil.Application;
+            EventsUtil.Initialize();
         }
 
         public void AutoClose()
         {
             IntelliSenseServer.Uninstall();
             RegistryUtil.Uninitialize();
+            EventsUtil.Uninitialize();
             memoryCache.Dispose();
         }
 

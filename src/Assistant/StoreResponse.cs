@@ -2,17 +2,17 @@
 
 namespace RehauSku.Assistant
 {
-    public class StoreResponce
+    class StoreResponce
     {
         public Ecommerce Ecommerce { get; set; }
     }
 
-    public class Ecommerce
+    class Ecommerce
     {
         public List<Product> Impressions { get; set; }
     }
 
-    public class Product : IProduct
+    class Product : IProduct
     {
         public string Id { get; set; }
         public string Name { get; set; }
