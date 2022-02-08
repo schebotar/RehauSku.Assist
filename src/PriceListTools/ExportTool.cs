@@ -30,7 +30,7 @@ namespace RehauSku.PriceListTools
             FilterByAmount();
             ResultBar.Update();
 
-            //Interface.Dialog.SaveWorkbookAs();
+            Interface.Dialog.SaveWorkbookAs();
             ExcelApp.StatusBar = false;
         }
 
