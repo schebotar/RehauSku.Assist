@@ -45,77 +45,50 @@ namespace RehauSku.PriceListTools
             {
                 foreach (int column in columns)
                 {
-                    Range sumCell = TargetFile.Sheet.Cells[row, column];
-
-                    if (sumCell.Value2 == null)
-                    {
-                        sumCell.Value2 = positionAmount.Value;
-                    }
-
-                    else
-                    {
-                        sumCell.Value2 += positionAmount.Value;
-                    }
+                    Range cell = TargetFile.Sheet.Cells[row, column];
+                    cell.AddValue(positionAmount.Value);
                 }
 
                 ResultBar.IncrementSuccess();
-                return;
             }
 
-            if (TargetFile.oldSkuCell != null)
+            else if (TargetFile.oldSkuCell != null)
             {
-                Range foundCell = TargetFile.oldSkuCell.EntireColumn.Find(positionAmount.Key.Sku);
+                row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.oldSkuCell.Column);
 
-                if (foundCell != null)
+                if (row != null)
                 {
-                    row = foundCell.Row;
-
                     foreach (int column in columns)
                     {
-                        if (TargetFile.Sheet.Cells[row, column].Value2 == null)
-                        {
-                            TargetFile.Sheet.Cells[row, column].Value2 = positionAmount.Value;
-                        }
-
-                        else
-                        {
-                            TargetFile.Sheet.Cells[row, column].Value2 += positionAmount.Value;
-                        }
+                        Range cell = TargetFile.Sheet.Cells[row, column];
+                        cell.AddValue(positionAmount.Value);
                     }
 
                     ResultBar.IncrementReplaced();
-                    return;
                 }
-            }
-
-            string sku = positionAmount.Key.Sku.Substring(1, 6);
-            row = GetPositionRow(sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
-
-            if (row != null)
-            {
-                foreach (int column in columns)
-                {
-                    Range amountCell = TargetFile.Sheet.Cells[row, column];
-
-                    if (amountCell.Value2 == null)
-                    {
-                        amountCell.Value2 = positionAmount.Value;
-                    }
-
-                    else
-                    {
-                        amountCell.Value2 += positionAmount.Value;
-                    }
-                }
-
-                ResultBar.IncrementReplaced();
-                return;
             }
 
             else
             {
-                FillMissing(positionAmount, columns);
-                ResultBar.IncrementNotFound();
+                string sku = positionAmount.Key.Sku.Substring(1, 6);
+                row = GetPositionRow(sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
+
+                if (row != null)
+                {
+                    foreach (int column in columns)
+                    {
+                        Range cell = TargetFile.Sheet.Cells[row, column];
+                        cell.AddValue(positionAmount.Value);
+                    }
+
+                    ResultBar.IncrementReplaced();
+                }
+
+                else
+                {
+                    FillMissing(positionAmount, columns);
+                    ResultBar.IncrementNotFound();
+                }
             }
         }
 
@@ -151,15 +124,8 @@ namespace RehauSku.PriceListTools
 
             foreach (int column in columns)
             {
-                if (TargetFile.Sheet.Cells[row, column].Value2 == null)
-                {
-                    TargetFile.Sheet.Cells[row, column].Value2 = positionAmount.Value;
-                }
-
-                else
-                {
-                    TargetFile.Sheet.Cells[row, column].Value2 += positionAmount.Value;
-                }
+                Range cell = TargetFile.Sheet.Cells[row, column];
+                cell.AddValue(positionAmount.Value);
             }
         }
 
