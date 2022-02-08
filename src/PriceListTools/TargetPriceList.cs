@@ -11,6 +11,12 @@ namespace RehauSku.PriceListTools
 
         public TargetPriceList(Workbook workbook)
         {
+            if (workbook == null)
+            {
+                throw new ArgumentException("Невозможно открыть книгу шаблонного файла. " +
+                    "Возможно открыт файл с именем, совпадающим с именем шаблонного файла.");
+            }
+
             Sheet = workbook.ActiveSheet;
             Name = workbook.FullName;
 

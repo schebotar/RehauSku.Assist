@@ -25,15 +25,20 @@ namespace RehauSku.PriceListTools
                 TargetFile = new TargetPriceList(wb);
             }
 
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 MessageBox.Show
-                    (ex.Message,
+                    (exception.Message,
                     "Ошибка открытия шаблонного прайс-листа",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
-                wb.Close();
-                throw ex;
+
+                if (wb != null)
+                {
+                    wb.Close();
+                }
+
+                throw exception;
             }
         }
 
