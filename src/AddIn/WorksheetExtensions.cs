@@ -27,6 +27,19 @@ namespace RehauSku
 
             return cells.All(x => x != null);
         }
+
+        public static void AddValue(this Range range, double value)
+        {
+            if (range.Value2 == null)
+            {
+                range.Value2 = value;
+            }
+
+            else
+            {
+                range.Value2 += value;
+            }
+        }
     }
 }
 

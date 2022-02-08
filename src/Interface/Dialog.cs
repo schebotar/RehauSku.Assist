@@ -46,12 +46,7 @@ namespace RehauSku.Interface
                 dialog.FileName = workbook.Name;
                 dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
 
-                if (dialog.ShowDialog() == DialogResult.Cancel)
-                {
-                    workbook.Close(false);
-                }
-
-                else
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string fileName = dialog.FileName;
                     workbook.SaveAs(fileName);
