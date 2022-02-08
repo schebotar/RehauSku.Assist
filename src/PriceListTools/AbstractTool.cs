@@ -18,7 +18,7 @@ namespace RehauSku.PriceListTools
 
         public void OpenNewPrice()
         {
-            Workbook wb = ExcelApp.Workbooks.Open(RegistryUtil.PriceListPath);
+            Workbook wb = ExcelApp.Workbooks.Open(RegistryUtil.PriceListPath, null, true);
 
             try
             {
