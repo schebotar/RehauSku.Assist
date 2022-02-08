@@ -3,6 +3,7 @@ using Microsoft.Office.Interop.Excel;
 using RehauSku.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Application = Microsoft.Office.Interop.Excel.Application;
 using ProgressBar = RehauSku.Interface.ProgressBar;
@@ -18,6 +19,19 @@ namespace RehauSku.PriceListTools
 
         public void OpenNewPrice()
         {
+            if (ExcelApp.Workbooks
+                .Cast<Workbook>()
+                .FirstOrDefault(w => w.FullName == RegistryUtil.PriceListPath) != null)
+            {
+                MessageBox.Show
+                    ("Шаблонный файл редактируется в другом месте",
+                    "Ошибка открытия шаблонного прайс-листа",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                throw new ArgumentException("Шаблонный файл редактируется в другом месте");
+            }
+
             Workbook wb = ExcelApp.Workbooks.Open(RegistryUtil.PriceListPath, null, true);
 
             try
