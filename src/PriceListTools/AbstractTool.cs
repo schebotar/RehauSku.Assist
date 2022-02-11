@@ -58,7 +58,7 @@ namespace RehauSku.PriceListTools
 
         protected private void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
-            int? row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
+            int? row = GetPositionRow(TargetFile.skuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
             if (row != null)
             {
@@ -69,11 +69,12 @@ namespace RehauSku.PriceListTools
                 }
 
                 ResultBar.IncrementSuccess();
+                return;
             }
 
-            else if (TargetFile.oldSkuCell != null)
+            if (TargetFile.oldSkuCell != null)
             {
-                row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.oldSkuCell.Column);
+                row = GetPositionRow(TargetFile.oldSkuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
                 if (row != null)
                 {
@@ -84,31 +85,27 @@ namespace RehauSku.PriceListTools
                     }
 
                     ResultBar.IncrementReplaced();
+                    return;
                 }
             }
 
-            else
+            string sku = positionAmount.Key.Sku.Substring(1, 6);
+            row = GetPositionRow(TargetFile.skuCell.EntireColumn, sku, positionAmount.Key.Group);
+
+            if (row != null)
             {
-                string sku = positionAmount.Key.Sku.Substring(1, 6);
-                row = GetPositionRow(sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
-
-                if (row != null)
+                foreach (int column in columns)
                 {
-                    foreach (int column in columns)
-                    {
-                        Range cell = TargetFile.Sheet.Cells[row, column];
-                        cell.AddValue(positionAmount.Value);
-                    }
-
-                    ResultBar.IncrementReplaced();
+                    Range cell = TargetFile.Sheet.Cells[row, column];
+                    cell.AddValue(positionAmount.Value);
                 }
 
-                else
-                {
-                    FillMissing(positionAmount, columns);
-                    ResultBar.IncrementNotFound();
-                }
+                ResultBar.IncrementReplaced();
+                return;
             }
+
+            FillMissing(positionAmount, columns);
+            ResultBar.IncrementNotFound();
         }
 
         protected private void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
@@ -148,32 +145,34 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private int? GetPositionRow(string sku, string group, int column)
+        protected private int? GetPositionRow(Range range, string sku, string group)
         {
-            int? row = null;
-            Range foundCell = TargetFile.Sheet.Columns[column].Find(sku);
+            Range found = range.Find(sku);
             string foundGroupValue;
 
-            if (foundCell == null) return null;
-
-            else
+            if (found == null)
             {
-                row = foundCell.Row;
-                foundGroupValue = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
+                return null;
             }
 
-            if (string.IsNullOrEmpty(group) || group.Equals(foundGroupValue))
-                return row;
+            int firstFoundRow = found.Row; 
 
-            else
-                while (true)
+            while (true)
+            {
+                foundGroupValue = TargetFile.Sheet.Cells[found.Row, TargetFile.groupCell.Column].Value2.ToString();
+
+                if (string.IsNullOrEmpty(group) || group.Equals(foundGroupValue))
                 {
-                    foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
-                    if (foundCell == null) return row;
-
-                    foundGroupValue = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
-                    if (group.Equals(foundGroupValue)) return foundCell.Row;
+                    return found.Row;
                 }
+
+                found = range.FindNext(found);
+
+                if (found.Row == firstFoundRow)
+                {
+                    return null;
+                }
+            }
         }
 
         protected private void FilterByAmount()
