@@ -20,11 +20,11 @@ namespace RehauSku.Interface
         <tabs>
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
-                <button id='exportToPrice' getEnabled='GetExportEnabled' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnToolPressed'/> 
-                <button id='convertPrice' getEnabled='GetConvertEnabled' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnToolPressed'/> 
+                <button id='export' getEnabled='GetExportEnabled' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnToolPressed'/> 
+                <button id='convert' getEnabled='GetConvertEnabled' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnToolPressed'/> 
                 <menu id='conjoinMenu' label='Объединить' imageMso='Copy'>
-                    <button id='mergeFiles' label='Сложить' onAction='OnToolPressed'/>    
-                    <button id='combineFiles' label='По колонкам' onAction='OnToolPressed'/>   
+                    <button id='merge' label='Сложить' onAction='OnToolPressed'/>    
+                    <button id='combine' label='По колонкам' onAction='OnToolPressed'/>   
                 </menu>
             </group>
             <group id='rausettings' label='Настройки'>
@@ -65,16 +65,16 @@ namespace RehauSku.Interface
                 AbstractTool tool;
                 switch (control.Id)
                 {
-                    case "exportToPrice":
+                    case "export":
                         tool = new ExportTool();
                         break;
-                    case "convertPrice":
+                    case "convert":
                         tool = new ConvertTool();
                         break;
-                    case "mergeFiles":
+                    case "merge":
                         tool = new MergeTool();
                         break;
-                    case "combineFiles":
+                    case "combine":
                         tool = new CombineTool();
                         break;
                     default:
