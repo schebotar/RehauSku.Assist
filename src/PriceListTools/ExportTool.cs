@@ -13,11 +13,16 @@ namespace RehauSku.PriceListTools
         public ExportTool()
         {
             Selection = ExcelApp.Selection;
+            GetSelected();
+
+            if (PositionAmount.Count == 0)
+            {
+                throw new Exception("В выделенном диапазоне не найдены позиции для экспорта");
+            }
         }
 
-        public void FillTarget()
+        public override void FillTarget()
         {
-            GetSelected();
             ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
             ResultBar = new ResultBar();
             

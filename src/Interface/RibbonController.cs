@@ -20,11 +20,11 @@ namespace RehauSku.Interface
         <tabs>
           <tab id='rau' label='REHAU'>
             <group id='priceList' label='Прайс-лист'>
-                <button id='exportToPrice' getEnabled='GetExportEnabled' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnExportPressed'/> 
-                <button id='convertPrice' getEnabled='GetConvertEnabled' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnConvertPressed'/> 
+                <button id='exportToPrice' getEnabled='GetExportEnabled' label='Экспорт в новый файл' size='normal' imageMso='PivotExportToExcel' onAction='OnToolPressed'/> 
+                <button id='convertPrice' getEnabled='GetConvertEnabled' label='Актуализировать' size='normal' imageMso='FileUpdate' onAction='OnToolPressed'/> 
                 <menu id='conjoinMenu' label='Объединить' imageMso='Copy'>
-                    <button id='mergeFiles' label='Сложить' onAction='OnMergePressed'/>    
-                    <button id='combineFiles' label='По колонкам' onAction='OnCombinePressed'/>   
+                    <button id='mergeFiles' label='Сложить' onAction='OnToolPressed'/>    
+                    <button id='combineFiles' label='По колонкам' onAction='OnToolPressed'/>   
                 </menu>
             </group>
             <group id='rausettings' label='Настройки'>
@@ -48,30 +48,50 @@ namespace RehauSku.Interface
                 ribbonUi.InvalidateControl(id);
             }
         }
-
-        public void OnMergePressed(IRibbonControl control)
+        public void OnSetPricePressed(IRibbonControl control)
         {
-            MergeTool mergeTool = new MergeTool();
-            string[] files = Dialog.GetMultiplyFiles();
+            string path = Dialog.GetFilePath();
 
-            if (files != null)
+            if (!string.IsNullOrEmpty(path))
             {
-                mergeTool.SourceFiles = SourcePriceList.GetSourceLists(files);
-                mergeTool.OpenNewPrice();
-                mergeTool.FillTarget();
+                RegistryUtil.PriceListPath = path;
             }
         }
 
-        public void OnCombinePressed(IRibbonControl control)
+        public void OnToolPressed(IRibbonControl control)
         {
-            CombineTool combineTool = new CombineTool();
-            string[] files = Dialog.GetMultiplyFiles();
-
-            if (files != null)
+            try
             {
-                combineTool.SourceFiles = SourcePriceList.GetSourceLists(files);
-                combineTool.OpenNewPrice();
-                combineTool.FillTarget();
+                AbstractTool tool;
+                switch (control.Id)
+                {
+                    case "exportToPrice":
+                        tool = new ExportTool();
+                        break;
+                    case "convertPrice":
+                        tool = new ConvertTool();
+                        break;
+                    case "mergeFiles":
+                        tool = new MergeTool();
+                        break;
+                    case "combineFiles":
+                        tool = new CombineTool();
+                        break;
+                    default:
+                        throw new Exception("Неизвестный инструмент");
+                }
+
+                tool.OpenNewPrice();
+                tool.FillTarget();
+            }
+
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message,
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
             }
         }
 
@@ -87,25 +107,6 @@ namespace RehauSku.Interface
             }
         }
 
-        public void OnExportPressed(IRibbonControl control)
-        {
-            try
-            {
-                ExportTool exportTool = new ExportTool();
-                exportTool.OpenNewPrice();
-                exportTool.FillTarget();
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,
-                    "Ошибка",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-        }
-
         public bool GetExportEnabled(IRibbonControl control)
         {
             if (AddIn.Excel.ActiveWorkbook == null)
@@ -115,25 +116,6 @@ namespace RehauSku.Interface
             {
                 Range selection = AddIn.Excel.Selection;
                 return selection.Columns.Count == 2;
-            }
-        }
-
-        public void OnConvertPressed(IRibbonControl control)
-        {
-            ConvertTool convertTool = new ConvertTool();
-
-            convertTool.GetCurrent();
-            convertTool.OpenNewPrice();
-            convertTool.FillTarget();
-        }
-
-        public void OnSetPricePressed(IRibbonControl control)
-        {
-            string path = Dialog.GetFilePath();
-
-            if (!string.IsNullOrEmpty(path))
-            {
-                RegistryUtil.PriceListPath = path;
             }
         }
     }

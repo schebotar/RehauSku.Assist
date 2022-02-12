@@ -5,27 +5,14 @@ namespace RehauSku.PriceListTools
 {
     internal class ConvertTool : AbstractTool
     {
-        private SourcePriceList Current;
+        private SourcePriceList Current { get; set; }
 
-        public void GetCurrent()
+        public ConvertTool()
         {
-            try
-            {
-                Current = new SourcePriceList(ExcelApp.ActiveWorkbook);
-            }
-
-            catch (Exception exception)
-            {
-                System.Windows.Forms.MessageBox.Show
-                    (exception.Message,
-                    "Ошибка распознавания",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Information);
-                throw exception;
-            }
+            Current = new SourcePriceList(ExcelApp.ActiveWorkbook);
         }
 
-        public void FillTarget()
+        public override void FillTarget()
         {
             ProgressBar = new ProgressBar("Заполняю строки...", Current.PositionAmount.Count);
             ResultBar = new ResultBar();

@@ -1,15 +1,32 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using System.Collections.Generic;
 using RehauSku.Interface;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Dialog = RehauSku.Interface.Dialog;
 
 namespace RehauSku.PriceListTools
 {
     internal class CombineTool : AbstractTool
     {
-        public List<SourcePriceList> SourceFiles;
+        private List<SourcePriceList> SourceFiles { get; set; }
 
-        public void FillTarget()
+        public CombineTool()
+        {
+            string[] files = Dialog.GetMultiplyFiles();
+
+            if (files != null)
+            {
+                SourceFiles = SourcePriceList.GetSourceLists(files);
+            }
+
+            else
+            {
+                throw new Exception("Не выбраны файлы");
+            }
+        }
+
+        public override void FillTarget()
         {
             ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
             ResultBar = new ResultBar();

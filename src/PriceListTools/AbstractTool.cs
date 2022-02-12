@@ -4,7 +4,6 @@ using RehauSku.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Application = Microsoft.Office.Interop.Excel.Application;
 using ProgressBar = RehauSku.Interface.ProgressBar;
 
@@ -12,10 +11,12 @@ namespace RehauSku.PriceListTools
 {
     internal abstract class AbstractTool
     {
-        protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
-        protected private TargetPriceList TargetFile;
-        protected private ResultBar ResultBar { get; set; }
-        protected private ProgressBar ProgressBar { get; set; }
+        protected Application ExcelApp = (Application)ExcelDnaUtil.Application;
+        protected TargetPriceList TargetFile { get; set; }
+        protected ResultBar ResultBar { get; set; }
+        protected ProgressBar ProgressBar { get; set; }
+
+        public abstract void FillTarget();
 
         public void OpenNewPrice()
         {
@@ -23,12 +24,6 @@ namespace RehauSku.PriceListTools
                 .Cast<Workbook>()
                 .FirstOrDefault(w => w.FullName == RegistryUtil.PriceListPath) != null)
             {
-                MessageBox.Show
-                    ("Шаблонный файл редактируется в другом месте",
-                    "Ошибка открытия шаблонного прайс-листа",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
                 throw new ArgumentException("Шаблонный файл редактируется в другом месте");
             }
 
@@ -41,12 +36,6 @@ namespace RehauSku.PriceListTools
 
             catch (Exception exception)
             {
-                MessageBox.Show
-                    (exception.Message,
-                    "Ошибка открытия шаблонного прайс-листа",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
                 if (wb != null)
                 {
                     wb.Close();
@@ -56,7 +45,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
+        protected void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
             int? row = GetPositionRow(TargetFile.skuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
@@ -108,7 +97,7 @@ namespace RehauSku.PriceListTools
             ResultBar.IncrementNotFound();
         }
 
-        protected private void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
+        protected void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
             int row = TargetFile.Sheet.Cells[TargetFile.Sheet.Rows.Count, TargetFile.skuCell.Column]
                 .End[XlDirection.xlUp]
@@ -145,7 +134,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private int? GetPositionRow(Range range, string sku, string group)
+        protected int? GetPositionRow(Range range, string sku, string group)
         {
             Range found = range.Find(sku);
             string foundGroupValue;
@@ -175,7 +164,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FilterByAmount()
+        protected void FilterByAmount()
         {
             AutoFilter filter = TargetFile.Sheet.AutoFilter;
             int startColumn = filter.Range.Column;
