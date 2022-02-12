@@ -1,17 +1,15 @@
-﻿using ExcelDna.Integration;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 using RehauSku.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application = Microsoft.Office.Interop.Excel.Application;
 using ProgressBar = RehauSku.Interface.ProgressBar;
 
 namespace RehauSku.PriceListTools
 {
     internal abstract class AbstractTool
     {
-        protected Application ExcelApp = (Application)ExcelDnaUtil.Application;
+        protected Application ExcelApp = AddIn.Excel;
         protected TargetPriceList TargetFile { get; set; }
         protected ResultBar ResultBar { get; set; }
         protected ProgressBar ProgressBar { get; set; }
