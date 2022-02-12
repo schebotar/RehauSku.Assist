@@ -33,17 +33,17 @@ namespace RehauSku.PriceListTools
 
             foreach (SourcePriceList source in SourceFiles)
             {
-                TargetFile.Sheet.Columns[TargetFile.amountCell.Column]
+                TargetFile.Sheet.Columns[TargetFile.AmountCell.Column]
                     .EntireColumn
                     .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
 
-                Range newColumnHeader = TargetFile.Sheet.Cells[TargetFile.amountCell.Row, TargetFile.amountCell.Column - 1];
+                Range newColumnHeader = TargetFile.Sheet.Cells[TargetFile.AmountCell.Row, TargetFile.AmountCell.Column - 1];
                 newColumnHeader.Value2 = $"{source.Name}";
                 newColumnHeader.WrapText = true;
 
                 foreach (var kvp in source.PositionAmount)
                 {
-                    FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column - 1, TargetFile.amountCell.Column);
+                    FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column - 1, TargetFile.AmountCell.Column);
                     ProgressBar.Update();
                 }
             }

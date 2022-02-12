@@ -8,7 +8,7 @@ namespace RehauSku.PriceListTools
     internal class ExportTool : AbstractTool
     {
         private Dictionary<Position, double> PositionAmount;
-        private Range Selection;
+        private readonly Range Selection;
 
         public ExportTool()
         {
@@ -28,7 +28,7 @@ namespace RehauSku.PriceListTools
             
             foreach (var kvp in PositionAmount)
             {
-                FillPositionAmountToColumns(kvp, TargetFile.amountCell.Column);
+                FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
                 ProgressBar.Update();
             }
 

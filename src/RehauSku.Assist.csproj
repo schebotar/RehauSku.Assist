@@ -131,6 +131,7 @@
     <Compile Include="PriceListTools\AbstractTool.cs" />
     <Compile Include="PriceListTools\MergeTool.cs" />
     <Compile Include="PriceListTools\AbstractPriceList.cs" />
+    <Compile Include="PriceListTools\PriceListHeaders.cs" />
     <Compile Include="PriceListTools\SourcePriceList.cs" />
     <Compile Include="PriceListTools\TargetPriceList.cs" />
     <Compile Include="Interface\RibbonController.cs" />

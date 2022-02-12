@@ -4,7 +4,7 @@ namespace RehauSku
 {
     internal static class EventsUtil
     {
-        private static Application Excel = AddIn.Excel;
+        private static readonly Application Excel = AddIn.Excel;
 
         public static void Initialize()
         {
