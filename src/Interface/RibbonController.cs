@@ -2,6 +2,8 @@
 using Microsoft.Office.Interop.Excel;
 using RehauSku.PriceListTools;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -27,8 +29,8 @@ namespace RehauSku.Interface
                     <button id='combine' label='По колонкам' onAction='OnToolPressed'/>   
                 </menu>
             </group>
-            <group id='rausettings' label='Настройки'>
-                <button id='setPriceList' label='Указать путь к шаблону' size='large' imageMso='CurrentViewSettings' onAction='OnSetPricePressed'/>
+            <group id='rausettings' getLabel='GetVersionLabel'>
+                <button id='setPriceList' getLabel='GetPriceListPathLabel' size='large' imageMso='TableExcelSpreadsheetInsert' onAction='OnSetPricePressed'/>
             </group>
           </tab>
         </tabs>
@@ -117,6 +119,18 @@ namespace RehauSku.Interface
                 Range selection = AddIn.Excel.Selection;
                 return selection.Columns.Count == 2;
             }
+        }
+
+        public string GetVersionLabel(IRibbonControl control)
+        {
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return $"v{version}";
+        }
+
+        public string GetPriceListPathLabel(IRibbonControl control)
+        {
+            string name = RegistryUtil.GetPriceListName();
+            return string.IsNullOrEmpty(name) ? "Нет файла шаблона!" : name;
         }
     }
 }
