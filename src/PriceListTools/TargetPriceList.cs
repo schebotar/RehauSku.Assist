@@ -6,8 +6,7 @@ namespace RehauSku.PriceListTools
 {
     internal class TargetPriceList : AbstractPriceList
     {
-        private const string oldSkuHeader = "Прежний материал";
-        public Range oldSkuCell { get; private set; }
+        public Range OldSkuCell { get; private set; }
 
         public TargetPriceList(Workbook workbook)
         {
@@ -22,13 +21,13 @@ namespace RehauSku.PriceListTools
 
             Range[] cells = new[]
             {
-                amountCell = Sheet.Cells.Find(amountHeader),
-                skuCell = Sheet.Cells.Find(skuHeader),
-                groupCell = Sheet.Cells.Find(groupHeader),
-                nameCell = Sheet.Cells.Find(nameHeader)
+                AmountCell = Sheet.Cells.Find(PriceListHeaders.Amount),
+                SkuCell = Sheet.Cells.Find(PriceListHeaders.Sku),
+                GroupCell = Sheet.Cells.Find(PriceListHeaders.Group),
+                NameCell = Sheet.Cells.Find(PriceListHeaders.Name)
             };
 
-            oldSkuCell = Sheet.Cells.Find(oldSkuHeader);
+            OldSkuCell = Sheet.Cells.Find(PriceListHeaders.OldSku);
 
             if (cells.Any(x => x == null))
             {

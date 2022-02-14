@@ -7,7 +7,6 @@ using RehauSku.Interface;
 
 namespace RehauSku.PriceListTools
 {
-
     internal class SourcePriceList : AbstractPriceList
     {
         public Dictionary<Position, double> PositionAmount { get; private set; }
@@ -24,10 +23,10 @@ namespace RehauSku.PriceListTools
 
             Range[] cells = new[]
             {
-                amountCell = Sheet.Cells.Find(amountHeader),
-                skuCell = Sheet.Cells.Find(skuHeader),
-                groupCell = Sheet.Cells.Find(groupHeader),
-                nameCell = Sheet.Cells.Find(nameHeader)
+                AmountCell = Sheet.Cells.Find(PriceListHeaders.Amount),
+                SkuCell = Sheet.Cells.Find(PriceListHeaders.Sku),
+                GroupCell = Sheet.Cells.Find(PriceListHeaders.Group),
+                NameCell = Sheet.Cells.Find(PriceListHeaders.Name)
             };
 
             if (cells.Any(x => x == null))
@@ -76,15 +75,15 @@ namespace RehauSku.PriceListTools
         {
             PositionAmount = new Dictionary<Position, double>();
 
-            for (int row = amountCell.Row + 1; row <= Sheet.Cells[Sheet.Rows.Count, amountCell.Column].End[XlDirection.xlUp].Row; row++)
+            for (int row = AmountCell.Row + 1; row <= Sheet.Cells[Sheet.Rows.Count, AmountCell.Column].End[XlDirection.xlUp].Row; row++)
             {
-                object amount = Sheet.Cells[row, amountCell.Column].Value2;
+                object amount = Sheet.Cells[row, AmountCell.Column].Value2;
 
                 if (amount != null && (double)amount != 0)
                 {
-                    object group = Sheet.Cells[row, groupCell.Column].Value2;
-                    object name = Sheet.Cells[row, nameCell.Column].Value2;
-                    object sku = Sheet.Cells[row, skuCell.Column].Value2;
+                    object group = Sheet.Cells[row, GroupCell.Column].Value2;
+                    object name = Sheet.Cells[row, NameCell.Column].Value2;
+                    object sku = Sheet.Cells[row, SkuCell.Column].Value2;
 
                     if (group == null || name == null || sku == null)
                         continue;

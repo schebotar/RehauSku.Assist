@@ -63,7 +63,13 @@ namespace RehauSku
             {
                 priceListPath = value;
                 RootKey.SetValue("PriceListPath", value);
+                RibbonController.RefreshControl("setPriceList");
             }
+        }
+
+        public static string GetPriceListName()
+        {
+            return Path.GetFileName(priceListPath);
         }
 
         public static ResponseOrder StoreResponseOrder

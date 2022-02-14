@@ -1,21 +1,20 @@
-﻿using ExcelDna.Integration;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 using RehauSku.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using Application = Microsoft.Office.Interop.Excel.Application;
 using ProgressBar = RehauSku.Interface.ProgressBar;
 
 namespace RehauSku.PriceListTools
 {
     internal abstract class AbstractTool
     {
-        protected private Application ExcelApp = (Application)ExcelDnaUtil.Application;
-        protected private TargetPriceList TargetFile;
-        protected private ResultBar ResultBar { get; set; }
-        protected private ProgressBar ProgressBar { get; set; }
+        protected Application ExcelApp = AddIn.Excel;
+        protected TargetPriceList TargetFile { get; set; }
+        protected ResultBar ResultBar { get; set; }
+        protected ProgressBar ProgressBar { get; set; }
+
+        public abstract void FillTarget();
 
         public void OpenNewPrice()
         {
@@ -23,12 +22,6 @@ namespace RehauSku.PriceListTools
                 .Cast<Workbook>()
                 .FirstOrDefault(w => w.FullName == RegistryUtil.PriceListPath) != null)
             {
-                MessageBox.Show
-                    ("Шаблонный файл редактируется в другом месте",
-                    "Ошибка открытия шаблонного прайс-листа",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
                 throw new ArgumentException("Шаблонный файл редактируется в другом месте");
             }
 
@@ -41,12 +34,6 @@ namespace RehauSku.PriceListTools
 
             catch (Exception exception)
             {
-                MessageBox.Show
-                    (exception.Message,
-                    "Ошибка открытия шаблонного прайс-листа",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
                 if (wb != null)
                 {
                     wb.Close();
@@ -56,9 +43,9 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
+        protected void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
-            int? row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
+            int? row = GetPositionRow(TargetFile.SkuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
             if (row != null)
             {
@@ -69,11 +56,12 @@ namespace RehauSku.PriceListTools
                 }
 
                 ResultBar.IncrementSuccess();
+                return;
             }
 
-            else if (TargetFile.oldSkuCell != null)
+            if (TargetFile.OldSkuCell != null)
             {
-                row = GetPositionRow(positionAmount.Key.Sku, positionAmount.Key.Group, TargetFile.oldSkuCell.Column);
+                row = GetPositionRow(TargetFile.OldSkuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
                 if (row != null)
                 {
@@ -84,36 +72,32 @@ namespace RehauSku.PriceListTools
                     }
 
                     ResultBar.IncrementReplaced();
+                    return;
                 }
             }
 
-            else
+            string sku = positionAmount.Key.Sku.Substring(1, 6);
+            row = GetPositionRow(TargetFile.SkuCell.EntireColumn, sku, positionAmount.Key.Group);
+
+            if (row != null)
             {
-                string sku = positionAmount.Key.Sku.Substring(1, 6);
-                row = GetPositionRow(sku, positionAmount.Key.Group, TargetFile.skuCell.Column);
-
-                if (row != null)
+                foreach (int column in columns)
                 {
-                    foreach (int column in columns)
-                    {
-                        Range cell = TargetFile.Sheet.Cells[row, column];
-                        cell.AddValue(positionAmount.Value);
-                    }
-
-                    ResultBar.IncrementReplaced();
+                    Range cell = TargetFile.Sheet.Cells[row, column];
+                    cell.AddValue(positionAmount.Value);
                 }
 
-                else
-                {
-                    FillMissing(positionAmount, columns);
-                    ResultBar.IncrementNotFound();
-                }
+                ResultBar.IncrementReplaced();
+                return;
             }
+
+            FillMissing(positionAmount, columns);
+            ResultBar.IncrementNotFound();
         }
 
-        protected private void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
+        protected void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
-            int row = TargetFile.Sheet.Cells[TargetFile.Sheet.Rows.Count, TargetFile.skuCell.Column]
+            int row = TargetFile.Sheet.Cells[TargetFile.Sheet.Rows.Count, TargetFile.SkuCell.Column]
                 .End[XlDirection.xlUp]
                 .Row + 1;
 
@@ -127,18 +111,18 @@ namespace RehauSku.PriceListTools
             previous.Copy(current);
             current.ClearContents();
 
-            TargetFile.Sheet.Cells[row, TargetFile.groupCell.Column].Value2 = positionAmount.Key.Group;
-            TargetFile.Sheet.Cells[row, TargetFile.nameCell.Column].Value2 = positionAmount.Key.Name;
+            TargetFile.Sheet.Cells[row, TargetFile.GroupCell.Column].Value2 = positionAmount.Key.Group;
+            TargetFile.Sheet.Cells[row, TargetFile.NameCell.Column].Value2 = positionAmount.Key.Name;
 
-            if (TargetFile.oldSkuCell != null)
+            if (TargetFile.OldSkuCell != null)
             {
-                TargetFile.Sheet.Cells[row, TargetFile.skuCell.Column].Value2 = "Не найден";
-                TargetFile.Sheet.Cells[row, TargetFile.oldSkuCell.Column].Value2 = positionAmount.Key.Sku;
+                TargetFile.Sheet.Cells[row, TargetFile.SkuCell.Column].Value2 = "Не найден";
+                TargetFile.Sheet.Cells[row, TargetFile.OldSkuCell.Column].Value2 = positionAmount.Key.Sku;
             }
 
             else
             {
-                TargetFile.Sheet.Cells[row, TargetFile.skuCell.Column].Value2 = positionAmount.Key.Sku;
+                TargetFile.Sheet.Cells[row, TargetFile.SkuCell.Column].Value2 = positionAmount.Key.Sku;
             }
 
             foreach (int column in columns)
@@ -148,40 +132,42 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        protected private int? GetPositionRow(string sku, string group, int column)
+        protected int? GetPositionRow(Range range, string sku, string group)
         {
-            int? row = null;
-            Range foundCell = TargetFile.Sheet.Columns[column].Find(sku);
+            Range found = range.Find(sku);
             string foundGroupValue;
 
-            if (foundCell == null) return null;
-
-            else
+            if (found == null)
             {
-                row = foundCell.Row;
-                foundGroupValue = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
+                return null;
             }
 
-            if (string.IsNullOrEmpty(group) || group.Equals(foundGroupValue))
-                return row;
+            int firstFoundRow = found.Row; 
 
-            else
-                while (true)
+            while (true)
+            {
+                foundGroupValue = TargetFile.Sheet.Cells[found.Row, TargetFile.GroupCell.Column].Value2.ToString();
+
+                if (string.IsNullOrEmpty(group) || group.Equals(foundGroupValue))
                 {
-                    foundCell = TargetFile.skuCell.EntireColumn.FindNext(foundCell);
-                    if (foundCell == null) return row;
-
-                    foundGroupValue = TargetFile.Sheet.Cells[foundCell.Row, TargetFile.groupCell.Column].Value2.ToString();
-                    if (group.Equals(foundGroupValue)) return foundCell.Row;
+                    return found.Row;
                 }
+
+                found = range.FindNext(found);
+
+                if (found.Row == firstFoundRow)
+                {
+                    return null;
+                }
+            }
         }
 
-        protected private void FilterByAmount()
+        protected void FilterByAmount()
         {
             AutoFilter filter = TargetFile.Sheet.AutoFilter;
             int startColumn = filter.Range.Column;
 
-            filter.Range.AutoFilter(TargetFile.amountCell.Column - startColumn + 1, "<>");
+            filter.Range.AutoFilter(TargetFile.AmountCell.Column - startColumn + 1, "<>");
             TargetFile.Sheet.Range["A1"].Activate();
         }
     }

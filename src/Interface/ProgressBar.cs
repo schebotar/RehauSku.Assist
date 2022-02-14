@@ -19,7 +19,7 @@
 
             if (percent < 100)
             {
-                Excel.StatusBar = $"{Message} Выполнено {percent.ToString("#.#")} %";
+                Excel.StatusBar = $"{Message} Выполнено {percent:#.#} %";
             }
 
             else
