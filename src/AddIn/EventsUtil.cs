@@ -22,12 +22,12 @@ namespace RehauSku
 
         private static void RefreshConvertButton(object sh)
         {
-            Interface.RibbonController.RefreshControl("convertPrice");
+            Interface.RibbonController.RefreshControl("convert");
         }
 
         private static void RefreshExportButton(object sh, Range target)
         {
-            Interface.RibbonController.RefreshControl("exportToPrice");
+            Interface.RibbonController.RefreshControl("export");
         }
     }
 }
