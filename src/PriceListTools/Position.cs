@@ -2,7 +2,7 @@
 
 namespace RehauSku.PriceListTools
 {
-    public class Position 
+    public class Position
     {
         public string Group { get; private set; }
         public string Sku { get; private set; }
@@ -36,7 +36,7 @@ namespace RehauSku.PriceListTools
                 Name
             };
 
-            return properties.Where(p => p != null).Sum(p => p.GetHashCode());
+            return string.Concat(properties.Where(p => p != null)).GetHashCode();
         }
     }
 }
