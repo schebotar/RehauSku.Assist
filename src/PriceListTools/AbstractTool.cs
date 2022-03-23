@@ -135,21 +135,25 @@ namespace RehauSku.PriceListTools
         protected int? GetPositionRow(Range range, string sku, string group)
         {
             Range found = range.Find(sku);
+            string foundGroupValue;
 
             if (found == null)
             {
                 return null;
             }
 
-            int firstFoundRow = found.Row; 
+            int firstFoundRow = found.Row;
+
+            if (string.IsNullOrEmpty(group))
+            {
+                return found.Row;
+            }
 
             while (true)
             {
-                Range groupCell = TargetFile.Sheet.Cells[found.Row, TargetFile.GroupCell.Column];
+                foundGroupValue = TargetFile.Sheet.Cells[found.Row, TargetFile.GroupCell.Column].Value2.ToString();
 
-                if (string.IsNullOrEmpty(group) || 
-                    string.IsNullOrEmpty(groupCell.Value2.ToString()) || 
-                    group.Equals(groupCell.Value2.ToString()))
+                if (group.Equals(foundGroupValue))
                 {
                     return found.Row;
                 }
