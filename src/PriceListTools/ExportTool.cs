@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using RehauSku.Interface;
+using System.Threading.Tasks;
 
 namespace RehauSku.PriceListTools
 {
@@ -21,11 +22,11 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public override void FillTarget()
+        public override async void FillTarget()
         {
             ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
             ResultBar = new ResultBar();
-            
+
             foreach (var kvp in PositionAmount)
             {
                 FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
@@ -35,13 +36,13 @@ namespace RehauSku.PriceListTools
             FilterByAmount();
             ResultBar.Update();
 
-            Interface.Dialog.SaveWorkbookAs();
+            await Task.Delay(new TimeSpan(0, 0, 5));
             ExcelApp.StatusBar = false;
         }
 
         private void GetSelected()
         {
-            object[,] cells = Selection.Value2;            
+            object[,] cells = Selection.Value2;
             PositionAmount = new Dictionary<Position, double>();
 
             int rowsCount = Selection.Rows.Count;

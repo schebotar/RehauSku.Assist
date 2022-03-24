@@ -1,4 +1,6 @@
-﻿namespace RehauSku.PriceListTools
+﻿using System.Linq;
+
+namespace RehauSku.PriceListTools
 {
     public class Position
     {
@@ -11,6 +13,30 @@
             Group = group;
             Sku = sku;
             Name = name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj as Position == null)
+                return false;
+
+            Position other = obj as Position;
+
+            return Group == other.Group &&
+                Sku == other.Sku &&
+                Name == other.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            string[] properties = new[]
+            {
+                Group,
+                Sku,
+                Name
+            };
+
+            return string.Concat(properties.Where(p => p != null)).GetHashCode();
         }
     }
 }
