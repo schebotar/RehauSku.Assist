@@ -3,6 +3,7 @@ using RehauSku.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Dialog = RehauSku.Interface.Dialog;
 
 namespace RehauSku.PriceListTools
@@ -26,7 +27,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public override void FillTarget()
+        public override async void FillTarget()
         {
             ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
             ResultBar = new ResultBar();
@@ -51,7 +52,7 @@ namespace RehauSku.PriceListTools
             FilterByAmount();
             ResultBar.Update();
 
-            Interface.Dialog.SaveWorkbookAs();
+            await Task.Delay(new TimeSpan(0, 0, 5));
             ExcelApp.StatusBar = false;
         }
     }

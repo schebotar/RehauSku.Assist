@@ -36,22 +36,5 @@ namespace RehauSku.Interface
                 else return null;
             }
         }
-
-        public static void SaveWorkbookAs()
-        {
-            Workbook workbook = AddIn.Excel.ActiveWorkbook;
-
-            using (SaveFileDialog dialog = new SaveFileDialog())
-            {
-                dialog.FileName = workbook.Name;
-                dialog.Filter = "Файлы Excel (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string fileName = dialog.FileName;
-                    workbook.SaveAs(fileName);
-                }
-            }
-        }
     }
 }
