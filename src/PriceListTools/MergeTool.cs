@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RehauSku.PriceListTools
 {
@@ -25,7 +24,7 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public override async void FillTarget()
+        public override void FillTarget()
         {
             ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(x => x.PositionAmount.Count));
             ResultBar = new ResultBar();
@@ -42,7 +41,7 @@ namespace RehauSku.PriceListTools
             FilterByAmount();
             ResultBar.Update();
 
-            await Task.Delay(new TimeSpan(0, 0, 5));
+            Dialog.SaveWorkbookAs();
             ExcelApp.StatusBar = false;
         }
     }
