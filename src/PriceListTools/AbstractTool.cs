@@ -45,17 +45,13 @@ namespace RehauSku.PriceListTools
 
         protected void FillPositionAmountToColumns(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
-            Range worksheetCells = TargetFile.Sheet.Cells;
-            Range skuColumn = TargetFile.SkuCell.EntireColumn;
-            Range oldSkuColumn = TargetFile.OldSkuCell.EntireColumn;
-
-            int? row = GetPositionRow(skuColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
+            int? row = GetPositionRow(TargetFile.SkuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
             if (row != null)
             {
                 foreach (int column in columns)
                 {
-                    Range cell = worksheetCells[row, column];
+                    Range cell = TargetFile.Sheet.Cells[row, column];
                     cell.AddValue(positionAmount.Value);
                 }
 
@@ -65,13 +61,13 @@ namespace RehauSku.PriceListTools
 
             if (TargetFile.OldSkuCell != null)
             {
-                row = GetPositionRow(oldSkuColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
+                row = GetPositionRow(TargetFile.OldSkuCell.EntireColumn, positionAmount.Key.Sku, positionAmount.Key.Group);
 
                 if (row != null)
                 {
                     foreach (int column in columns)
                     {
-                        Range cell = worksheetCells[row, column];
+                        Range cell = TargetFile.Sheet.Cells[row, column];
                         cell.AddValue(positionAmount.Value);
                     }
 
@@ -81,13 +77,13 @@ namespace RehauSku.PriceListTools
             }
 
             string sku = positionAmount.Key.Sku.Substring(1, 6);
-            row = GetPositionRow(skuColumn, sku, positionAmount.Key.Group);
+            row = GetPositionRow(TargetFile.SkuCell.EntireColumn, sku, positionAmount.Key.Group);
 
             if (row != null)
             {
                 foreach (int column in columns)
                 {
-                    Range cell = worksheetCells[row, column];
+                    Range cell = TargetFile.Sheet.Cells[row, column];
                     cell.AddValue(positionAmount.Value);
                 }
 
@@ -101,43 +97,37 @@ namespace RehauSku.PriceListTools
 
         protected void FillMissing(KeyValuePair<Position, double> positionAmount, params int[] columns)
         {
-            Range worksheetCells = TargetFile.Sheet.Cells;
-            Range worksheetRows = TargetFile.Sheet.Rows;
-            int skuColumn = TargetFile.SkuCell.Column;
-            int groupColumn = TargetFile.GroupCell.Column;
-            int nameColumn = TargetFile.NameCell.Column;
-
-            int row = worksheetCells[worksheetRows.Count, skuColumn]
+            int row = TargetFile.Sheet.Cells[TargetFile.Sheet.Rows.Count, TargetFile.SkuCell.Column]
                 .End[XlDirection.xlUp]
                 .Row + 1;
 
-            worksheetRows[row]
+            TargetFile.Sheet.Rows[row]
                 .EntireRow
                 .Insert(XlInsertShiftDirection.xlShiftDown, XlInsertFormatOrigin.xlFormatFromLeftOrAbove);
 
-            Range previous = worksheetRows[row - 1];
-            Range current = worksheetRows[row];
+            Range previous = TargetFile.Sheet.Rows[row - 1];
+            Range current = TargetFile.Sheet.Rows[row];
 
             previous.Copy(current);
             current.ClearContents();
 
-            worksheetCells[row, groupColumn].Value2 = positionAmount.Key.Group;
-            worksheetCells[row, nameColumn].Value2 = positionAmount.Key.Name;
+            TargetFile.Sheet.Cells[row, TargetFile.GroupCell.Column].Value2 = positionAmount.Key.Group;
+            TargetFile.Sheet.Cells[row, TargetFile.NameCell.Column].Value2 = positionAmount.Key.Name;
 
             if (TargetFile.OldSkuCell != null)
             {
-                worksheetCells[row, skuColumn].Value2 = "Не найден";
-                worksheetCells[row, TargetFile.OldSkuCell.Column].Value2 = positionAmount.Key.Sku;
+                TargetFile.Sheet.Cells[row, TargetFile.SkuCell.Column].Value2 = "Не найден";
+                TargetFile.Sheet.Cells[row, TargetFile.OldSkuCell.Column].Value2 = positionAmount.Key.Sku;
             }
 
             else
             {
-                worksheetCells[row, skuColumn].Value2 = positionAmount.Key.Sku;
+                TargetFile.Sheet.Cells[row, TargetFile.SkuCell.Column].Value2 = positionAmount.Key.Sku;
             }
 
             foreach (int column in columns)
             {
-                Range cell = worksheetCells[row, column];
+                Range cell = TargetFile.Sheet.Cells[row, column];
                 cell.AddValue(positionAmount.Value);
             }
         }
