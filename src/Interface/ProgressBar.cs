@@ -21,11 +21,6 @@
             {
                 Excel.StatusBar = $"{Message} Выполнено {percent:#.#} %";
             }
-
-            else
-            {
-                Excel.StatusBar = false;
-            }
         }
     }
 }

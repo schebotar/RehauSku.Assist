@@ -26,20 +26,21 @@ namespace RehauSku.PriceListTools
 
         public override void FillTarget()
         {
-            ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(x => x.PositionAmount.Count));
-            ResultBar = new ResultBar();
-
-            foreach (SourcePriceList source in SourceFiles)
+            using (ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(x => x.PositionAmount.Count)))
+            using (ResultBar = new ResultBar())
             {
-                foreach (var kvp in source.PositionAmount)
+                foreach (SourcePriceList source in SourceFiles)
                 {
-                    FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
-                    ProgressBar.Update();
+                    foreach (var kvp in source.PositionAmount)
+                    {
+                        FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
+                        ProgressBar.Update();
+                    }
                 }
-            }
 
-            FilterByAmount();
-            ResultBar.Update();
+                FilterByAmount();
+                ResultBar.Update();
+            }
         }
     }
 }

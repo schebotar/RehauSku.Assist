@@ -23,22 +23,23 @@ namespace RehauSku.PriceListTools
 
         public override void FillTarget()
         {
-            ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
-            ResultBar = new ResultBar();
-            
-            foreach (var kvp in PositionAmount)
+            using (ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count))
+            using (ResultBar = new ResultBar())
             {
-                FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
-                ProgressBar.Update();
-            }
+                foreach (var kvp in PositionAmount)
+                {
+                    FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
+                    ProgressBar.Update();
+                }
 
-            FilterByAmount();
-            ResultBar.Update();
+                FilterByAmount();
+                ResultBar.Update();
+            }
         }
 
         private void GetSelected()
         {
-            object[,] cells = Selection.Value2;            
+            object[,] cells = Selection.Value2;
             PositionAmount = new Dictionary<Position, double>();
 
             int rowsCount = Selection.Rows.Count;

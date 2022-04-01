@@ -28,28 +28,29 @@ namespace RehauSku.PriceListTools
 
         public override void FillTarget()
         {
-            ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count));
-            ResultBar = new ResultBar();
-
-            foreach (SourcePriceList source in SourceFiles)
+            using (ProgressBar = new ProgressBar("Заполняю строки...", SourceFiles.Sum(file => file.PositionAmount.Count)))
+            using (ResultBar = new ResultBar())
             {
-                TargetFile.Sheet.Columns[TargetFile.AmountCell.Column]
-                    .EntireColumn
-                    .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
-
-                Range newColumnHeader = TargetFile.Sheet.Cells[TargetFile.AmountCell.Row, TargetFile.AmountCell.Column - 1];
-                newColumnHeader.Value2 = $"{source.Name}";
-                newColumnHeader.WrapText = true;
-
-                foreach (var kvp in source.PositionAmount)
+                foreach (SourcePriceList source in SourceFiles)
                 {
-                    FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column - 1, TargetFile.AmountCell.Column);
-                    ProgressBar.Update();
-                }
-            }
+                    TargetFile.Sheet.Columns[TargetFile.AmountCell.Column]
+                        .EntireColumn
+                        .Insert(XlInsertShiftDirection.xlShiftToRight, XlInsertFormatOrigin.xlFormatFromRightOrBelow);
 
-            FilterByAmount();
-            ResultBar.Update();
+                    Range newColumnHeader = TargetFile.Sheet.Cells[TargetFile.AmountCell.Row, TargetFile.AmountCell.Column - 1];
+                    newColumnHeader.Value2 = $"{source.Name}";
+                    newColumnHeader.WrapText = true;
+
+                    foreach (var kvp in source.PositionAmount)
+                    {
+                        FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column - 1, TargetFile.AmountCell.Column);
+                        ProgressBar.Update();
+                    }
+                }
+
+                FilterByAmount();
+                ResultBar.Update();
+            }
         }
     }
 }

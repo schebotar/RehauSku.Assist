@@ -40,7 +40,6 @@ namespace RehauSku.Interface
             }
 
             Excel.StatusBar = sb.ToString(); 
-            AddIn.Excel.OnTime(DateTime.Now + new TimeSpan(0, 0, 5), "ResetStatusBar");
         }
     }
 }
