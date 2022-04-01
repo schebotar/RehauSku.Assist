@@ -34,9 +34,6 @@ namespace RehauSku.PriceListTools
 
             FilterByAmount();
             ResultBar.Update();
-
-            Interface.Dialog.SaveWorkbookAs();
-            ExcelApp.StatusBar = false;
         }
 
         private void GetSelected()

@@ -24,9 +24,6 @@ namespace RehauSku.PriceListTools
 
             FilterByAmount();
             ResultBar.Update();
-
-            Dialog.SaveWorkbookAs();
-            ExcelApp.StatusBar = false;
         }
     }
 }
