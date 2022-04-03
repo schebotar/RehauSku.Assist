@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using RehauSku.Interface;
-using System.Threading.Tasks;
 
 namespace RehauSku.PriceListTools
 {
@@ -22,22 +21,20 @@ namespace RehauSku.PriceListTools
             }
         }
 
-        public override async void FillTarget()
+        public override void FillTarget()
         {
-            ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count);
-            ResultBar = new ResultBar();
-
-            foreach (var kvp in PositionAmount)
+            using (ProgressBar = new ProgressBar("Заполняю строки...", PositionAmount.Count))
+            using (ResultBar = new ResultBar())
             {
-                FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
-                ProgressBar.Update();
+                foreach (var kvp in PositionAmount)
+                {
+                    FillPositionAmountToColumns(kvp, TargetFile.AmountCell.Column);
+                    ProgressBar.Update();
+                }
+
+                FilterByAmount();
+                ResultBar.Update();
             }
-
-            FilterByAmount();
-            ResultBar.Update();
-
-            await Task.Delay(new TimeSpan(0, 0, 5));
-            ExcelApp.StatusBar = false;
         }
 
         private void GetSelected()

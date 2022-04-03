@@ -93,6 +93,7 @@ namespace RehauSku.Interface
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+                AddIn.Excel.StatusBar = false;
                 return;
             }
         }

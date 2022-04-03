@@ -16,16 +16,7 @@
         public override void Update()
         {
             double percent = (++CurrentProgress / TaskWeight) * 100;
-
-            if (percent < 100)
-            {
-                Excel.StatusBar = $"{Message} Выполнено {percent:#.#} %";
-            }
-
-            else
-            {
-                Excel.StatusBar = false;
-            }
+            Excel.StatusBar = $"{Message} Выполнено {percent:#.#} %";
         }
     }
 }

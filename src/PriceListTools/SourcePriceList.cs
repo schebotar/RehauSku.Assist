@@ -77,9 +77,9 @@ namespace RehauSku.PriceListTools
 
             for (int row = AmountCell.Row + 1; row <= Sheet.Cells[Sheet.Rows.Count, AmountCell.Column].End[XlDirection.xlUp].Row; row++)
             {
-                object amount = Sheet.Cells[row, AmountCell.Column].Value2;
+                double? amount = Sheet.Cells[row, AmountCell.Column].Value2 as double?;
 
-                if (amount != null && (double)amount != 0)
+                if (amount != null && amount.Value != 0)
                 {
                     object group = Sheet.Cells[row, GroupCell.Column].Value2;
                     object name = Sheet.Cells[row, NameCell.Column].Value2;
@@ -95,12 +95,12 @@ namespace RehauSku.PriceListTools
 
                     if (PositionAmount.ContainsKey(p))
                     {
-                        PositionAmount[p] += (double)amount;
+                        PositionAmount[p] += amount.Value;
                     }
 
                     else
                     {
-                        PositionAmount.Add(p, (double)amount);
+                        PositionAmount.Add(p, amount.Value);
                     }
                 }
             }
