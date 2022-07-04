@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddIn\EventsUtil.cs" />
+    <Compile Include="AddIn\RehauSku.cs" />
     <Compile Include="Interface\AbstractBar.cs" />
     <Compile Include="Interface\Dialog.cs" />
     <Compile Include="AddIn\RegistryUtil.cs" />

@@ -52,5 +52,18 @@ namespace RehauSku
                     return null;
             }
         }
+
+        [ExcelFunction(Description = "Получение корректного артикула из строки")]
+        public static object GETRAUSKU([ExcelArgument(Name = "\"Строка\"", Description = "строка, содержащая актикул")] string line)
+        {
+            RauSku rausku;
+
+            if (RauSku.TryParse(line, out rausku))
+            {
+                return rausku.ToString();
+            }
+
+            else return ExcelError.ExcelErrorNA;
+        }
     }
 }
