@@ -56,9 +56,11 @@ namespace RehauSku.PriceListTools
                 {
                     object current = cells[row, column];
 
-                    if (current.ToString().IsRehauSku())
+                    RauSku rauSku;
+
+                    if (RauSku.TryParse(current.ToString(), out rauSku))
                     {
-                        sku = current.ToString();
+                        sku = rauSku.ToString();
                     }
 
                     else if (current.GetType() == typeof(string)
