@@ -9,14 +9,12 @@ namespace RehauSku
     static class RegistryUtil
     {
         private static string priceListPath;
-        private static int? storeResponseOrder;
         private static RegistryKey RootKey { get; set; }
 
         public static void Initialize()
         {
             RootKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\REHAU\SkuAssist"); 
             priceListPath = RootKey.GetValue("PriceListPath") as string;
-            storeResponseOrder = RootKey.GetValue("StoreResponseOrder") as int?;
         }
 
         public static void Uninitialize()
@@ -70,24 +68,6 @@ namespace RehauSku
         public static string GetPriceListName()
         {
             return Path.GetFileName(priceListPath);
-        }
-
-        public static ResponseOrder StoreResponseOrder
-        {
-            get
-            {
-                if (storeResponseOrder == null)
-                {
-                    RootKey.SetValue("StoreResponseOrder", (int)ResponseOrder.Default);
-                    storeResponseOrder = (int)ResponseOrder.Default;
-                    return (ResponseOrder)storeResponseOrder.Value;
-                }
-
-                else
-                {
-                    return (ResponseOrder)storeResponseOrder.Value;
-                }
-            }
         }
     }
 }

@@ -7,15 +7,6 @@ using System.Runtime.Caching;
 
 namespace RehauSku
 {
-    enum ResponseOrder
-    {
-        Default,
-        Relevance,
-        Name,
-        Price,
-        Series
-    }
-
     class AddIn : IExcelAddIn
     {
         public static HttpClient httpClient;

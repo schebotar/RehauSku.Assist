@@ -56,9 +56,7 @@ namespace RehauSku
         [ExcelFunction(Description = "Получение корректного артикула из строки")]
         public static object GETRAUSKU([ExcelArgument(Name = "\"Строка\"", Description = "строка, содержащая актикул")] string line)
         {
-            RauSku rausku;
-
-            if (RauSku.TryParse(line, out rausku))
+            if (RauSku.TryParse(line, out RauSku rausku))
             {
                 return rausku.ToString();
             }
