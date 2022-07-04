@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DnaLibrary Name="RehauSku.Assist Add-In" RuntimeVersion="v4.0" xmlns="http://schemas.excel-dna.net/addin/2020/07/dnalibrary">
   <ExternalLibrary Path="RehauSku.Assist.dll" ExplicitRegistration="true" LoadFromBytes="true" Pack="true" IncludePdb="false" />
-  <Reference Path="AngleSharp.dll" Pack="true" />
   <Reference Path="ExcelDna.Registration.dll" Pack="true" />
-  <Reference Path="Newtonsoft.Json.dll" Pack="true" />
-  <Reference Path="System.Buffers.dll" Pack="true" />
-  <Reference Path="System.Memory.dll" Pack="true" />
-  <Reference Path="System.Numerics.Vectors.dll" Pack="true" />
-  <Reference Path="System.Runtime.CompilerServices.Unsafe.dll" Pack="true" />
-  <Reference Path="System.Text.Encoding.CodePages.dll" Pack="true" />
   <Reference Path="ExcelDna.IntelliSense.dll" Pack="true" />
 </DnaLibrary>

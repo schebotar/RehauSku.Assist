@@ -9,14 +9,10 @@ namespace RehauSku
 {
     class AddIn : IExcelAddIn
     {
-        public static HttpClient httpClient;
-        public static MemoryCache memoryCache;
         public static Application Excel;
 
         public void AutoOpen()
         {
-            httpClient = new HttpClient();
-            memoryCache = new MemoryCache("RehauSku");
             Excel = (Application)ExcelDnaUtil.Application;
             RegisterFunctions();
             IntelliSenseServer.Install();
@@ -29,7 +25,6 @@ namespace RehauSku
             IntelliSenseServer.Uninstall();
             RegistryUtil.Uninitialize();
             EventsUtil.Uninitialize();
-            memoryCache.Dispose();
         }
 
         void RegisterFunctions()
